@@ -126,8 +126,9 @@ $("send").onclick = async () => {
                ["수수료 상한", r.fee_cap_trx + " TRX — 빠지는 금액이 아님. 예상 수수료가 이보다 크면 보내지 않습니다. 보낸 뒤 실제 수수료가 이보다 크게 확인되면 '확인 필요'로 표시하고 완료로 기록하지 않습니다(전송 여부는 txID로 확인)."],
                ["보내는 지갑", wallet.address || "(지갑 연결 필요)"],
                ...(r.adapt ? [["조건 변경(적응)", `예산 ${r.adapt.budget_trx ?? "-"} TRX · 기한 ${r.adapt.deadline_minutes ?? "-"}분 → 수수료 상한 ${r.adapt.fee_cap_trx} TRX 로 주문에 반영. 이전 승인 무효, 다시 확인·서명 필요`]] : []),
+               ...SBClient.proposalNotice(r).rows,
                ["AI", r.ai.mode + " · " + r.ai.note + (r.ai.fallback ? " · " + r.ai.fallback : "")]]);
-  if (r.kind_detail === "adapt") addMsg("bot", r.next);
+  SBClient.proposalNotice(r).messages.forEach(m => addMsg("bot", m));   // 관용 매칭 재확인·적응 안내(정상/폴백/적응 모두, textContent)
   $("confirmCard").style.display = "";
 };
 function renderTable(rows) { $("orderTable").innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td class="${/주소|ID|지문/.test(k) ? "mono" : ""}">${v}</td></tr>`).join(""); }

@@ -232,5 +232,22 @@ run("N", async () => {
 });
 
 drainMicrotasks();
-for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
+// P (VP 9/29 C) 제안 안내: 관용 매칭 → 재확인 메시지 + 표 행(입력 문장 이스케이프), 정확 별칭 → 안내 없음, 적응 → next 도 메시지
+run("P", async () => {
+  const tol = { kind: "proposal", kind_detail: "normal", text: "맥북 지갑의 트론 2개 <b>x</b>", understood: { alias_match: "space_or_particle_tolerant" }, proposal: { alias: "맥북지갑" },
+                confirm_note: "받는 사람을 등록된 '맥북지갑' 으로 이해했습니다(입력 문장: '맥북 지갑의 트론 2개 <b>x</b>'). 아니면 진행하지 마세요." };
+  const n = SBClient.proposalNotice(tol);
+  assert(n.messages.length === 1 && n.messages[0].indexOf("이해했습니다") >= 0, "P 관용 매칭 → 재확인 메시지 1개(textContent 용)");
+  assert(n.rows.length === 1 && n.rows[0][0] === "입력 문장 → 이해한 수취인" && n.rows[0][1].indexOf("&lt;b&gt;x&lt;/b&gt;") >= 0 && n.rows[0][1].indexOf("<b>") < 0, "P 표 행: 입력 문장이 HTML 로 해석되지 않게 이스케이프");
+  const exact = { kind: "proposal", kind_detail: "normal", text: "맥북지갑한테 트론 2개", understood: {}, proposal: { alias: "맥북지갑" }, next: "휴대폰에서 …" };
+  const e = SBClient.proposalNotice(exact);
+  assert(e.rows.length === 0 && e.messages.length === 0, "P 정확 별칭 → 안내 행/메시지 없음");
+  const adapt = { ...tol, kind_detail: "adapt", next: tol.confirm_note + " 조건이 바뀌어 새 제안입니다." };
+  const a = SBClient.proposalNotice(adapt);
+  assert(a.rows.length === 1 && a.messages.length === 2 && a.messages[1].indexOf("조건이 바뀌어") >= 0, "P 적응 → 재확인 메시지 + 적응 안내 모두 표시");
+  const fb = { ...tol, ai: { mode: "KILN_LIVE", fallback: "budget gate refused → 규칙 파서" } };
+  assert(SBClient.proposalNotice(fb).messages.length === 1, "P 규칙 폴백 제안에도 재확인 메시지 표시");
+});
+
+for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N ", "P "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
 print(out.join("\n")); print("RESULT " + (failures === 0 ? "PASS" : "FAIL " + failures));

@@ -639,3 +639,41 @@ class MockKilnIntegrationTests(unittest.TestCase):
             flow.reject(od["payment_id"], od["snapshot_sha256"])                                    # 서버에서 취소돼도(서명 미저장) 보유 등록이 있으면 새 주문 차단
             p = flow.prepare(flow.chat("맥북지갑한테 트론 1개")["proposal_id"], SENDER); self.assertFalse(p["ok"]); self.assertIn("서명본이 남아", p["error"])
             self.assertIsNone(flow.sender_lock(OTHER.public_key.to_base58check_address(), T0))
+
+
+class SenderIsolationTests(unittest.TestCase):
+    """9/29 두 기기·두 지갑 시험 준비(VP): 계정/기기가 바뀌어도 해당 지갑의 주소·주문·서명본만 쓴다. 다른 지갑의 미완료 주문을 재사용·종료하지 않는다."""
+    OTHER_ADDR = OTHER.public_key.to_base58check_address()
+
+    def _prep(self, flow, sender, text="맥북지갑한테 트론 2개"):
+        r = flow.chat(text); self.assertEqual(r["kind"], "proposal")
+        return flow.prepare(r["proposal_id"], sender)
+
+    def test_orders_and_signatures_are_per_sender_wallet(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            node = FakeNode(); flow = mkflow(node, tmp)
+            a = self._prep(flow, SENDER); self.assertTrue(a["ok"], a); oa = a["order"]
+            # 지갑 A 에 미완료 주문이 있어도 지갑 B 는 자기 주문을 만들 수 있다(잠금·중복 검사는 발신 지갑별)
+            b = self._prep(flow, self.OTHER_ADDR); self.assertTrue(b["ok"], b); ob = b["order"]
+            self.assertNotEqual(oa["payment_id"], ob["payment_id"]); self.assertNotEqual(oa["tx_id"], ob["tx_id"])
+            self.assertEqual(oa["user_eoa"], SENDER); self.assertEqual(ob["user_eoa"], self.OTHER_ADDR)
+            # 결과 조회는 발신 지갑별로만 보인다
+            self.assertEqual([o["payment_id"] for o in flow.list_orders(SENDER)], [oa["payment_id"]])
+            self.assertEqual([o["payment_id"] for o in flow.list_orders(self.OTHER_ADDR)], [ob["payment_id"]])
+            # 지갑 A 의 서명본을 지갑 B 의 주문에 제출 → 거부(원본 바이트 불일치, 방송 0). 두 주문 모두 그대로
+            cross = flow.submit_signed(ob["payment_id"], ob["snapshot_sha256"], sign_like_wallet(oa["unsigned_tx"]))
+            self.assertEqual(cross["state"], "NOT_SUBMITTED", cross); self.assertEqual(len(node.broadcasts), 0)
+            self.assertEqual(flow.store.get(ob["payment_id"])["state"], "PENDING"); self.assertEqual(flow.store.get(oa["payment_id"])["state"], "PENDING")
+            # 지갑 B 가 자기 주문에 자기 키로 서명 → 방송 1회·확정. 지갑 A 주문은 영향 없음(미완료 유지)
+            okb = flow.submit_signed(ob["payment_id"], ob["snapshot_sha256"], sign_like_wallet(ob["unsigned_tx"], OTHER))
+            self.assertEqual(okb["state"], "FINAL_CONFIRMED_SOLIDITY", okb); self.assertEqual(len(node.broadcasts), 1)
+            self.assertEqual(flow.intents.state(ob["payment_id"]), "CONFIRMED"); self.assertEqual(flow.store.get(oa["payment_id"])["state"], "PENDING")
+            # 지갑 B 의 키로 지갑 A 의 주문에 서명한 서명본 → 서명자 불일치로 거부(방송 여전히 1회). A 주문은 A 만 서명할 수 있게 그대로 남는다
+            wrong = flow.submit_signed(oa["payment_id"], oa["snapshot_sha256"], sign_like_wallet(oa["unsigned_tx"], OTHER))
+            self.assertEqual(wrong["state"], "NOT_SUBMITTED", wrong); self.assertIn("signer mismatch", wrong["reason"]); self.assertEqual(len(node.broadcasts), 1)
+            self.assertEqual(flow.store.get(oa["payment_id"])["state"], "PENDING")
+            oka = flow.submit_signed(oa["payment_id"], oa["snapshot_sha256"], sign_like_wallet(oa["unsigned_tx"]))
+            self.assertEqual(oka["state"], "FINAL_CONFIRMED_SOLIDITY", oka); self.assertEqual(len(node.broadcasts), 2)
+            # 결과 조회는 여전히 지갑별(상대 지갑 주문이 보이지 않는다)
+            self.assertEqual({o["payment_id"] for o in flow.list_orders(SENDER)}, {oa["payment_id"]})
+            self.assertEqual({o["payment_id"] for o in flow.list_orders(self.OTHER_ADDR)}, {ob["payment_id"]})

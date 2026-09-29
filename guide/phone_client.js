@@ -150,5 +150,16 @@
 
     return { loadInflight, clearInflight, decide, canResubmit, checkOrder, sign, resume, recover, isUserReject, CHAIN_TERMINAL, STAGES };
   }
-  root.SBClient = { create, CHAIN_TERMINAL, STAGES };
+  /* 제안 화면 안내(VP 9/29 C): 관용 매칭 사실·입력 문장·이해한 수취인을 정상/폴백/적응 모두에서 표시. HTML 로 해석하지 않도록 이스케이프한 행과, textContent 용 메시지를 돌려준다. */
+  function escapeHtml(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])); }
+  function proposalNotice(r) {
+    const u = (r && r.understood) || {}; const p = (r && r.proposal) || {};
+    const rows = [];
+    if (u.alias_match) rows.push(["입력 문장 → 이해한 수취인", escapeHtml(r.text) + " → " + escapeHtml(p.alias) + " (띄어쓰기/조사 차이를 무시해 등록된 이름과 맞춤 — 아니면 진행하지 마세요)"]);
+    const messages = [];
+    if (r && r.confirm_note) messages.push(String(r.confirm_note));
+    if (r && r.kind_detail === "adapt" && r.next) messages.push(String(r.next));
+    return { rows, messages };
+  }
+  root.SBClient = { create, CHAIN_TERMINAL, STAGES, proposalNotice, escapeHtml };
 })(typeof window !== "undefined" ? window : globalThis);

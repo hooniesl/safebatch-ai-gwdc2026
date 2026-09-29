@@ -39,4 +39,9 @@ ok   E2 NOT_SUBMITTED + 원래 주문 FINAL_CONFIRMED_SOLIDITY → 종결(chain-
 ok   F 복구 동작당 재제출 1회씩(총 POST 3)·서명본 보존(submit_count 3)
 ok   F 잠금 유지
 ok   E6 근거 없는 expired 는 폐기하지 않음
+ok   P 관용 매칭 → 재확인 메시지 1개(textContent 용)
+ok   P 표 행: 입력 문장이 HTML 로 해석되지 않게 이스케이프
+ok   P 정확 별칭 → 안내 행/메시지 없음
+ok   P 적응 → 재확인 메시지 + 적응 안내 모두 표시
+ok   P 규칙 폴백 제안에도 재확인 메시지 표시
 RESULT PASS

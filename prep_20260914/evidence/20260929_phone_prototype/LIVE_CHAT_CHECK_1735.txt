@@ -1,0 +1,6 @@
+# 2026-09-29 17:06:22 live /api/chat (규칙 폴백, Kiln 관문 소진 → calls 0, 주문 생성 없음)
+'맥북 지갑의 트론 2개' → proposal fallback 맥북지갑 confirm_note calls 0 order_created None
+'맥북지갑한테 트론 2개, 철이에게 트론 2개' → question AMBIGUOUS_ALIAS None - calls 0 order_created None
+'다른 맥북지갑한테 트론 2개' → question UNCLEAR_ALIAS None - calls 0 order_created None
+'다른맥북지갑한테 트론 2개' → question UNREGISTERED_ALIAS None - calls 0 order_created None
+'맥북지갑한테 트론 두 개' → question fallback None - calls 0 order_created None

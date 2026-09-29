@@ -293,7 +293,7 @@ def _decide_inner(text: str, contacts: list[dict], provider, fee_cap_trx: Decima
         adapt = {"budget_trx": (str(budget) if budget is not None else None), "deadline_minutes": deadline_min, "amount_trx": prop["amount_trx"],
                  "fee_cap_trx": str(Decimal(constraints["fee_cap_sun"]) / 1_000_000), "need_trx_at_default_cap": str(need)}
         return {**base, "kind": "proposal", "kind_detail": "adapt", "ai": ai, "adapt": adapt, "constraints": constraints,
-                "next": "조건이 바뀌어 새 제안입니다. 이전 승인은 무효이며 이 내용으로 다시 확인·서명해야 합니다. 예산·기한은 주문의 수수료 상한·만료에 반영됩니다."}
+                "next": ((base.get("confirm_note") + " ") if base.get("confirm_note") else "") + "조건이 바뀌어 새 제안입니다. 이전 승인은 무효이며 이 내용으로 다시 확인·서명해야 합니다. 예산·기한은 주문의 수수료 상한·만료에 반영됩니다."}
     base["ai"] = ai; base["kind_detail"] = "normal"; base["constraints"] = constraints; return base
 
 
