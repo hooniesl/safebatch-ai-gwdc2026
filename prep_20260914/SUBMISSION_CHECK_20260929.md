@@ -1,4 +1,4 @@
-# 제출 준비 점검 v4.2 · 2026-09-29 16:3x KST (전무) — 산출물 경로·재현 결과·제출을 막는 항목
+# 제출 준비 점검 v4.3 · 2026-09-29 16:4x KST (전무) — 산출물 경로·재현 결과·제출을 막는 항목
 
 ## 0. v4 변경(a안: 휴대폰 흐름 포함, 확인 범위 명시) — v3 기준본은 `evidence/20260929_submission_v3_baseline/`(읽기 전용, SHA256SUMS)
 | 제출물 | 경로 | v4 상태 |
@@ -14,7 +14,9 @@
 
 **v4.2(16:3x):** 휴대폰 LTE 기존 주문 조회 확인(`evidence/20260929_phone_prototype/remote_lte_1629/`) → README §4b 3본, PDF v4.1(9·10·1쪽 문장, 10쪽 유지), 영상 v4.1(177.8 s ≤ 180, 장면 10·11 문장), 대본 v4.1 시간표 갱신, 공개 사본 submission/ SHA 동일. 범위 표기: "existing-order lookup from the phone on LTE verified; remote chat/signing unverified". gh 인증 OK(hooniesl, scopes repo) — 게시는 사장 공개 승인 대기.
 
-제출을 막는 항목(변경 없음): 팀 ID·Telegram 체크인 미확인, 공개 GitHub 미생성(승인 대기), 최종 제출 미실행. 휴대폰 LTE 조회는 제출 조건이 아니며 미검증으로 표기한 채 제출 가능(사장이 캡처하면 README·PDF 문장만 '확인'으로 바꾼다).
+**v4.3(16:4x) 공개 GitHub 게시 완료(사장 승인):** https://github.com/hooniesl/safebatch-ai-gwdc2026 — Public·main·커밋 8d3c2e45(178)+6b2c9f95(LTE 증거 4)=182 파일, force-push 없음, 라이선스 미지정. 로그아웃 접근: 저장소·raw README·submission PDF/mp4·kiln_calls.jsonl 모두 200. README 참조 중 공개 사본에 없는 것: `prep_20260914/SESSION.md`(내부 일지, 의도적 제외). 제출 폼에 넣을 값: 저장소 URL 위, 영상 `submission/DEMO_VIDEO_SafeBatchAI_FuriosaA_20260929.mp4`(177.8 s), PDF `submission/DECK_SafeBatchAI_FuriosaA_20260929.pdf`(10쪽).
+
+제출을 막는 항목(v4.3): 팀 ID·Telegram 체크인 미확인, 최종 제출 미실행(사장 승인 필요). GitHub 항목은 해소. 팀 ID·Telegram 체크인 미확인, 공개 GitHub 미생성(승인 대기), 최종 제출 미실행. 휴대폰 LTE 조회는 제출 조건이 아니며 미검증으로 표기한 채 제출 가능(사장이 캡처하면 README·PDF 문장만 '확인'으로 바꾼다).
 
 ## (이력) v3 · 02:5x
 
