@@ -75,6 +75,7 @@ class PhoneFlow:
 
     # ── 대화 → 제안 ───────────────────────────────────────────────────────
     CARRY_WINDOW_S = 900
+    carry_enabled = os.environ.get("SB_CARRY_LAST_LIVE", "0") == "1"
 
     def _carry_candidate(self, text: str) -> dict | None:
         """9/29 A-T 실측(화면 버튼 결함으로 새로고침 필요) 대응: **같은 문장**의 직전 Kiln 실호출 성공 결과를 15분 안에 1회만 재사용한다(추가 호출 0).
@@ -104,7 +105,8 @@ class PhoneFlow:
 
     def chat(self, text: str) -> dict:
         contacts = self.contacts if self.contacts is not None else PC.load_contacts()
-        carry = self._carry_candidate(text) if getattr(self.ai_provider, "provider", "") == "KILN_LIVE" else None
+        # VP 9/29: 일반 /api/chat 의 자동 재사용은 기본 비활성. A-T 복구(17:56) 이력은 보존. 필요 시 SB_CARRY_LAST_LIVE=1 로만 켠다(명시 복구 식별자 검증은 별도 범위)
+        carry = self._carry_candidate(text) if (self.carry_enabled and getattr(self.ai_provider, "provider", "") == "KILN_LIVE") else None
         if carry:
             r = PC.parse_request(text, contacts)
             if r.get("kind") == "proposal":

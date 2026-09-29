@@ -12,7 +12,7 @@ ok   H 페이지 종료 뒤 재진입: 유지·재제출 0·잠금(keep:SIGNING:
 ok   M 'connection cancelled' → SIGNING 유지
 ok   F 서명 뒤 첫 제출 실패 → 1회로 정지(post-failed:1)
 ok   G SIGNED 저장 실패 → SIGNING 유지·제출 0·서버 보유 등록 1
-ok   J 스테일 폴링의 삭제 거부(stale:never-signed:PENDING)
+ok   J 스테일 폴링의 삭제 거부(stale:record-changed)
 ok   A 첫 제출 실패 → 정지·서명본 보존(post-failed:1)
 ok   B 응답 유실 → 정지(방송은 이미 1회)
 ok   C 불통 중 서명본 보관(단계 SUBMITTING)
@@ -65,4 +65,7 @@ ok   Q 최근 송금 행: 짧은 상태·금액·수취인·시각
 ok   Q 미확정은 목록에서 드러남 · 시각 근거 없으면 비움
 ok   Q AI 표시: 실호출/폴백/재사용/모의 구분
 ok   Q 연결 모드 표시는 요청별 사용 여부와 분리
+ok   R 다른 주문 FINAL → B 기록 보존(other-order)
+ok   R 잠금 해제 없음
+ok   R 오류 본문(ok:false)은 종결·삭제 아님
 RESULT PASS

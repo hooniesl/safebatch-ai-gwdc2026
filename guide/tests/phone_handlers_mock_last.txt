@@ -1,0 +1,24 @@
+ok   1 초기 목록 로드
+ok   1 status 500 + history 503 → failed 명시({"wallet":true,"status":false,"history":false,"failed":true})
+ok   1 실패 문구 · 성공 시각 없음
+ok   1 이전 목록 유지(기록 없음으로 안 바뀜)
+ok   1 화면 상태 유지
+ok   1 통신 끊김·비JSON → 실패·목록 유지
+ok   1 진짜 빈 목록은 '기록 없음'
+ok   1 새로고침은 GET 만(chat/prepare/signed/hold 0)
+ok   2 재진입 → 완료 화면·금액·수취인 복원(done)
+ok   2 fee_known=true·fee 필드 생략 → 0 TRX
+ok   2 보관 기록은 같은 주문 확정으로 정리
+ok   2 추가 서명·서명본 제출·hold 0
+ok   2 새 송금 도달
+ok   3 A 늦은 FINAL → B 기록 보존(stale:record-changed)
+ok   3 화면도 B 유지(A 완료로 덮지 않음)
+ok   4 편집 뒤 늦은 chat 응답 → 제안 활성화 안 됨
+ok   4 정상 제안
+ok   4 지갑 변경 뒤 늦은 prepare 응답 → 주문·서명 비활성
+ok   5 연타 → 두 번째는 건너뜀
+ok   5 결과 불명이면 새 송금 차단
+ok   5 새로고침·새 송금: chat/prepare/signed/hold/지갑서명 증가 0
+ok   5 종결 뒤 새 송금 가능
+ok   5 완료 뒤 서명 핸들러 실행 안 됨
+RESULT PASS

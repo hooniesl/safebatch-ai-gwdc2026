@@ -4,6 +4,7 @@
 import hashlib
 import http.client
 import json
+import subprocess
 import pathlib
 import sys
 import tempfile
@@ -687,9 +688,21 @@ class CarryLastLiveCallTests(unittest.TestCase):
             self.calls += 1
             return {"provider": "KILN_LIVE", "model": "qwen3-32b", "raw": json.dumps({"alias": "맥북지갑", "amount": "2", "asset": "TRX", "change": None, "reason": "r", "missing": []}), "calls": 1, "usage": {"total_tokens": 10}, "call_id": f"live{self.calls}", "source": "tool_calls"}
 
-    def test_reuse_once_within_window_then_new_call(self):
+    def test_default_no_auto_reuse_each_request_is_a_new_live_call(self):
+        """VP 9/29: 일반 새 요청(다른 기기/발신자 포함)은 과거 로그를 자동 복사하지 않는다. 예산 소진·중단 관문도 옛 성공으로 우회하지 않는다."""
         with tempfile.TemporaryDirectory() as tmp:
             node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live
+            self.assertFalse(flow.carry_enabled)
+            r1 = flow.chat("맥북지갑 트론 2개"); r2 = flow.chat("맥북지갑 트론 2개")
+            self.assertEqual(live.calls, 2); self.assertNotIn("carried_from", r2["ai"]); self.assertEqual(r2["ai"]["calls"], 1)
+            class Halted(self._Live):
+                def structure(self, text): return {"provider": "KILN_LIVE", "model": "qwen3-32b", "raw": "", "calls": 0, "usage": None, "error": "budget gate refused: halted", "budget": {"used": 4, "max_calls": 4}}
+            flow.ai_provider = Halted(); r3 = flow.chat("맥북지갑 트론 2개")
+            self.assertNotIn("carried_from", r3["ai"]); self.assertIn("fallback", r3["ai"], "관문 거부는 옛 성공 결과로 우회하지 않고 규칙 폴백(실제 AI 성공 아님)")
+
+    def test_reuse_once_within_window_then_new_call(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live; flow.carry_enabled = True
             r1 = flow.chat("맥북지갑 트론 2개"); self.assertEqual(r1["kind"], "proposal"); self.assertEqual(live.calls, 1); self.assertNotIn("carried_from", r1["ai"])
             r2 = flow.chat("맥북지갑 트론 2개"); self.assertEqual(r2["kind"], "proposal"); self.assertEqual(live.calls, 1, "재사용 → 실호출 없음")
             self.assertEqual(r2["ai"]["carried_from"], "live1"); self.assertEqual(r2["ai"]["calls"], 0); self.assertIn("proposal_id", r2)
@@ -698,7 +711,23 @@ class CarryLastLiveCallTests(unittest.TestCase):
 
     def test_no_reuse_after_window_or_for_mock(self):
         with tempfile.TemporaryDirectory() as tmp:
-            node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live
+            node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live; flow.carry_enabled = True
             flow.chat("맥북지갑 트론 2개"); base = flow.now_fn(); flow.now_fn = lambda: base + 901
             flow.chat("맥북지갑 트론 2개"); self.assertEqual(live.calls, 2, "15분 지나면 재사용 없음")
             flow2 = mkflow(FakeNode(), tmp); r = flow2.chat("맥북지갑 트론 2개"); self.assertEqual(r["ai"]["mode"], "MOCK_KILN"); self.assertNotIn("carried_from", r["ai"])
+
+
+class PhoneHandlersJscMockTests(unittest.TestCase):
+    """phone.html 의 실제 핸들러(doRefresh·loadHistory·resume/checkOrder·send/prepare/sign/newSend)를 가짜 DOM·fetch·지갑으로 구동(VP 9/29 §4). 실제 서버·AI·서명·방송 0."""
+    def test_handlers_jsc_mock(self):
+        here = pathlib.Path(__file__).resolve().parent
+        jsc = "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc"
+        if not pathlib.Path(jsc).exists():
+            self.skipTest("jsc not available")
+        html = (here.parent / "phone.html").read_text(encoding="utf-8")
+        inline = html.rsplit("<script>", 1)[1].split("</script>")[0]
+        wrapped = "globalThis.__page = function () {\n" + inline + "\nreturn { ui: () => ui, setUi: v => { ui = v; }, render, doRefresh, client: () => client, refreshWallet, loadHistory };\n};\n"
+        inl = here / "_phone_inline.js"; inl.write_text(wrapped, encoding="utf-8")
+        p = subprocess.run([jsc, "-e", f'var ARG_CLIENT="{here.parent / "phone_client.js"}"; var ARG_INLINE="{inl}";', str(here / "phone_handlers_mock.js")], capture_output=True, text=True, timeout=60)
+        (here / "phone_handlers_mock_last.txt").write_text(p.stdout + p.stderr, encoding="utf-8")
+        self.assertIn("RESULT PASS", p.stdout, p.stdout[-3000:] + p.stderr[-2000:])

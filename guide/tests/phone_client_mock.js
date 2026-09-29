@@ -288,5 +288,22 @@ run("Q", async () => {
   assert(S.healthLine({ ai_provider: "KILN_LIVE" }).indexOf("실호출 연결") >= 0 && S.healthLine({ ai_provider: "MOCK" }).indexOf("모의") >= 0, "Q 연결 모드 표시는 요청별 사용 여부와 분리");
 });
 
-for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N ", "P ", "Q "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
+
+// R (VP 9/29 C) 다른 주문(A)의 늦은 FINAL 응답이 새 주문(B)의 보관 기록·잠금을 건드리지 않는다
+run("R", async () => {
+  const st = mkStorage(false), ui = mkUI();
+  const api = async (p) => { if (p.startsWith("/api/order/status")) return { ok: true, order_state: "CONSUMED", signature_stored: true, result: { state: "FINAL_CONFIRMED_SOLIDITY", tx_hash: "a".repeat(64), payment_id: "phone_trx_A" }, tx_hash: "a".repeat(64), expired: false }; return {}; };
+  const c = SBClient.create({ api, storage: st, ui, now: () => NOW.t });
+  st.setItem("sb_inflight", JSON.stringify({ payment_id: "phone_trx_B", snapshot_sha256: "b".repeat(64), tx_hash: "b".repeat(64), stage: "SIGNED", signed_tx: { txID: "b".repeat(64), signature: ["s"] }, epoch: 3 }));
+  const d = await c.checkOrder("phone_trx_A");
+  const rec = c.loadInflight();
+  assert(d.done === false && d.why === "other-order" && rec && rec.payment_id === "phone_trx_B" && rec.stage === "SIGNED" && rec.epoch === 3, "R 다른 주문 FINAL → B 기록 보존(" + d.why + ")");
+  assert(ui.locks[ui.locks.length - 1] !== false, "R 잠금 해제 없음");
+  const api2 = async (p) => ({ ok: false, error: "order not found" });
+  const c2 = SBClient.create({ api: api2, storage: st, ui, now: () => NOW.t });
+  const d2 = await c2.checkOrder("phone_trx_B"); assert(d2.done === false && d2.why === "status-error" && c2.loadInflight().stage === "SIGNED", "R 오류 본문(ok:false)은 종결·삭제 아님");
+});
+
+drainMicrotasks();
+for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N ", "P ", "Q ", "R "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
 print(out.join("\n")); print("RESULT " + (failures === 0 ? "PASS" : "FAIL " + failures));

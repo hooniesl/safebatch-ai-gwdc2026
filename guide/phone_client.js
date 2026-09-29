@@ -52,8 +52,12 @@
       if (busy && !(opts && opts.internal)) { ui.lock(true); return { done: false, why: "busy" }; }   // 제출·서명 진행 중에는 외부 폴링이 판단·삭제하지 않음
       const rec = loadInflight();
       const s = await fetchStatus(pid);
-      if (!s) { ui.lock(true); return { done: false, why: "status-error", s: null }; }
-      if (s.result) ui.result(s.result);
+      if (!s || s.ok === false) { ui.lock(true); return { done: false, why: "status-error", s: null }; }
+      if (s.result) ui.result({ ...s.result, payment_id: s.result.payment_id || pid });
+      const cur = loadInflight();                                                       // 응답 처리 시점의 보관 기록과 대조(VP 9/29 C)
+      if (rec && rec.payment_id !== pid) { ui.log("other-order status ignored for record " + rec.payment_id); return { done: false, why: "other-order", s }; }
+      if (cur && (!rec || cur.payment_id !== rec.payment_id || (cur.epoch || 0) !== (rec.epoch || 0))) { ui.log("record changed during status; not settled"); return { done: false, why: "stale:record-changed", s }; }
+      if (!rec && cur) { ui.log("new record appeared during status; not settled"); return { done: false, why: "stale:new-record", s }; }
       return settle(s, rec);
     }
 
@@ -179,15 +183,16 @@
       case "question": case "decline": case "prepare-failed": if (ev.type !== "prepare-failed") u.state = "input"; return u;
       case "proposal": u.proposal = ev.proposal; u.order = null; u.result = null; u.walletAddr = ev.walletAddr || ui.walletAddr; u.state = "confirm"; return u;
       case "duplicate": u.state = "dup"; return u;
-      case "edit": u.state = "input"; u.proposal = null; u.order = null; return u;
+      case "edit": u.state = "input"; u.proposal = null; u.order = null; u.reqId = ui.reqId + 1; return u;
       case "order": u.order = ev.order; u.state = "presign"; return u;
       case "signing": u.state = "processing"; return u;
       case "sign-rejected": u.state = "presign"; return u;
-      case "rejected": u.state = "input"; u.proposal = null; u.order = null; return u;
+      case "rejected": u.state = "input"; u.proposal = null; u.order = null; u.reqId = ui.reqId + 1; return u;
       case "unknown": u.state = "unknown"; return u;
       case "recovering": u.state = "unknown"; u.result = ev.result; u.order = u.order || { payment_id: ev.payment_id, tx_id: ev.tx_hash }; return u;
       case "result": u.result = ev.result; u.state = ev.result.state === TERMINAL_OK ? "done" : (["REJECTED", "FAILED_ONCHAIN", "EXPIRED_NOT_ON_CHAIN"].includes(ev.result.state) ? "unknown" : (ev.result.state === "NOT_SUBMITTED" ? ui.state : (UNKNOWN_STATES.includes(ev.result.state) ? (ev.result.state === "ACCEPTED_UNCONFIRMED" ? "processing" : "unknown") : ui.state))); return u;
-      case "wallet-changed": u.walletAddr = ev.address; if (["confirm", "dup", "presign"].includes(ui.state)) { u.state = "input"; u.proposal = null; u.order = null; } return u;
+      case "wallet-changed": u.walletAddr = ev.address; u.reqId = ui.reqId + 1; if (["confirm", "dup", "presign"].includes(ui.state)) { u.state = "input"; u.proposal = null; u.order = null; } return u;
+      case "restored": u.order = ev.order; u.result = ev.result; u.state = ev.result && ev.result.state === TERMINAL_OK ? "done" : "unknown"; return u;
       case "new": return { ...initial(), reqId: ui.reqId + 1, walletAddr: ui.walletAddr };
       default: return u;
     }
@@ -203,7 +208,8 @@
   function healthLine(h) { if (!h) return "-"; return h.ai_provider === "KILN_LIVE" ? "Kiln 실호출 연결됨(요청마다 실제 사용 여부는 아래에 표시)" : "규칙 모의(실제 AI 호출 없음)"; }
   function feeText(rc) { if (!rc) return "미확인"; const known = rc.fee_known !== undefined ? rc.fee_known : rc.fee_field_present; return known ? (Number(rc.fee_sun || 0) / 1e6) + " TRX" : "미확인"; }
   function feeBasis(rc) { if (!rc) return "-"; const known = rc.fee_known !== undefined ? rc.fee_known : rc.fee_field_present; return known ? ("영수증 확인 · " + (Number(rc.fee_sun || 0) === 0 ? "0 sun(무료 대역폭 안 · 영수증에 fee 항목 생략=0)" : rc.fee_sun + " sun") + (rc.fee_note ? " · " + rc.fee_note : "")) : "영수증에 수수료 근거 없음"; }
-  function feeLines(o, q) { const worst = Number(q.worst_case_fee_sun || 0) / 1e6; return { fee: `최대 ${worst.toFixed(6)} TRX (대역폭 ${q.bandwidth_bytes}B${q.receiver_exists ? "" : " + 활성화 1.1 TRX"}; 무료 ${q.free_bandwidth_left}B 남음 → 무료분 안이면 0)`, cap: `${o.fee_cap_trx} TRX — 한도이며 빠지는 금액이 아님. 넘으면 보내지 않음` }; }
+  function feeLines(o, q) { const worst = Number(q.worst_case_fee_sun || 0) / 1e6; return { fee: `예상 최대 ${(+worst.toFixed(3))} TRX`, cap: `상한 ${o.fee_cap_trx} TRX (한도 · 빠지는 금액 아님)`,
+    detail: `대역폭 ${q.bandwidth_bytes}B × ${q.bandwidth_price_sun} sun${q.receiver_exists ? "" : " + 수취인 활성화 1.1 TRX"} · 무료 대역폭 ${q.free_bandwidth_left}B 남음(무료분 안이면 0 TRX) · 넘으면 보내지 않음` }; }
   function fmtWhen(o) { const t = o.created_at ? new Date(Number(o.created_at) * 1000) : null; return t && !isNaN(t) ? t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""; }
   function historyRow(o) { const s = o.result_state; const cls = stateClass(s); return { cls, label: s === TERMINAL_OK ? "완료 ✓" : (cls === "warn" ? "확인 중" : "실패/미전송"), amount: (o.amount_trx || "?") + " TRX", who: (o.receiver_alias || shortAddr(o.receiver)) + "에게", when: fmtWhen(o) }; }
   const screen = { initial, on, isCurrent, canSign, canStartNew, walletChanged, resultBelongs, shortAddr, aiLine, healthLine, feeText, feeBasis, feeLines, historyRow, resultLabel, stateClass };
