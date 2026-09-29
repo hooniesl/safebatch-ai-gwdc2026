@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeBatch 안내 · 업비트에서 Binance 본인 계정으로 USDT 보내기</title>
+<style>
+  :root { font-size: 18px; }
+  body { font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; margin: 0; background: #fafafa; color: #111; line-height: 1.55; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; }
+  .sub { color: #444; margin-bottom: 20px; }
+  label { display: block; font-weight: 600; margin: 14px 0 6px; }
+  textarea, input, select, button { font: inherit; }
+  textarea { width: 100%; min-height: 84px; padding: 12px; border: 2px solid #999; border-radius: 8px; box-sizing: border-box; }
+  select, input[type=text] { padding: 10px; border: 2px solid #999; border-radius: 8px; min-width: 240px; }
+  button { padding: 12px 20px; border-radius: 10px; border: 2px solid #222; background: #222; color: #fff; cursor: pointer; margin-top: 12px; }
+  button.secondary { background: #fff; color: #222; }
+  button:focus, a:focus, select:focus, textarea:focus, input:focus { outline: 4px solid #ffb300; outline-offset: 2px; }
+  .card { background: #fff; border: 2px solid #ddd; border-radius: 12px; padding: 18px; margin-top: 18px; }
+  .status { display: inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 700; border: 2px solid; }
+  .status[data-s=ready] { border-color: #1b7f3b; color: #1b7f3b; }
+  .status[data-s=ready_unverified] { border-color: #6a5b00; color: #6a5b00; }
+  .status[data-s=need_confirm] { border-color: #b26a00; color: #b26a00; }
+  .status[data-s=unsupported] { border-color: #b00020; color: #b00020; }
+  .kind { font-size: 0.85rem; border: 1px solid #888; border-radius: 6px; padding: 1px 6px; margin-right: 6px; }
+  .now { font-size: 1.25rem; font-weight: 700; }
+  ul { padding-left: 20px; }
+  details summary { cursor: pointer; font-weight: 600; }
+  .muted { color: #555; font-size: 0.95rem; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+  table.k { border-collapse: collapse; margin: 8px 0; }
+  table.k td { border: 1px solid #ddd; padding: 6px 10px; }
+  .mock { background:#0b0e11; color:#eaecef; border-radius:10px; padding:12px; font-size:.92rem } .mock .mh { font-weight:700; color:#fff; margin-bottom:6px } .mock .mh span { font-weight:400; font-size:.8rem; color:#b7bdc6 }
+  .mock .mr { display:grid; grid-template-columns: 130px 1fr 1fr; gap:8px; border-bottom:1px solid #2b3139; padding:6px 0; align-items:center } .mock .mr em { color:#ffd166; font-style:normal; font-size:.85rem }
+</style>
+</head>
+<body>
+<main>
+  <h1>업비트에서 Binance 본인 계정으로 USDT 보내기 · 한국어 안내</h1>
+  <p class="sub">공식 문서의 조건을 정리해 <strong>지금 할 일 하나</strong>와 <strong>필요 조건</strong>을 보여줍니다. 실제 입금·매수·출금은 각 거래소에서 직접 하고 확인합니다. 이 화면의 어떤 표시도 승인·서명·송금 권한이 아닙니다. 예치 가입·투자 추천을 자동으로 하지 않습니다.</p>
+
+  <form id="f" aria-describedby="help">
+    <label for="text">하고 싶은 일을 한국어로 적어 주세요</label>
+    <textarea id="text" name="text" placeholder="예: 업비트에서 산 USDT 50만원어치를 바이낸스 내 계정으로 트론 네트워크로 보내고 싶어요"></textarea>
+    <p id="help" class="muted">빠진 정보는 아래에서 물어봅니다. 추측해서 채우지 않습니다. 새 문장을 입력하면 이전에 답한 내용은 지워집니다.</p>
+    <div class="row">
+      <div><label for="change">조건 변경 요청(선택)</label>
+        <input type="text" id="change" name="change" placeholder="예: 예산 안에서 금액을 줄여도 돼요 / 금액은 꼭 그대로"></div>
+      <div><details><summary class="muted">상세 설정(단계를 직접 고르기 · 보통은 필요 없음)</summary><label for="step">현재 단계</label>
+        <select id="step" name="step">
+          <option value="">자동(아래 질문에 답하면 정해짐)</option><option value="s1">1 원화 준비</option><option value="s2">2 USDT 매수</option><option value="s3">3 도착 계정 확인</option><option value="s4">4 출금 신청</option><option value="s5">5 도착 확인</option>
+        </select></details></div>
+    </div>
+    <div id="answers" class="row" aria-live="polite"></div>
+    <button type="submit" id="go">이 화면 설명 듣기 (AI)</button>
+    <button type="button" class="secondary" id="rulesOnly">거래소 원문 규칙만 보기 (AI 안 씀)</button>
+    <button type="button" class="secondary" id="reset">지우기</button>
+    <p class="muted" style="font-size:.85rem">'이 화면 설명 듣기'는 Kiln qwen3-32b 를 실제로 1회 호출합니다. 화면을 열거나 새로 고치는 것만으로는 호출하지 않습니다.</p>
+  </form>
+
+  <section id="out" aria-live="polite"></section>
+
+  <section class="card" id="cards">
+    <h2 style="font-size:1.15rem;margin:0 0 8px">메뉴 풀이 · 예치 조건 카드</h2>
+    <div id="cardsBody" class="muted">불러오는 중…</div>
+  </section>
+</main>
+<script>
+const SB_TOKEN = "__SB_TOKEN__";
+const $ = (s) => document.querySelector(s);
+// 초보자용 한국어 선택지(값은 서버 검증을 그대로 통과해야 함)
+const CHOICES = {
+  from: [["upbit","업비트"]],
+  to: [["binance","바이낸스(Binance)"],["bitget","비트겟(Bitget) — 현재 안내 범위 밖"],["okx","OKX — 현재 안내 범위 밖"]],
+  asset: [["USDT","USDT(테더)"]],
+  network: [["TRON","트론(TRC20)"],["APTOS","앱토스(Aptos)"],["KAIA","카이아(Kaia)"]],
+  own_account: [["true","예, 업비트 명의와 동일한 제 계정입니다"],["false","아니오, 다른 사람 계정입니다"]],
+};
+const LABEL = {from:"코인을 보낼 곳(출금 거래소)", to:"코인을 받을 곳(입금 거래소)", asset:"자산", network:"네트워크", own_account:"받을 곳 계정 명의", amount_krw:"코인 가치(원화 참고값)"};
+let answers = {}; let lastText = ""; let stageAnswers = {}; let lastMode = false;
+function esc(s){ return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function renderAnswers(need){
+  const box = $("#answers"); box.innerHTML = "";
+  for (const n of need) {
+    const f = n.field; const wrap = document.createElement("div"); const id = "ans_" + f;
+    let ctl;
+    if (CHOICES[f]) ctl = `<select id="${id}"><option value="">선택해 주세요</option>${CHOICES[f].map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+    else ctl = `<input type="text" id="${id}" inputmode="numeric" placeholder="예: 500000 (원화 환산 참고값)">`;
+    wrap.innerHTML = `<label for="${id}">${esc(LABEL[f]||f)} — ${esc(n.question)}${n.why ? ` <span class="muted">(${esc(n.why)})</span>` : ""}</label>${ctl}`;
+    box.appendChild(wrap);
+    wrap.querySelector("select,input").addEventListener("change", (e) => {
+      const raw = e.target.value.trim(); if (raw === "") { delete answers[f]; return; }
+      if (f === "own_account") answers[f] = (raw === "true");
+      else if (f === "amount_krw") { const m = raw.replace(/,/g,""); answers[f] = /^\d+$/.test(m) ? parseInt(m,10) : null; if (answers[f]===null){ alert("금액은 양의 정수(원)만 입력해 주세요. 부호·소수점은 받지 않습니다."); delete answers[f]; e.target.value=""; } }
+      else answers[f] = raw;
+    });
+  }
+}
+function aiLine(p){
+  if (!p.kiln) return `AI 해석 도우미: 사용 안 함(규칙만) · flow ${esc(p.flow_id)}`;
+  const k = p.kiln; const map = {VALIDATED:"성공(검증 통과, 해석에 사용)", LENGTH_TRUNCATED:"실패(응답이 잘림 → 규칙만 사용)", INVALID_JSON:"실패(형식 오류 → 규칙만 사용)", HTTP_ERROR:"실패(서버 오류 → 규칙만 사용)", CALL_FAILED:"실패(호출 불가 → 규칙만 사용)"};
+  return `AI 해석 도우미: ${esc(map[k.outcome]||k.outcome)} · 전송 ${esc(k.transport||"-")} · 모델 ${esc(k.model||"-")} · 토큰 in ${k.usage?.prompt_tokens ?? "-"} / out ${k.usage?.completion_tokens ?? "-"} · 비용 $${k.usage?.cost ?? "-"} · flow ${esc(p.flow_id)}`;
+}
+function renderAiWork(w){
+  if (!w) return "";
+  const badge = {used:"#1b7f3b", partially_used:"#6a5b00", intent_only:"#6a5b00", unused_failed:"#b00020", off:"#555"}[w.ai_status] || "#555";
+  const kind = w.ai_status === "off" ? "규칙 결과(AI 호출 없음)" : (w.ai_status === "unused_failed" ? "실제 AI 호출 실패 → 규칙 결과" : "실제 AI 호출 결과(Kiln)");
+  const item = (it) => {
+    let body = "";
+    if (it.step === "요청 이해") body = `<table class="k">${it.understood.map(u=>`<tr><td>${esc(u.field)}</td><td>${esc(u.value)}</td><td class="muted">${esc(u.by)}</td></tr>`).join("")}</table>` + (it.unknown.length ? `<p>아직 모르는 것: ${it.unknown.map(esc).join(" · ")}</p>` : "") + (it.conflicts.length ? `<p>엇갈린 해석: ${it.conflicts.map(esc).join(" · ")}</p>` : "") + (it.step_suggestion ? `<p><span class="status" data-s="need_confirm">단계 확인 필요</span> ${esc(it.step_suggestion.reason)} ${esc(it.step_suggestion.how)}</p>` : "") + `<p class="muted">${esc(it.note)}</p>`;
+    else if (it.step === "막힌 부분 질문") body = `<p class="now">${esc(it.question || "")}</p>` + (it.all_unknown.length > 1 ? `<details><summary>전체 미확인 ${it.all_unknown.length}건</summary><p>${it.all_unknown.map(esc).join(" · ")}</p></details>` : "") + `<p class="muted">${esc(it.note)}</p>`;
+    else if (it.step === "조건 변경") body = `<p>요청: ${esc(it.request)}</p>` + (it.interpretation ? `<p>해석: <strong>${esc({exact_amount:"금액은 정확히 그대로(감액 없음)", max_within_budget:"예산 안에서 금액 조절 허용"}[it.interpretation.mode] || "불명확(직접 선택 필요)")}</strong> ${esc(it.interpretation.note||"")} <span class="status" data-s="need_confirm">사람 확인 필요</span></p>` : `<p>해석하지 못했습니다. 아래에서 직접 선택해 주세요.</p>`) + `<p class="muted">${esc(it.note)}</p>`;
+    else if (it.step === "진행/결과") body = `<p><span class="status" data-s="${esc(it.state)}">● ${esc(it.state_label)}</span></p><p>완료: ${it.done.map(esc).join(" · ")}</p><p>아직 아님: ${it.not_yet.map(esc).join(" · ")}</p>`;
+    else body = `<p class="now">${esc(it.summary || "")}</p>` + (it.evidence && it.evidence.length ? `<p class="muted">근거: ${it.evidence.map(e=>`${esc(e.id)}(${esc(e.applies_to)}, ${esc(e.kind)}, 읽음 ${esc(e.checked_at)})`).join(" · ")}</p>` : "") + `<p class="muted">${esc(it.single_candidate_note||"")}</p>`;
+    return `<li><strong>${esc(it.step)}</strong> <span class="kind">${esc(it.by)}</span>${body}</li>`;
+  };
+  return `<div class="card" id="aiwork"><h2 style="font-size:1.15rem;margin:0 0 6px">AI가 도와드린 일 <span class="status" style="border-color:${badge};color:${badge}">${esc(w.ai_status_ko)}</span> <span class="muted" style="font-size:.85rem">${esc(kind)} · 기록 재생 아님(지금 계산)</span></h2>
+    <ol style="padding-left:20px">${w.items.map(item).join("")}</ol>
+    ${w.rejected_reasons && w.rejected_reasons.length ? `<details><summary>AI 출력 중 사용하지 않은 부분 (${w.rejected_reasons.length})</summary><ul>${w.rejected_reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></details>` : ""}
+    <details><summary>개발·심사 증빙(모델·flow·원본 출력)</summary><p class="muted">모델 ${esc(w.model||"-")} · flow ${esc(w.flow_id||"-")} · 호출 결과 ${esc(w.kiln_outcome||"없음")}</p><pre style="white-space:pre-wrap;font-size:.8rem">${esc(JSON.stringify(w.raw_ai, null, 1) || "AI 출력 없음")}</pre></details>
+    <p class="muted">${esc(w.honesty)}</p></div>`;
+}
+function renderPlan(p){
+  const cond = p.conditions.map(c => `<li><span class="kind">${esc({current:"현재 조건",past:"과거 공지",future:"향후 시행",unverified:"미확인",partial:"일부 확인(사용자 직접 확인 필요)"}[c.kind]||c.kind)}</span><strong>${esc(c.applies_to)}</strong><br>${esc(c.condition)}<br><span class="muted">문서 기준일 ${esc(c.doc_date||"-")} · 시행일 ${esc(c.effective_from||"미기재")} · 읽은 시각 ${esc(c.checked_at)} · 확신도 ${esc(c.confidence)} · <a href="${esc(c.source_url)}" target="_blank" rel="noopener">원문</a>${c.as_of_note ? `<br>주의: ${esc(c.as_of_note)}` : ""}<br>한계: ${esc(c.limits)}</span></li>`).join("");
+  const need = p.need_confirm.map(n => `<li>${esc(n.question)}${n.why?` <span class="muted">(${esc(n.why)})</span>`:""}</li>`).join("");
+  const uns = p.unsupported.map(u => `<li>${esc(u)}</li>`).join("");
+  const conf = (p.conflicts||[]).map(u => `<li>${esc(u)}</li>`).join("");
+  const ko = Object.entries(p.intent_ko||{}).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+  const showNext = p.next_step && (p.status === "ready" || p.status === "ready_unverified");
+  const sc = p.current_step.screen; const blocked = p.status === "unsupported";
+  const mockS3 = (p.current_step.id === "s3" && !blocked) ? `<details><summary>예시: 받는 곳 입금 화면은 이렇게 생겼습니다 (합성 예시 · 실제 거래소 화면 아님 · 누를 수 없음)</summary>
+      <div class="mock"><div class="mh">Deposit USDT <span>(예시)</span></div>
+      <div class="mr"><span>Network</span><span>TRX · Tron (TRC20)</span><em>← 업비트에서도 같은 걸 고른다</em></div>
+      <div class="mr"><span>Address</span><span>TXXXX…(받는 주소)</span><em>← 받는 사람 = 내 Binance 계정 주소. 복사해서 업비트에 붙여넣기</em></div>
+      <div class="mr"><span>Minimum deposit</span><span>1 USDT</span><em>← 이보다 적으면 안 들어옴</em></div>
+      <div class="mr"><span>Copy address</span><span class="muted">(거래소 화면의 버튼 · 이 안내에서는 동작하지 않음)</span><em></em></div></div></details>` : "";
+  const st = p.stage || {}; const q = st.question;
+  const stageBox = q ? `<div style="border:2px solid #444;border-radius:10px;padding:10px 14px;margin:10px 0">
+      <div style="font-weight:700">한 가지만 여쭙니다 — ${esc(q.q)}</div>
+      <div style="margin-top:6px"><button type="button" onclick="answerStage('${esc(q.id)}', true)">${esc(q.yes)}</button> <button type="button" class="secondary" onclick="answerStage('${esc(q.id)}', false)">${esc(q.no)}</button></div>
+      <p class="muted" style="margin:6px 0 0">${esc(st.note || "")} 답에 따라 아래 '지금 할 행동'이 바뀝니다. (지금은 ${p.current_step.n}단계 기준으로 보여드립니다)</p></div>` : "";
+  const firstCard = (sc && !blocked) ? `<div class="card" id="first" style="border-color:#f2c200">
+    <div class="muted" style="font-size:.85rem">${esc(st.certain ? "단계: 답변으로 확정" : "단계: 잠정")} · ${p.current_step.n}/${p.current_step.total} ${esc(p.current_step.title)} · ${esc(p.ai_work && p.ai_work.ai_status_ko || "규칙 결과")}</div>
+    <h2 style="font-size:1.05rem;margin:8px 0 2px">① 지금 할 행동 하나</h2><p class="now" style="font-size:1.2rem">${esc(sc.next_one)}</p>
+    <h2 style="font-size:1.05rem;margin:10px 0 2px">② 먼저 확인할 조건</h2><ul>${(sc.key_conditions||[]).map(k=>k.startsWith("⚠") ? `<li style="color:#b00020;font-weight:700">${esc(k)}</li>` : `<li>${esc(k)}</li>`).join("")}</ul>
+    <h2 style="font-size:1.05rem;margin:10px 0 2px">③ 확인이 필요한 이유</h2><p>${esc(sc.why_check || "")}</p>
+    ${stageBox}
+    <p class="muted">이 화면은 거래소 화면을 읽거나 상태를 확인하지 않습니다. 복사·출금·보내기는 각 거래소 앱에서 직접 합니다.</p></div>` : (blocked ? "" : stageBox);
+  const screenCard = (sc && !blocked) ? `<details><summary>화면 풀이 더 보기(이 화면은 무엇 · 주소는 누구 것 · 나중에 할 일 · 예시 화면)</summary><div class="card" id="screen">
+    <div><span class="status" data-s="${p.status}">● ${esc(p.status_label)}</span> <span class="muted">단계 ${p.current_step.n}/${p.current_step.total} · ${esc(p.current_step.title)}</span></div>
+    ${sc.summary ? `<div style="font-size:1.25rem;font-weight:800;line-height:1.5;background:#fff8e1;border:2px solid #f2c200;border-radius:10px;padding:10px 14px;margin:8px 0 12px">${sc.summary.map(esc).join("<br>")}</div>` : ""}
+    <h2 style="font-size:1.2rem;margin:10px 0 4px">이 화면은 무엇인가</h2><p class="now">${esc(sc.purpose)}</p>
+    ${sc.address_role ? `<h3 style="font-size:1rem;margin:10px 0 2px">주소는 누구 것인가</h3><p>${esc(sc.address_role).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</p>` : ""}
+    <h3 style="font-size:1rem;margin:10px 0 2px">다음 행동 하나</h3><p class="now">${p.status === "need_confirm" ? "먼저 아래 확인 질문에 답한 뒤: " : ""}${esc(sc.next_one)}</p>
+    ${sc.after_this ? `<details><summary>나중에 할 일 보기(이 화면에서 하는 일 아님)</summary><p class="muted">${esc(sc.after_this)}</p></details>` : ""}
+    <h3 style="font-size:1rem;margin:10px 0 2px">보내기 전에 꼭 볼 것</h3><ul>${(sc.key_conditions||[]).map(k=>k.startsWith("⚠") ? `<li style="color:#b00020;font-weight:700">${esc(k)}</li>` : `<li>${esc(k)}</li>`).join("")}</ul>
+    ${sc.screen_conditions_note ? `<p class="muted">${esc(sc.screen_conditions_note)}</p>` : ""}
+    ${mockS3}
+    <p class="muted">이 화면은 설명만 합니다. 복사·출금·보내기는 각 거래소 앱에서 사용자가 직접 합니다.</p></div></details>` : "";
+  $("#out").innerHTML = firstCard + renderAiWork(p.ai_work) + screenCard + `
+  <div class="card">
+    <div><span class="status" data-s="${p.status}">● ${esc(p.status_label)}</span> <span class="muted">plan ${esc(p.plan_id)} · 단계 ${p.current_step.n}/${p.current_step.total}</span></div>
+    <h2 style="font-size:1.2rem;margin:10px 0 4px">${esc(p.current_step.title)}</h2>
+    <p class="now">지금 할 일: ${esc(p.current_step.do_now)}</p>
+    <details${sc && !blocked ? "" : " open"}><summary>제가 이해한 내용 (틀리면 위 질문칸이나 문장을 고쳐 주세요)</summary><table class="k">${ko}</table></details>
+    ${uns ? `<h3 style="font-size:1rem">멈춘 이유</h3><ul>${uns}</ul>` : ""}
+    ${need ? `<h3 style="font-size:1rem">먼저 확인이 필요합니다</h3><ul>${need}</ul>` : ""}
+    ${conf ? `<h3 style="font-size:1rem">해석이 엇갈린 부분</h3><ul>${conf}</ul>` : ""}
+    ${showNext ? `<p><strong>필요 조건:</strong> ${p.current_step.need.map(esc).join(" · ")}</p><p><strong>내가 확인해 표시할 것:</strong> ${esc(p.current_step.user_confirms)}</p><p><strong>다음 단계:</strong> ${esc(p.next_step.title)}</p>` : (p.status==="ready"||p.status==="ready_unverified") ? `<p><strong>마지막 단계입니다.</strong></p>` : ""}
+    <details><summary>이 단계에 적용되는 조건·근거 (${p.conditions.length})</summary><ul>${cond}</ul></details>
+    <p class="muted">${esc(p.authority)} ${esc(p.disclaimer)}</p>
+    <details><summary>기술 상세(AI 호출·토큰·flow)</summary><p class="muted">${aiLine(p)}</p></details>
+  </div>`;
+  renderAnswers(p.need_confirm);
+}
+$("#text").addEventListener("input", () => { if ($("#text").value !== lastText) { answers = {}; stageAnswers = {}; $("#answers").innerHTML = ""; } });
+function answerStage(id, val){ stageAnswers[id] = val; submitPlan(false); }   // 단계 질문의 답은 규칙만 다시 계산(AI 재호출 없음)
+async function submitPlan(useKiln){
+  $("#go").disabled = true; $("#rulesOnly").disabled = true; $("#go").textContent = useKiln ? "AI 가 요청을 처리하는 중… (실제 호출)" : "확인 중…";
+  try {
+    const text = $("#text").value; if (text !== lastText) { answers = {}; lastText = text; }
+    const r = await fetch("/api/plan", {method:"POST", headers:{"Content-Type":"application/json","X-SafeBatch-Token":SB_TOKEN},
+      body: JSON.stringify({text, step: $("#step").value || null, stage_answers: stageAnswers, use_kiln: useKiln, answers, change_request: $("#change").value || null})});
+    lastMode = useKiln;
+    renderPlan(await r.json());
+  } catch (err) { $("#out").innerHTML = `<div class="card"><span class="status" data-s="unsupported">● 오류</span> ${esc(err.message)}</div>`; }
+  finally { $("#go").disabled = false; $("#rulesOnly").disabled = false; $("#go").textContent = "이 화면 설명 듣기 (AI)"; }
+}
+$("#f").addEventListener("submit", (e) => { e.preventDefault(); submitPlan(true); });
+$("#rulesOnly").addEventListener("click", () => submitPlan(false));
+$("#reset").addEventListener("click", () => { $("#text").value = ""; $("#change").value = ""; lastText = ""; answers = {}; stageAnswers = {}; $("#answers").innerHTML = ""; $("#out").innerHTML = ""; $("#text").focus(); });
+// 9/29 데모 캡처용: ?demo_text=…&step=s3&auto=rules 이면 문장을 채우고 **규칙만 보기(AI 미호출)** 를 자동 실행한다. Kiln 은 어떤 경우에도 자동 호출하지 않는다.
+(() => { const q = new URLSearchParams(location.search); const t = q.get("demo_text"); if (!t) return;
+  $("#text").value = t; if (q.get("step")) $("#step").value = q.get("step");
+  if (q.get("stage")) for (const kv of q.get("stage").split(",")) { const [k, v] = kv.split(":"); if (k) stageAnswers[k] = (v === "1"); }   // 캡처용: 단계 답 미리 채움(규칙만)
+  if (q.get("auto") === "rules") setTimeout(() => submitPlan(false), 50); })();
+fetch("/api/cards").then(r => r.json()).then(c => {
+  $("#cardsBody").innerHTML = `<h3 style="font-size:1rem">메뉴 풀이</h3><ul>${c.glossary.map(g => `<li><strong>${esc(g.term)}</strong>: ${esc(g.plain)} <a href="${esc(g.source_url)}" target="_blank" rel="noopener">원문</a></li>`).join("")}</ul>` +
+    c.earn_cards.map(e => `<h3 style="font-size:1rem">${esc(e.title)}</h3><p class="muted">예시 상품: ${esc(e.product_example)} · 확인 ${esc(e.checked_at)}</p><ul>${e.conditions.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p><strong>미확인:</strong> ${e.unknown.map(esc).join(" · ")} · <a href="${esc(e.source_url)}" target="_blank" rel="noopener">원문</a></p><p class="muted">이 카드는 설명만 하며 가입·투자를 실행하지 않습니다.</p>`).join("");
+});
+</script>
+</body>
+</html>

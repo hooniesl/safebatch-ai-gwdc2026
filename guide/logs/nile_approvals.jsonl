@@ -1,0 +1,8 @@
+{"approval_id": "nile_selftest_v4_20260928:r1:approval@nile_selftest_v4_20260928_manual", "flow_id": "nile_selftest_v4_20260928_manual", "revision": 1, "rules_digest": "001dc14a8e376a5b", "plan_digest": "cfe9cc12d8f36ee0", "approved_by": "Codex", "approved_at": 1790604067}
+{"used": "nile_selftest_v4_20260928:r1:approval@nile_selftest_v4_20260928_manual", "ts": 1790604067}
+{"approval_id": "nile_ai_normal_v5_20260929:r1:approval@nile_ai_normal_v5_20260929", "flow_id": "nile_ai_normal_v5_20260929", "revision": 1, "rules_digest": "accc3b0dcd4430af", "plan_digest": "cfe9cc12d8f36ee0", "approved_by": "Codex", "approved_at": 1790610961}
+{"used": "nile_ai_normal_v5_20260929:r1:approval@nile_ai_normal_v5_20260929", "ts": 1790610961}
+{"approval_id": "nile_ai_adapt_v6_20260929:r1:approval@nile_ai_adapt_v6_20260929", "flow_id": "nile_ai_adapt_v6_20260929", "revision": 2, "rules_digest": "a632fb901f7bca80", "plan_digest": "8575400029290612", "approved_by": "Codex", "approved_at": 1790612286}
+{"used": "nile_ai_adapt_v6_20260929:r1:approval@nile_ai_adapt_v6_20260929", "ts": 1790612286}
+{"approval_id": "nile_ai_adapt_v6b_20260929:r1:approval@nile_ai_adapt_v6b_20260929", "flow_id": "nile_ai_adapt_v6b_20260929", "revision": 2, "rules_digest": "a632fb901f7bca80", "plan_digest": "8575400029290612", "approved_by": "Codex", "approved_at": 1790612918}
+{"used": "nile_ai_adapt_v6b_20260929:r1:approval@nile_ai_adapt_v6b_20260929", "ts": 1790612918}

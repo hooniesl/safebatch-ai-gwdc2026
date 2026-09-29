@@ -1,0 +1,5 @@
+[사람 확인 요약] {"sender": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "amount_units": 600000, "trx_total_cap_sun": 5000000, "energy_fee_limit_sun": 4655000, "bandwidth_max_sun": 345000, "deadline_ts": 1790633870, "tx_id": "71a951bc63b73b3146f74d6b66b9b46b994be2f20a715ae57104acc0c83b4f88", "confirm_sha256": "dce84413ee64f5962c889d5deff2c96cc62abd43e0e2cbd6461baaf6641114da", "ai_mode": "AI_LIVE"}
+[AI가 한 일] {"mode": "AI_LIVE", "model": "qwen3-32b", "request_id": null, "choice_index": 0, "reason": "예산이 1.0 USDT에서 0.6 USDT로 줄어들었기 때문에, 후보는 최대 0.6 USDT를 보내는 것을 반영합니다.", "ok": true}
+{"flow_id": "nile_ai_adapt_v6_20260929", "revision": 2, "outcome": "NOT_SUBMITTED", "reason": null, "executed": false, "ai_mode": "AI_LIVE", "a_demo_eligible": true}
+execution: NOT_SUBMITTED None tx None reason confirm digest mismatch between human-confirmed summary, artifact and signing target
+saved prep_20260914/evidence/20260928_nile_live/FLOW_ai_adapt_v6.json

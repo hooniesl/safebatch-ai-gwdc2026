@@ -1,0 +1,150 @@
+{
+  "batch_id": "sample_20260915",
+  "stage": "AWAITING_HUMAN_APPROVAL",
+  "sent": false,
+  "signed": false,
+  "csv_sha256": "58fefa9b892037ab58de78a79f9a5a2ccc8e634de82dc572e6e04609af4bfb17",
+  "header_errors": [],
+  "validation_counts": {
+    "total_rows": 5,
+    "OK": 2,
+    "ERROR": 1,
+    "DUPLICATE_SUSPECT": 2
+  },
+  "decision_counts": {
+    "ACCEPTED_FOR_APPROVAL": 1,
+    "BLOCKED_RECIPIENT_NOT_ALLOWED": 1
+  },
+  "new_pending_this_run": 1,
+  "new_pending_amount_units": 10000000,
+  "pending_approval_total": 1,
+  "pending_approval_amount_units": 10000000,
+  "fee_units_per_payment": 1000000,
+  "budget_units": 100000000,
+  "reserved_units": 11000000,
+  "remaining_units": 89000000,
+  "rows": [
+    {
+      "row_no": 2,
+      "recipient": "THmr2CkWzBmMyXSHX2xjZQ2gpeVSMp4to6",
+      "amount_text": "10",
+      "amount_units": 10000000,
+      "amount": "10.000000",
+      "memo": "invoice 1\nsecond line",
+      "validation": "OK",
+      "validation_reasons": [],
+      "candidate": true,
+      "payment_id": "sample_20260915:2",
+      "decision": "ACCEPTED_FOR_APPROVAL",
+      "decision_reason": "policy passed; budget reserved incl. fee; awaiting human confirmation and signature (not sent)",
+      "decision_seq": 1,
+      "stopped": false,
+      "first_record_seq": 1
+    },
+    {
+      "row_no": 4,
+      "recipient": "TWLwA7RJY8oSVpBbpzrQ7fNUjbjWs59Q3o",
+      "amount_text": "abc",
+      "amount_units": null,
+      "amount": null,
+      "memo": "bad amount",
+      "validation": "ERROR",
+      "validation_reasons": [
+        "AMOUNT_FORMAT",
+        "DUPLICATE_RECIPIENT:rows=4,6,7"
+      ],
+      "candidate": false,
+      "payment_id": null,
+      "decision": null,
+      "decision_reason": null,
+      "decision_seq": null,
+      "stopped": null
+    },
+    {
+      "row_no": 5,
+      "recipient": "TKji8mLVTWjuB2S57bacUaZf5uNwhDfEQA",
+      "amount_text": "5",
+      "amount_units": 5000000,
+      "amount": "5.000000",
+      "memo": "not allowed",
+      "validation": "OK",
+      "validation_reasons": [],
+      "candidate": true,
+      "payment_id": "sample_20260915:5",
+      "decision": "BLOCKED_RECIPIENT_NOT_ALLOWED",
+      "decision_reason": "recipient is not in the pre-registered allowlist",
+      "decision_seq": 2,
+      "stopped": true,
+      "first_record_seq": 2
+    },
+    {
+      "row_no": 6,
+      "recipient": "TWLwA7RJY8oSVpBbpzrQ7fNUjbjWs59Q3o",
+      "amount_text": "2",
+      "amount_units": 2000000,
+      "amount": "2.000000",
+      "memo": "dup1",
+      "validation": "DUPLICATE_SUSPECT",
+      "validation_reasons": [
+        "DUPLICATE_RECIPIENT:rows=4,6,7"
+      ],
+      "candidate": false,
+      "payment_id": null,
+      "decision": null,
+      "decision_reason": null,
+      "decision_seq": null,
+      "stopped": null
+    },
+    {
+      "row_no": 7,
+      "recipient": "TWLwA7RJY8oSVpBbpzrQ7fNUjbjWs59Q3o",
+      "amount_text": "2",
+      "amount_units": 2000000,
+      "amount": "2.000000",
+      "memo": "dup2",
+      "validation": "DUPLICATE_SUSPECT",
+      "validation_reasons": [
+        "DUPLICATE_RECIPIENT:rows=4,6,7"
+      ],
+      "candidate": false,
+      "payment_id": null,
+      "decision": null,
+      "decision_reason": null,
+      "decision_seq": null,
+      "stopped": null
+    }
+  ],
+  "decision_log": [
+    {
+      "seq": 1,
+      "payment_id": "sample_20260915:2",
+      "outcome": "ACCEPTED_FOR_APPROVAL",
+      "reason": "policy passed; budget reserved incl. fee; awaiting human confirmation and signature (not sent)",
+      "recipient": "THmr2CkWzBmMyXSHX2xjZQ2gpeVSMp4to6",
+      "amount_units": 10000000,
+      "fee_units": 1000000,
+      "content_sha256": "1480852785c131d1765abe683c71630c05e676b11fd45419bcc8ef8732eabc7e",
+      "budget_remaining_before": 100000000,
+      "budget_remaining_after": 89000000,
+      "row_no": 2,
+      "memo": "invoice 1\nsecond line",
+      "stopped": false
+    },
+    {
+      "seq": 2,
+      "payment_id": "sample_20260915:5",
+      "outcome": "BLOCKED_RECIPIENT_NOT_ALLOWED",
+      "reason": "recipient is not in the pre-registered allowlist",
+      "recipient": "TKji8mLVTWjuB2S57bacUaZf5uNwhDfEQA",
+      "amount_units": 5000000,
+      "fee_units": 1000000,
+      "content_sha256": "138d675e56cf8b972c1a0d32c8f9de73719fb895fc59417267cc5459a27b6766",
+      "budget_remaining_before": 89000000,
+      "budget_remaining_after": 89000000,
+      "row_no": 5,
+      "memo": "not allowed",
+      "stopped": true
+    }
+  ],
+  "note": "synthetic data only; addresses are synthetic; no service integration; stage ends at human approval"
+}

@@ -1,0 +1,4 @@
+[사람 확인 요약] {"sender": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "amount_units": 1000000, "trx_total_cap_sun": 5000000, "energy_fee_limit_sun": 4655000, "bandwidth_max_sun": 345000, "deadline_ts": 1790624866, "tx_id": "1bb7fb621e15e4fdc6f06f8a8defc07ebd81a0536aaee9d0db944aadbfb2af05", "confirm_sha256": "3e2093d88042e051f197f38b1423212e9adc3b36ec24974bc9b0e4c0e20a3cd3", "ai_mode": "MANUAL_TECH_CHECK"}
+{"flow_id": "nile_selftest_v4_20260928_manual", "revision": 1, "outcome": "EXECUTED_ACCEPTED_PENDING", "reason": null, "executed": true, "ai_mode": "MANUAL_TECH_CHECK", "a_demo_eligible": false}
+execution: ACCEPTED ACCEPTED_ACCEPTED tx 1bb7fb621e15e4fdc6f06f8a8defc07ebd81a0536aaee9d0db944aadbfb2af05 reason None
+saved prep_20260914/evidence/20260928_nile_live/FLOW_selftransfer_v4_manual.json

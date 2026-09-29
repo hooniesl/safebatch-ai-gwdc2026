@@ -1,0 +1,5 @@
+BASELINE guide build10 (sign connect UX) · 2026-09-28 23:48:50 +0900
+Ran 144 tests in 1.658s
+OK
+Ran 105 tests in 0.055s
+OK

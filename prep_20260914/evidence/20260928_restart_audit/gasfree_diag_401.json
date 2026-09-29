@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-09-28T18:26:41+09:00",
+  "key_len": 36,
+  "secret_len": 43,
+  "results": [
+    {
+      "base": "https://open-test.gasfree.io",
+      "path": "/nile/api/v1/config/token/all",
+      "http": 401,
+      "body_head": "Apikey not found.",
+      "curl_rc": 0
+    },
+    {
+      "base": "https://open.gasfree.io",
+      "path": "/tron/api/v1/config/token/all",
+      "http": 200,
+      "body_head": "{\"code\":200,\"reason\":null,\"message\":null,\"data\":{\"tokens\":[{\"tokenAddress\":\"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t\",\"createdAt\":1740540550276,\"updatedAt\":1789112055",
+      "curl_rc": 0
+    },
+    {
+      "base": "https://open-test.gasfree.io",
+      "path": "/nile/api/v1/config/provider/all",
+      "http": 401,
+      "body_head": "Apikey not found.",
+      "curl_rc": 0
+    },
+    {
+      "note": "header names are case-insensitive in HTTP; no variant tested"
+    }
+  ],
+  "sign_selftest_matches_doc_formula": true
+}

@@ -1,0 +1,12 @@
+2026-09-28T20:38:17 KST
+24e1c7a76899f7ff59d95218a1110e7230f5303599720f117e47c3c81c843703  guide/executor.py
+7fe5632c1d6e9ceb904c11ba34e8aff5e4070a859590a4cf06483fe8933263fc  guide/demo_flows.py
+0487c08c206aa507726e6255e9e124f7463c8bf01ed89d2505e0ee181e5347ef  guide/app.py
+927410ee61020ddd1c3b6b702b3ae79a6faa885e8ee37a801ff1ed02b039a511  guide/sign.html
+0df6dd7c8b6074aded64ebc315b10b55ec85244df1d3fa3d5c088ea7f98bf888  guide/tests/test_executor_review.py
+Ran 50 tests in 0.039s
+
+OK
+Ran 105 tests in 0.050s
+
+OK

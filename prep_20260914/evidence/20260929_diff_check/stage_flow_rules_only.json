@@ -1,0 +1,34 @@
+{
+ "q0_no_answer": {
+  "step": "s3",
+  "certain": false,
+  "question": "받는 곳(Binance)의 USDT 입금 화면을 열어 받는 주소를 확인했나요?",
+  "next_one": "이 화면의 주소(받는 주소)를 복사해 둔다. 이 화면에서는 그 밖에 할 일이 없습니다.",
+  "why_check": "받는 주소·네트워크가 틀리면 코인이 사라질 수 있고, 최소 수량·입금 방식·본인 계정 조건은 받는 곳 화면에만 적혀 있기 때문입니다.",
+  "ai_status": "off"
+ },
+ "q1_opened_yes": {
+  "step": "s4",
+  "certain": false,
+  "question": "업비트에서 그 주소로 출금 신청까지 했나요?",
+  "next_one": "업비트 출금 화면에 받는 주소·네트워크(TRC20)·수량을 넣고 출금을 신청한 뒤 출금 ID를 적어 둔다.",
+  "why_check": "출금 화면에서 네트워크·주소·수량을 잘못 넣으면 되돌릴 수 없고, 100만원 이상은 본인 확인 절차가 붙기 때문입니다.",
+  "ai_status": "off"
+ },
+ "q1_opened_no": {
+  "step": "s3",
+  "certain": true,
+  "question": null,
+  "next_one": "이 화면의 주소(받는 주소)를 복사해 둔다. 이 화면에서는 그 밖에 할 일이 없습니다.",
+  "why_check": "받는 주소·네트워크가 틀리면 코인이 사라질 수 있고, 최소 수량·입금 방식·본인 계정 조건은 받는 곳 화면에만 적혀 있기 때문입니다.",
+  "ai_status": "off"
+ },
+ "q2_withdraw_yes": {
+  "step": "s5",
+  "certain": true,
+  "question": null,
+  "next_one": "Binance 앱 [입금 내역]에서 같은 수량이 '완료'인지 확인. 잔액 반영은 이 화면으로만 판단합니다.",
+  "why_check": "잔액 반영은 받는 곳 화면으로만 확인되며, 해시만 보고 완료로 판단하면 안 되기 때문입니다.",
+  "ai_status": "off"
+ }
+}

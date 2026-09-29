@@ -1,0 +1,43 @@
+test_integer_units_no_float (safebatch.tests.test_local.C07AmountSchema) ... ok
+test_rejects_without_rounding (safebatch.tests.test_local.C07AmountSchema) ... ok
+test_C05_memo_injection_does_not_change_amount (safebatch.tests.test_local.CsvValidation) ... ok
+test_C08_duplicate_recipient_not_merged (safebatch.tests.test_local.CsvValidation) ... ok
+test_C27_row_numbers_and_memo_preserved (safebatch.tests.test_local.CsvValidation) ... ok
+test_C30_counts_and_totals_consistent (safebatch.tests.test_local.CsvValidation) ... ok
+test_R1_column_count_mismatch_rejected (safebatch.tests.test_local.CsvValidation) ... ok
+test_R1_duplicate_amount_header_rejected (safebatch.tests.test_local.CsvValidation) ... ok
+test_R1_unclosed_quote_rejected (safebatch.tests.test_local.CsvValidation) ... ok
+test_R3_multiline_memo_keeps_physical_line_numbers (safebatch.tests.test_local.CsvValidation) ... ok
+test_address_checksum (safebatch.tests.test_local.CsvValidation) ... ok
+test_header_missing (safebatch.tests.test_local.CsvValidation) ... ok
+test_missing_and_bad_rows_flagged (safebatch.tests.test_local.CsvValidation) ... ok
+test_C09_same_request_replayed_once (safebatch.tests.test_local.PolicyChecks) ... ok
+test_C10_same_id_different_content_conflict (safebatch.tests.test_local.PolicyChecks) ... ok
+test_C33_two_out_of_scope_requests_stop_with_reason (safebatch.tests.test_local.PolicyChecks) ... ok
+test_R2_returned_decision_is_immutable (safebatch.tests.test_local.PolicyChecks) ... ok
+test_accept_reserves_amount_plus_fee (safebatch.tests.test_local.PolicyChecks) ... ok
+test_allowlist_checked_before_budget (safebatch.tests.test_local.PolicyChecks) ... ok
+test_rejects_float_inputs (safebatch.tests.test_local.PolicyChecks) ... ok
+test_F1_single_ok_row_reserved_once_and_pending (safebatch.tests.test_flow.FlowCases) ... ok
+test_F2_mixed_ok_and_error_rows (safebatch.tests.test_flow.FlowCases) ... ok
+test_F3_duplicate_suspect_rows_not_candidates (safebatch.tests.test_flow.FlowCases) ... ok
+test_F4_rerun_same_request_adds_nothing (safebatch.tests.test_flow.FlowCases) ... ok
+test_G1_blank_line_inserted_rejected (safebatch.tests.test_flow.FlowCases) ... ok
+test_G2_row_order_changed_rejected (safebatch.tests.test_flow.FlowCases) ... ok
+test_G3_amount_changed_and_row_added_rejected (safebatch.tests.test_flow.FlowCases) ... ok
+test_G4_same_csv_rerun_still_replay (safebatch.tests.test_flow.FlowCases) ... ok
+test_G5_header_error_input_not_registered (safebatch.tests.test_flow.FlowCases) ... ok
+test_H1_new_invalid_csv_rejected_without_registration (safebatch.tests.test_flow.FlowCases) ... ok
+test_H2_invalid_csv_on_existing_batch_preserves_records (safebatch.tests.test_flow.FlowCases) ... ok
+test_H3_response_logs_are_independent_copies (safebatch.tests.test_flow.FlowCases) ... ok
+test_R1_revise_before_approval_releases_and_rereserves (safebatch.tests.test_flow.RevisionCases) ... ok
+test_R2_revise_after_mock_approval_invalidates_it (safebatch.tests.test_flow.RevisionCases) ... ok
+test_R3_invalid_revision_releases_without_new_reservation (safebatch.tests.test_flow.RevisionCases) ... ok
+test_R4_same_edit_request_retry_does_not_duplicate (safebatch.tests.test_flow.RevisionCases) ... ok
+test_R5_stale_revision_edit_and_no_change_rejected (safebatch.tests.test_flow.RevisionCases) ... ok
+test_R6_other_batch_reservations_preserved (safebatch.tests.test_flow.RevisionCases) ... ok
+
+----------------------------------------------------------------------
+Ran 38 tests in 0.005s
+
+OK

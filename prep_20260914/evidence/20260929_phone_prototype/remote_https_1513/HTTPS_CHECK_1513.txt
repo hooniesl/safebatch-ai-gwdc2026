@@ -1,0 +1,25 @@
+# real HTTPS via Tailscale Serve (Let's Encrypt), from MacBook, 2026-09-29T15:13:49+09:00
+## serve status
+https://djl-macbookpro.tail5c054d.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:8791
+
+
+## cert
+issuer= /C=US/O=Let's Encrypt/CN=YE1
+subject= /CN=djl-macbookpro.tail5c054d.ts.net
+notBefore=Sep 29 05:13:00 2026 GMT
+notAfter=Dec 28 05:12:59 2026 GMT
+
+## health
+{"ok": true, "ai_mode": "MOCK_RULES", "ai_provider": "KILN_LIVE", "network": "nile", "server_time": 1790662429}
+http=200 ssl_verify=0
+
+## orders (first)
+{"payment_id": "phone_trx_20260929_095534_178b51e6", "tx_hash": "178b51e69af30135c98e46ddff2ba5955f51c79b1695a140703d3961d27101c1", "result_state": "FINAL_CONFIRMED_SOLIDITY", "block_number": 71372152}
+## server log tail
+2026-09-29T15:13:39 127.0.0.1 - "GET /p/<token>/api/orders?sender=TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY HTTP/1.1" 200 -
+2026-09-29T15:13:49 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 200 -
+2026-09-29T15:13:49 127.0.0.1 - "GET /p/<token>/api/orders?sender=TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY HTTP/1.1" 200 -
+
+## server pid
+24297 127.0.0.1:8791

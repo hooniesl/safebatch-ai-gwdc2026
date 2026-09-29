@@ -1,0 +1,58 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>15분 비교 · 기본 번역 vs 현재 안내 (합성 자료)</title>
+<style>:root{font-size:17px}body{font-family:-apple-system,"Apple SD Gothic Neo",sans-serif;margin:0;background:#fafafa;color:#111;line-height:1.5}main{max-width:1180px;margin:0 auto;padding:20px 16px 80px}
+.warn{border:2px solid #b00020;color:#b00020;padding:8px 12px;border-radius:8px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#fff;border:2px solid #ddd;border-radius:12px;padding:16px;margin-top:14px}
+.screen{background:#0b0e11;color:#eaecef;border-radius:10px;padding:16px;font-family:-apple-system,Helvetica,Arial;font-size:.95rem}.screen h3{margin:0 0 8px;color:#fff}.screen .row{display:flex;justify-content:space-between;border-bottom:1px solid #2b3139;padding:8px 0}.screen .sel{border:1px solid #474d57;border-radius:6px;padding:6px 10px;background:#1e2329}.screen .btn{background:#fcd535;color:#181a20;border-radius:6px;padding:8px 12px;text-align:center;font-weight:700;margin-top:10px}
+.badge{display:inline-block;border:1px solid #999;border-radius:999px;padding:2px 10px;font-size:.85rem}table.cond{border-collapse:collapse;width:100%;font-size:.9rem}table.cond td,table.cond th{border:1px solid #ddd;padding:6px;vertical-align:top}
+label{display:block;margin-top:8px;font-weight:600}textarea,input,select{width:100%;font:inherit;padding:6px;border:1px solid #bbb;border-radius:6px;box-sizing:border-box;font-weight:400}button{font:inherit;padding:10px 18px;border-radius:10px;border:2px solid #222;background:#222;color:#fff;cursor:pointer;margin-top:10px}
+.muted{color:#555;font-size:.9rem}.tr{background:#fff;border:1px dashed #999;border-radius:8px;padding:10px;font-size:.95rem}</style></head><body><main>
+<h1 style="font-size:1.35rem">15분 비교 · 같은 송금 상황에서 <u>기본 번역 화면</u> vs <u>현재 안내 화면</u></h1>
+<p class="warn">합성 자료입니다. 아래 영어 화면은 실제 거래소 화면이 아니라 전무가 만든 모형이며, 실제 계정·거래·로그인이 없습니다. 이 비교는 사장 1인의 초기 사용성 확인이며 시장 검증이 아닙니다. "범용 AI보다 낫다"는 주장은 실제 비교 전까지 <strong>미확인</strong>입니다.</p>
+<div class="card"><strong>상황(공통):</strong> 사용자 목적 — “업비트에서 산 USDT 50만원어치를 내 Binance 계정으로 트론 네트워크로 보내고 싶어요”. 지금 보고 있는 화면 = 도착 거래소(Binance 모형)의 <em>Deposit USDT</em> 화면. 현재 단계 = 5단계 중 3 ‘도착 계정 확인’.<br>
+<span class="muted">진행 방법: 왼쪽(A)만 보고 3문항에 답한 뒤, 오른쪽(B)만 보고 같은 3문항에 답합니다. 각각 빠뜨린 조건·오해·외부 도움 여부·시간을 적고 [결과 JSON 만들기]를 누릅니다. 정답표는 아래 접힌 칸에 있으며 답한 뒤에만 펼칩니다.</span></div>
+<div class="grid">
+<div class="card"><h2 style="font-size:1.1rem">A · 기본 번역 화면 (원문 + 문장 그대로 번역)</h2>
+<div class="screen"><h3>Deposit USDT <span style="font-weight:400;font-size:.85rem">(mock)</span></h3>
+<div class="row"><span>Coin</span><span class="sel">USDT · Tether</span></div>
+<div class="row"><span>Network</span><span class="sel">TRX · Tron (TRC20) ▾</span></div>
+<div class="row"><span>Address</span><span>TXXXXmockXXXXXXXXXXXXXXXXXXXXXXXXX</span></div>
+<div class="row"><span>Minimum deposit</span><span>1 USDT</span></div>
+<div class="row"><span>Expected arrival</span><span>1 network confirmation</span></div>
+<div class="row"><span>Expected unlock</span><span>1 network confirmation</span></div>
+<p style="font-size:.85rem;color:#b7bdc6;margin:8px 0 0">Send only USDT to this deposit address. Ensure the network matches the withdrawal network at the sending platform, otherwise assets may be lost. Deposits via smart contract are not supported.</p>
+<div class="btn">Copy address</div></div>
+<div class="tr" style="margin-top:10px"><strong>번역(문장 그대로):</strong> USDT 입금 · 코인: USDT(테더) · 네트워크: TRX · 트론(TRC20) · 주소: TXXXX… · 최소 입금 1 USDT · 예상 도착: 네트워크 확인 1회 · 예상 잠금 해제: 네트워크 확인 1회 · “이 입금 주소로는 USDT만 보내세요. 보내는 플랫폼의 출금 네트워크와 일치하는지 확인하세요. 그렇지 않으면 자산이 손실될 수 있습니다. 스마트 컨트랙트를 통한 입금은 지원되지 않습니다.” · [주소 복사]</div>
+<form id="fa"><label>① 이 화면은 무슨 화면인가요? (무엇을 하려는 화면)<textarea name='A_q1' rows='2'></textarea></label><label>② 진행 전에 무엇을 확인해야 하나요?<textarea name='A_q2' rows='2'></textarea></label><label>③ 다음 행동은 무엇인가요? 지금 진행해도 되나요, 그 이유는?<textarea name='A_q3' rows='2'></textarea></label><label>빠뜨린 조건(있으면)<input name='A_missed'></label><label>오해한 것(있으면)<input name='A_misread'></label><label>외부 도움이 필요했나요? <select name='A_help'><option value=''>-</option><option>아니오</option><option>예(검색)</option><option>예(범용 AI)</option><option>예(사람)</option></select></label><label>걸린 시간(분)<input name='A_min' type='number' min='0' step='0.5'></label></form></div>
+<div class="card"><h2 style="font-size:1.1rem">B · 현재 안내 화면 (규칙만 사용 · AI 미호출 · 같은 상황)</h2>
+<p class="muted">아래는 실제 guide 화면이 같은 문장·같은 단계(s3)에 내놓는 내용을 그대로 옮긴 것입니다(evidence/20260928_compare/guide_plan_s3_rules_only.json). AI(Kiln) 호출 없이 규칙만으로 만든 결과이며, AI가 있을 때의 문장 이해·질문은 이 비교에 포함되지 않습니다.</p>
+<p><strong>제가 이해한 내용:</strong></p><ul><li>코인을 보낼 곳(출금 거래소): 업비트</li><li>코인을 받을 곳(입금 거래소): 바이낸스</li><li>자산: USDT</li><li>네트워크: 트론(TRC20)</li><li>송금할 코인 가치(원화 환산 참고값): 약 500,000원 (시세 변동에 따라 실제 전송 수량과 다릅니다)</li><li>받을 곳 계정 명의: 정하지 않음</li></ul>
+<h4>B-1 · 사용자가 아직 &#x27;본인 계정 여부&#x27;를 답하지 않은 상태</h4>
+<p><span class="badge">확인 필요</span> 단계 3/5 · 도착 계정 확인</p>
+<p><strong>지금 할 일:</strong> 먼저 아래 항목을 확인해 주세요. 확인 전에는 다음 단계를 제시하지 않습니다.</p>
+<p><strong>먼저 답할 것:</strong></p><ul><li>코인을 받을 곳(Binance) 계정이 가입자 본인 명의인가요?</li></ul>
+<p><strong>필요 조건:</strong> Binance 본인 계정(KYC 완료) / USDT 입금 주소·네트워크 · <strong>내가 확인해 표시할 것:</strong> 본인 계정 여부·주소·네트워크</p>
+<p><strong>다음 단계:</strong> (확인 전에는 제시하지 않음)</p>
+<table class="cond"><tr><th>구분</th><th>조건</th><th>기준일·확인·확신도</th><th>출처</th></tr><tr><td>current</td><td>Binance·Bitget·OKX·Gate·Crypto.com 은 업비트 &#x27;계정주 확인 연동 가상자산사업자&#x27; 목록에 있다. 이 유형은 100만원 이상 출금 시 &#x27;본인&#x27; 계정만 가능하고 계정주 본인 확인을 거친다. 100만원 미만은 본인/타인 모두 가능.</td><td>2026-09-23 (목록 기준일)<br>확인 2026-09-28T19:27+09:00<br>확정(공식 고객센터 직접 열람)</td><td><a href='https://support.upbit.com/hc/ko/articles/5048002559897' target='_blank' rel='noopener'>원문</a></td></tr><tr><td>current</td><td>트래블룰 적용 입출금은 양쪽 거래소에 등록된 본인 정보(영문 이름 등)가 일치해야 한다.</td><td>2026 (업비트 트래블룰 안내)<br>확인 2026-09-28T17:25+09:00<br>유력(공식 안내 요지, 원문 문장 재확인 필요)</td><td><a href='https://support.upbit.com/hc/ko/articles/4498679629337' target='_blank' rel='noopener'>원문</a></td></tr><tr><td>unverified</td><td>2차 출처는 Binance 가 한국 FIU 미등록이며 2026-01-28부터 Google Play 한국 이용자 앱 차단이라고 보도. 공식 명단으로 확인하지 못함. 업비트 목록에는 여전히 계정주 확인 연동 사업자로 있음.</td><td>2026-06-06 (wherelegalcrypto 검토일)<br>확인 2026-09-28T19:24+09:00<br>미확정(2차 출처)</td><td><a href='https://wherelegalcrypto.com/exchanges/binance/south-korea/' target='_blank' rel='noopener'>원문</a></td></tr></table>
+<h4>B-2 · &#x27;예, 업비트 명의와 동일한 제 계정&#x27; 이라고 답한 뒤</h4>
+<p><span class="badge">안내 준비 · 사용자 직접 확인 필요</span> 단계 3/5 · 도착 계정 확인</p>
+<p><strong>지금 할 일:</strong> Binance 본인 계정의 USDT 입금 주소와 네트워크를 확인한다. 계정 영문 이름이 업비트 등록 이름과 같은지 본다. (단, &#x27;사용자 직접 확인 필요&#x27; 표시는 시스템 승인이 아니므로, 거래소 화면에서 사용자가 직접 조건을 확인한 뒤 진행하세요.)</p>
+
+<p><strong>필요 조건:</strong> Binance 본인 계정(KYC 완료) / USDT 입금 주소·네트워크 · <strong>내가 확인해 표시할 것:</strong> 본인 계정 여부·주소·네트워크</p>
+<p><strong>다음 단계:</strong> 출금 신청 — </p>
+<table class="cond"><tr><th>구분</th><th>조건</th><th>기준일·확인·확신도</th><th>출처</th></tr><tr><td>current</td><td>Binance·Bitget·OKX·Gate·Crypto.com 은 업비트 &#x27;계정주 확인 연동 가상자산사업자&#x27; 목록에 있다. 이 유형은 100만원 이상 출금 시 &#x27;본인&#x27; 계정만 가능하고 계정주 본인 확인을 거친다. 100만원 미만은 본인/타인 모두 가능.</td><td>2026-09-23 (목록 기준일)<br>확인 2026-09-28T19:27+09:00<br>확정(공식 고객센터 직접 열람)</td><td><a href='https://support.upbit.com/hc/ko/articles/5048002559897' target='_blank' rel='noopener'>원문</a></td></tr><tr><td>current</td><td>트래블룰 적용 입출금은 양쪽 거래소에 등록된 본인 정보(영문 이름 등)가 일치해야 한다.</td><td>2026 (업비트 트래블룰 안내)<br>확인 2026-09-28T17:25+09:00<br>유력(공식 안내 요지, 원문 문장 재확인 필요)</td><td><a href='https://support.upbit.com/hc/ko/articles/4498679629337' target='_blank' rel='noopener'>원문</a></td></tr><tr><td>unverified</td><td>2차 출처는 Binance 가 한국 FIU 미등록이며 2026-01-28부터 Google Play 한국 이용자 앱 차단이라고 보도. 공식 명단으로 확인하지 못함. 업비트 목록에는 여전히 계정주 확인 연동 사업자로 있음.</td><td>2026-06-06 (wherelegalcrypto 검토일)<br>확인 2026-09-28T19:24+09:00<br>미확정(2차 출처)</td><td><a href='https://wherelegalcrypto.com/exchanges/binance/south-korea/' target='_blank' rel='noopener'>원문</a></td></tr></table>
+<details><summary>메뉴 풀이(현재 화면 카드)</summary><ul><li><strong>계정주 확인 연동 가상자산사업자</strong>: 업비트가 상대 거래소 계정이 &#x27;내 것&#x27;인지 확인할 수 있는 해외 거래소. 100만원 이상 보낼 때 본인 계정으로만 보낼 수 있다.</li><li><strong>트래블룰 솔루션 연동 사업자</strong>: 송·수신인 정보를 자동으로 주고받는 거래소. 본인·타인 계정 모두 가능(국내 거래소 등).</li><li><strong>네트워크(TRC20/ERC20)</strong>: 같은 USDT라도 보내는 길이 다르다. 출발과 도착이 같은 길을 골라야 한다. 다르면 자산이 고립될 수 있다.</li></ul></details>
+<form id="fb"><label>① 이 화면은 무슨 화면인가요? (무엇을 하려는 화면)<textarea name='B_q1' rows='2'></textarea></label><label>② 진행 전에 무엇을 확인해야 하나요?<textarea name='B_q2' rows='2'></textarea></label><label>③ 다음 행동은 무엇인가요? 지금 진행해도 되나요, 그 이유는?<textarea name='B_q3' rows='2'></textarea></label><label>빠뜨린 조건(있으면)<input name='B_missed'></label><label>오해한 것(있으면)<input name='B_misread'></label><label>외부 도움이 필요했나요? <select name='B_help'><option value=''>-</option><option>아니오</option><option>예(검색)</option><option>예(범용 AI)</option><option>예(사람)</option></select></label><label>걸린 시간(분)<input name='B_min' type='number' min='0' step='0.5'></label></form></div>
+</div>
+<div class="card"><button id="mk">결과 JSON 만들기</button> <button id="dl" style="background:#fff;color:#222">파일로 저장</button>
+<textarea id="out" rows="8" placeholder="여기에 결과 JSON 이 생성됩니다. 복사해 부사장/전무에게 전달하거나 [파일로 저장]"></textarea>
+<p class="muted">저장 위치 제안: prep_20260914/evidence/20260928_compare/RESULT_owner_YYYYMMDD_HHMM.json (사장 1인 · 합성 화면 · 초기 사용성)</p></div>
+<details class="card"><summary><strong>정답표(답한 뒤에만 펼치기)</strong> — 전무가 규칙 JSON 기준으로 정리, 부사장 검수 전</summary>
+<ol><li>무슨 화면: 도착 거래소(Binance 모형)에서 <em>USDT 를 받을 입금 주소·네트워크를 확인/복사하는</em> 화면. 아직 보내는 단계가 아님.</li>
+<li>진행 전 확인: ⓐ 받는 계정이 <strong>본인 명의</strong>(업비트 명의와 동일)인지 ⓑ 네트워크가 업비트 출금 쪽과 <strong>같은 TRC20</strong>인지 ⓒ 양쪽 <strong>영문 이름 일치</strong>(트래블룰) ⓓ 금액 50만원은 100만원 미만이라 계정주 본인 확인 절차 대상은 아님(단, 본인 계정 안내 범위) ⓔ Binance 한국 거주자 지위는 <strong>미확정</strong>(2차 출처) — 다른 거래소를 자동 추천하지 않음.</li>
+<li>다음 행동: 본인 계정 여부를 확정하고 주소·네트워크(TRC20)를 확인한 뒤 → 4단계 ‘업비트 출금 신청’으로. 지금 ‘Copy address’ 자체는 가능하나, ⓐⓑⓒ 확인 전에 업비트에서 출금을 신청하면 안 됨.</li></ol>
+<p class="muted">A 화면만으로는 ⓐ·ⓒ·ⓓ·ⓔ 와 '현재 단계'가 드러나지 않는다는 것이 전무 가설이며, 실제로 사장이 A 만 보고도 답했다면 그 가설은 기각된다.</p></details>
+<script>
+function collect(){const o={at:new Date().toISOString(),synthetic:true,scenario:"upbit→binance USDT 500k KRW, step s3 deposit screen",note:"사장 1인 초기 사용성, 시장 검증 아님, 범용 AI 비교 미포함"};
+for(const f of ["fa","fb"]){for(const el of document.getElementById(f).elements){if(el.name)o[el.name]=el.value;}}return o;}
+document.getElementById("mk").onclick=()=>{document.getElementById("out").value=JSON.stringify(collect(),null,1);};
+document.getElementById("dl").onclick=()=>{const o=collect();const b=new Blob([JSON.stringify(o,null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="RESULT_owner_"+o.at.replace(/[-:T]/g,"").slice(0,12)+".json";a.click();};
+</script></main></body></html>

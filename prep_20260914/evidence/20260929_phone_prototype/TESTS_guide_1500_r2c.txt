@@ -1,0 +1,30 @@
+..............................................................[executor] intent UNKNOWN append failed for b-f1:r1:2: disk fsync failed
+.................................................................................................................2026-09-29T14:38:46 127.0.0.1 - "GET /p/wrongtoken/api/health HTTP/1.1" 404 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /api/health HTTP/1.1" 404 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 403 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 403 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /p/<token>/ HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/order/prepare HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /p/<token>/api/order/status?payment_id=phone_trx_20260930_014000_d109477f HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-29T14:38:46 127.0.0.1 - "GET /p/<token>/api/orders?sender=TJRabPrwbZy45sbavfcjinPJC18kjpRTv8 HTTP/1.1" 200 -
+............................................127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/signed HTTP/1.1" 409 -
+127.0.0.1 - "POST /api/order/signed HTTP/1.1" 200 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 200 -
+.....
+----------------------------------------------------------------------
+Ran 224 tests in 3.064s
+
+OK

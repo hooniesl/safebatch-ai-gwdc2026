@@ -1,0 +1,35 @@
+{
+  "note": "휴대폰 대화용 수취인 별칭 목록(9/29 시제품). confirmed_by_owner=true 이고 address 가 있는 항목만 제안에 사용한다. 주소 추측·자동 등록 없음. Nile 테스트넷 전용.",
+  "contacts": [
+    {
+      "alias": "맥북지갑",
+      "aliases": ["맥북", "테스트지갑"],
+      "address": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+      "network": "nile",
+      "confirmed_by_owner": true,
+      "confirmed_at": "2026-09-21 (사장 TronLink 화면·9/21 허용 원장 4aa672) · 9/29 체인 읽기 존재 확인",
+      "note": "사장 맥북 TronLink Nile 테스트 지갑"
+    },
+    {
+      "alias": "민수",
+      "address": null,
+      "network": "nile",
+      "confirmed_by_owner": false,
+      "note": "동명이인 예시 1(주소 미등록) — 질문 경로 시연용"
+    },
+    {
+      "alias": "민수",
+      "address": null,
+      "network": "nile",
+      "confirmed_by_owner": false,
+      "note": "동명이인 예시 2(주소 미등록) — 질문 경로 시연용"
+    },
+    {
+      "alias": "지연",
+      "address": null,
+      "network": "nile",
+      "confirmed_by_owner": false,
+      "note": "주소 미확인 예시 — 확인 전에는 보내지 않음"
+    }
+  ]
+}

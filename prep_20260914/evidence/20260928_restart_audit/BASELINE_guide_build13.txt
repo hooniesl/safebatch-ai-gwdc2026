@@ -1,0 +1,5 @@
+BASELINE guide build13 (wording + ai_work on order) · 2026-09-29 00:55:02 +0900
+Ran 148 tests in 1.660s
+OK
+Ran 105 tests in 0.055s
+OK

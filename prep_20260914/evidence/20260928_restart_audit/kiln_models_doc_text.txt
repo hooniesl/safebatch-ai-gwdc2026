@@ -1,0 +1,397 @@
+
+Models · Kiln
+Skip to content
+Kiln
+Docs
+Search
+⌘K
+English
+Sign in
+Get started
+Overview
+Quickstart
+Migrating from OpenAI
+Using the API
+API Reference
+Chat completions
+Responses
+Completions
+Messages
+Count tokens
+List models
+Key info
+Models
+Streaming
+Errors
+Rate limits
+Manage
+Authentication
+Usage & billing
+Organizations & budgets
+Integrations
+SDKs & coding tools
+OpenAI SDK
+Anthropic SDK
+Vercel AI SDK
+LangChain
+PydanticAI
+Claude Code
+Codex CLI
+Hermes Agent
+OpenCode
+OpenClaw
+Cursor
+Cookbook
+All recipes
+Help
+FAQ
+Changelog
+Copy Markdown
+View as Markdown
+Models
+You find out which models you can call by asking the API. This page starts with that call, then keeps the per-model figures you need once you have picked an ID.
+List the models you can call
+One authenticated GET returns the models that are being served right now. That is the whole of what it answers: which IDs an inference request will accept today. It is not the full catalog — a model that is announced but not serving yet is not in it.
+cURL
+Python
+JavaScript
+bash
+curl
+ https://api.bricksum.com/v1/models 
+\
+-H
+"Authorization: Bearer 
+$KILN_API_KEY
+"
+python
+import
+ os
+from
+ openai 
+import
+ OpenAI
+client 
+=
+ OpenAI
+(
+ base_url
+=
+"https://api.bricksum.com/v1"
+,
+ api_key
+=
+os
+.
+environ
+[
+"KILN_API_KEY"
+]
+,
+)
+for
+ model 
+in
+ client
+.
+models
+.
+list
+(
+)
+:
+print
+(
+model
+.
+id
+)
+javascript
+import
+ OpenAI 
+from
+"openai"
+;
+const
+ client 
+=
+new
+OpenAI
+(
+{
+baseURL
+:
+"https://api.bricksum.com/v1"
+,
+apiKey
+:
+ process
+.
+env
+.
+KILN_API_KEY
+,
+}
+)
+;
+const
+ list 
+=
+await
+ client
+.
+models
+.
+list
+(
+)
+;
+for
+(
+const
+ model 
+of
+ list
+.
+data
+)
+ console
+.
+log
+(
+model
+.
+id
+)
+;
+A response from staging on 2026-09-20, reproduced as it came back. It holds one entry per servable model, and each entry has four fields.
+200 OK
+{
+"object"
+:
+"list"
+,
+"data"
+:
+[
+{
+"id"
+:
+"gpt-oss-120b"
+,
+"object"
+:
+"model"
+,
+"created"
+:
+1789902597
+,
+"owned_by"
+:
+"bricksum"
+}
+]
+}
+What to branch on
+Of the four fields, one is worth reading in code:
+data[].id
+ — 
+the value you put in the model field of a request. This is the field to branch on, and the set of IDs is what to compare between calls when you want to notice that the catalog changed.
+object
+, 
+data[].object
+,
+owned_by
+ — 
+fixed strings ("list", "model", "bricksum"). They carry no routing or ownership meaning, so branching on them buys nothing.
+data[].created
+ — 
+Unix seconds stamped when the gateway builds the response, not when the model was added. Every entry of one response carries the same value and the value moves between calls, so it cannot be used to detect a newly added model.
+The list carries nothing else: no context length, no price, no capability flags. Those are in the reference table further down. For the full request and error contract of this endpoint, see
+List models
+.
+Check a model before you send a request
+There is no per-model lookup: a GET on /models/{model} is not served and answers a plain-text 404 rather than an error object. To ask whether an ID is servable, read the list and test for membership.
+Membership check
+served 
+=
+{
+m
+.
+id
+for
+ m 
+in
+ client
+.
+models
+.
+list
+(
+)
+}
+if
+"gpt-oss-120b"
+not
+in
+ served
+:
+raise
+ SystemExit
+(
+"gpt-oss-120b is not servable right now"
+)
+When a model ID is not in the list
+Sending it anyway is rejected by the inference endpoints with 404 and an error object:
+404 Not Found
+{
+"error"
+:
+{
+"code"
+:
+"model_not_found"
+,
+"message"
+:
+"The model `no-such-model-xyz` does not exist or you do not have access to it."
+,
+"param"
+:
+"model"
+,
+"type"
+:
+"invalid_request_error"
+}
+}
+There are three reasons an ID is missing: the model is not served yet, it has been retired, or the ID is misspelled. The list is the only check that distinguishes them, so re-read it and pick an ID from what it returns rather than retrying the same string.
+Model reference
+Which source answers which question
+GET /models
+— 
+answers “what can I call right now”. It returns only the models that are being served, so this is the list your code should trust. If a model is absent here, a request naming it is rejected, whatever any page says.
+the model catalog
+— 
+answers “what do you offer, and at what price”. It carries every model with a status, including the ones that are not serving yet, plus the context length, pricing, capabilities, measured throughput and 90-day uptime that the API list does not return. The table below reads from it.
+So the two do not compete. A model with a coming-soon status is in the catalog and not in the API list, and that is the expected state rather than a mistake. Take IDs from the API list and everything else from the catalog; where they disagree about whether a model can be called, follow the API list.
+One row per catalog model, status first. Only the models marked available are returned by the API list and can be called today; the rest are listed so you know they exist, and they publish no figures. Everything here is read live from the catalog, so the table follows a price or context change without an edit on this page.
+Model
+Status
+Context length
+Input / 1M tokens
+Output / 1M tokens
+deepseek-v4.1-flash
+DeepSeek V4.1 Flash
+available
+262,144
+tokens
+$4.00
+$8.00
+qwen3-32b
+Qwen3 32B
+available
+32,768
+tokens
+$0.08
+$0.28
+exaone-4.5-33b
+EXAONE 4.5 33B
+coming soon
+— not serving yet, so no figures are published
+gpt-oss-120b
+gpt-oss-120b
+coming soon
+— not serving yet, so no figures are published
+gpt-oss-20b
+gpt-oss-20b
+coming soon
+— not serving yet, so no figures are published
+k-exaone-236b
+K-EXAONE 236B
+coming soon
+— not serving yet, so no figures are published
+llama-3.1-8b
+Llama 3.1 8B
+coming soon
+— not serving yet, so no figures are published
+qwen3-30b-a3b
+Qwen3 30B-A3B
+coming soon
+— not serving yet, so no figures are published
+qwen3-8b
+Qwen3 8B
+coming soon
+— not serving yet, so no figures are published
+solar-open-100b
+Solar Open 100B
+coming soon
+— not serving yet, so no figures are published
+Max output tokens
+ — 
+not a per-model figure. The catalog publishes no separate output cap for any model, so set max_tokens per request, within that model's context length. Context length counts prompt and completion together, and a request that exceeds it is rejected with 400.
+Data handling
+ — 
+Prompts and completions are processed to serve your request and to meter usage for billing. By default, your data is not used for training. Contact us if you need a data-processing agreement.
+Capabilities by model
+The same models, one row each. Streaming is available on every served model. Every other cell comes from the live catalog. "not listed" means the catalog does not report that capability for the model yet: it has not been measured, which is different from unsupported. For a model marked coming soon, capabilities are listed once it is served.
+Model
+Streaming
+Tool calling (auto)
+Forced / named tool choice
+Parallel tool calls
+Structured outputs
+Vision
+Thinking mode
+deepseek-v4.1-flash
+yes
+yes
+yes
+yes
+no
+no
+yes
+qwen3-32b
+yes
+yes
+no
+no
+no
+no
+yes
+exaone-4.5-33b
+coming soon: capabilities are listed once the model is served
+gpt-oss-120b
+coming soon: capabilities are listed once the model is served
+gpt-oss-20b
+coming soon: capabilities are listed once the model is served
+k-exaone-236b
+coming soon: capabilities are listed once the model is served
+llama-3.1-8b
+coming soon: capabilities are listed once the model is served
+qwen3-30b-a3b
+coming soon: capabilities are listed once the model is served
+qwen3-8b
+coming soon: capabilities are listed once the model is served
+solar-open-100b
+coming soon: capabilities are listed once the model is served
+Tool calling and structured output flags come from the 2026-09-11 measurement. Every function still needs a description, and reasoning tokens count toward max_tokens.
+Measurement
+API surface
+Streaming
+: 
+Supported
+ (
+stream=true
+)
+Reasoning effort
+: 
+reasoning_effort is passed to the model. gpt-oss-120b accepts low, medium and high; higher values trade latency for reasoning depth.
+Request timeout
+: 
+The gateway ends a request after 60 minutes. A non-streaming request that sends no bytes for about 100 seconds can be cut at the network edge, so send long generations with stream: true.
+Known limitations
+The current serving stack does not support every OpenAI parameter. The known gaps are listed in one place, on
+Migrating from OpenAI
+.
+Prices are per 1M tokens in USD and are metered from the usage field of each response. See the console for the current catalog and any changes.

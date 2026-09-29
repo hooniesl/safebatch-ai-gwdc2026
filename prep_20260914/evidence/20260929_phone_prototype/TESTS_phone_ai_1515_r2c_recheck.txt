@@ -1,0 +1,40 @@
+test_cap_reached_blocks_without_calling (tests.test_phone_ai.BudgetGateTests) ... ok
+test_concurrent_threads_never_exceed_cap (tests.test_phone_ai.BudgetGateTests) ... ok
+test_cross_process_lock_never_exceeds_cap (tests.test_phone_ai.BudgetGateTests) ... ok
+test_failure_counts_and_halts_following_calls (tests.test_phone_ai.BudgetGateTests) ... ok
+test_invariant_a_reserve_then_crash_blocks_after_restart (tests.test_phone_ai.BudgetGateTests)
+(a) reserve 직후 프로세스 중단 → 재시작한 새 제공자는 예약 못 함(실제 제공자 호출 0). pending 은 소비 횟수·미확인 비용으로 보존. ... ok
+test_invariant_b_slow_first_request_blocks_second_thread_and_process (tests.test_phone_ai.BudgetGateTests)
+(b) 느린 첫 요청 중 두 번째 스레드·프로세스 요청 → 관문 거부(실제 제공자 호출 0). ... ok
+test_invariant_c_semantic_failure_after_response_finalizes_as_failure (tests.test_phone_ai.BudgetGateTests)
+(c) 응답 수신 뒤 의미 검증 실패 → 예약이 실패로 확정·halted, 후속 실제 제공자 호출 0. 성공은 검증 후에만 확정. ... ok
+test_missing_budget_file_is_not_a_fresh_approval (tests.test_phone_ai.BudgetGateTests) ... ok
+test_missing_info_is_question_not_fallback_and_not_halt (tests.test_phone_ai.BudgetGateTests) ... ok
+test_raw_save_failure_and_unknown_cost_are_not_success (tests.test_phone_ai.BudgetGateTests) ... ok
+test_reservation_persists_before_call_and_exception_consumes_it (tests.test_phone_ai.BudgetGateTests) ... ok
+test_runner_judge_semantics (tests.test_phone_ai.BudgetGateTests) ... ok
+test_schema_or_semantic_failure_halts_server_path (tests.test_phone_ai.BudgetGateTests) ... ok
+test_success_counts_and_cost_accumulates (tests.test_phone_ai.BudgetGateTests) ... ok
+test_transport_error_counts_and_halts (tests.test_phone_ai.BudgetGateTests) ... ok
+test_runner_cost_prefers_server_usage_cost (tests.test_phone_ai.KilnClientRawSave) ... ok
+test_save_raw_message_keeps_choices_only (tests.test_phone_ai.KilnClientRawSave) ... ok
+test_save_raw_message_reports_failure (tests.test_phone_ai.KilnClientRawSave) ... ok
+test_adapt_via_real_tool_call_applies_constraints (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_condition_must_be_in_budget_or_deadline_context (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_extract_helper_direct (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_garbage_or_error_stays_fallback_and_model_cannot_lower_amount (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_reasoning_or_content_json_is_diagnostic_only_not_success (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_replay_0929_failure_shape_is_fallback_with_diagnosis (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_request_shape_matches_0928_success_path (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_strict_tool_call_shape (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_tool_call_arguments_as_object_and_empty_string (tests.test_phone_ai.KilnLiveRecovery) ... ok
+test_adapt_on_explicit_budget_or_deadline_change (tests.test_phone_ai.MockKilnFlows) ... ok
+test_decline_only_on_clear_violations (tests.test_phone_ai.MockKilnFlows) ... ok
+test_model_output_validation_and_fallback (tests.test_phone_ai.MockKilnFlows) ... ok
+test_normal_exact_amount_not_lowered (tests.test_phone_ai.MockKilnFlows) ... ok
+test_unregistered_alias_is_info_check_not_decline (tests.test_phone_ai.MockKilnFlows) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.113s
+
+OK

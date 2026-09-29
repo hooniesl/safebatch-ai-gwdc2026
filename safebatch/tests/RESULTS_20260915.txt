@@ -1,0 +1,20 @@
+test_integer_units_no_float (safebatch.tests.test_local.C07AmountSchema) ... ok
+test_rejects_without_rounding (safebatch.tests.test_local.C07AmountSchema) ... ok
+test_C05_memo_injection_does_not_change_amount (safebatch.tests.test_local.CsvValidation) ... ok
+test_C08_duplicate_recipient_not_merged (safebatch.tests.test_local.CsvValidation) ... ok
+test_C27_row_numbers_and_memo_preserved (safebatch.tests.test_local.CsvValidation) ... ok
+test_C30_counts_and_totals_consistent (safebatch.tests.test_local.CsvValidation) ... ok
+test_address_checksum (safebatch.tests.test_local.CsvValidation) ... ok
+test_header_missing (safebatch.tests.test_local.CsvValidation) ... ok
+test_missing_and_bad_rows_flagged (safebatch.tests.test_local.CsvValidation) ... ok
+test_C09_same_request_replayed_once (safebatch.tests.test_local.PolicyChecks) ... ok
+test_C10_same_id_different_content_conflict (safebatch.tests.test_local.PolicyChecks) ... ok
+test_C33_two_out_of_scope_requests_stop_with_reason (safebatch.tests.test_local.PolicyChecks) ... ok
+test_accept_reserves_amount_plus_fee (safebatch.tests.test_local.PolicyChecks) ... ok
+test_allowlist_checked_before_budget (safebatch.tests.test_local.PolicyChecks) ... ok
+test_rejects_float_inputs (safebatch.tests.test_local.PolicyChecks) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.001s
+
+OK

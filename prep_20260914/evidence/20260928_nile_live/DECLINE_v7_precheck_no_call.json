@@ -1,0 +1,74 @@
+{
+ "flow_id": "nile_ai_decline_v7_precheck",
+ "kind": "decline",
+ "at": "2026-09-29T01:35:49+0900",
+ "rules": {
+  "goal": "정확히 1 USDT 를 본인 지갑(TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz)으로 지급, 예산 0.6 USDT, 감액 불허 — Nile 테스트넷 연습, 실제 거래소 입금 아님",
+  "guide_plan_id": "nile-ai-decline-v7",
+  "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+  "mode": "exact_amount",
+  "amount_units": 1000000,
+  "budget_total_units": 600000,
+  "min_receive_units": 0,
+  "deadline_ts": 1790616949,
+  "allowlist": [
+   "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz"
+  ],
+  "asset": "USDT",
+  "network": "nile",
+  "path": "nile_trc20",
+  "trx_fee_cap_sun": 5000000
+ },
+ "quote": {
+  "trx_sun": 999310000,
+  "usdt_units": 1000000000,
+  "energy_est": 14650,
+  "energy_price_sun": 100,
+  "bandwidth_price_sun": 1000,
+  "tx_size_bytes": 281,
+  "bandwidth_bytes": 345,
+  "bandwidth_rule": "java-tron BandwidthProcessor.consume: serialized Transaction(without ret) + MAX_RESULT_SIZE_IN_TX(64) per contract",
+  "est_energy_sun": 1904500,
+  "bandwidth_max_sun": 345000,
+  "expected_total_sun": 2249500,
+  "would_succeed": true,
+  "free_net_left": 286,
+  "quoted_at": 1790613349
+ },
+ "candidates": [],
+ "code_block": {
+  "blocked": true,
+  "reason": "exact amount 1000000 + fee 0 exceeds budget 600000",
+  "enforced_by": "demo_flows.candidate_plans/decline_reason (code)"
+ },
+ "kiln": null,
+ "ai_explanation": null,
+ "order": null,
+ "unsigned": null,
+ "signed": 0,
+ "broadcast": 0,
+ "onchain_tx": 0,
+ "ledger_before": {
+  "pending_count": 0,
+  "intents_lines": 18
+ },
+ "ledger_after": {
+  "pending_count": 0,
+  "intents_lines": 18
+ },
+ "outcome": "DECLINED_BY_CODE_NO_AI_CALL",
+ "ai_work": {
+  "code": [
+   "규칙(수량·예산·모드·허용 수취인·기한·TRX 상한)으로 후보 계산 → 후보 0 = 지급 불가(코드 강제, 모델 무관)",
+   "미서명 거래·주문·intent·승인 생성 없음(호출 전후 원장 대조)",
+   "모델 출력은 decision=decline 형식·허용 키만 검증하며 어떤 제안도 실행에 쓰지 않는다"
+  ],
+  "ai": {
+   "mode": "NONE",
+   "did": "호출 안 함(--kiln 없음)"
+  },
+  "human": "사람 확인·서명 없음(거절이므로 서명 대상 자체가 없다)"
+ },
+ "ledger_unchanged": true,
+ "a_demo_eligible": false
+}

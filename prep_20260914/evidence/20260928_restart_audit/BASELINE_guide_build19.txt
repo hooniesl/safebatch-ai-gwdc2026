@@ -1,0 +1,5 @@
+BASELINE guide build19 (stage questions, first card) · 2026-09-29 02:34:58 +0900
+Ran 160 tests in 1.736s
+OK
+Ran 105 tests in 0.054s
+OK

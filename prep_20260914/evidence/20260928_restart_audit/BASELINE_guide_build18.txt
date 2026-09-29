@@ -1,0 +1,5 @@
+BASELINE guide build18 (advisor wording 9/29) · 2026-09-29 02:27:26 +0900
+Ran 157 tests in 1.723s
+OK
+Ran 105 tests in 0.054s
+OK

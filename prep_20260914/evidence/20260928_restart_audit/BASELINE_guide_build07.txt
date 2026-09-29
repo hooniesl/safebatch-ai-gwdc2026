@@ -1,0 +1,23 @@
+BASELINE guide build07 · 2026-09-28 21:42:36 +0900
+== guide
+Ran 103 tests in 1.396s
+
+OK
+== safebatch
+Ran 105 tests in 0.053s
+
+OK
+== nile live evidence
+total 984
+drwxr-xr-x   7 djl  staff     224 Sep 28 21:41 .
+drwxr-xr-x@ 30 djl  staff     960 Sep 28 21:35 ..
+-rw-r--r--   1 djl  staff   23726 Sep 28 21:41 AI_WORK_CARD_EXAMPLE_synthetic.html
+-rw-r--r--   1 djl  staff    4390 Sep 28 21:41 AI_WORK_CARD_EXAMPLE_synthetic.json
+-rw-r--r--@  1 djl  staff  281398 Sep 28 21:41 AI_WORK_CARD_EXAMPLE_synthetic.png
+-rw-r--r--   1 djl  staff    5441 Sep 28 21:35 PREPARE_selfaddr_preview.json
+-rw-r--r--@  1 djl  staff  177229 Sep 28 21:37 SIGN_SCREEN_PREVIEW_selfaddr.png
+== pending store (real app) orders:
+       0
+== nile ledgers:
+(eval):1: no matches found: guide/logs/nile_*
+none

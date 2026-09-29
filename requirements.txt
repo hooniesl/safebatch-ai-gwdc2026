@@ -1,0 +1,5 @@
+# Verified on macOS 15 / Python 3.9.6 on 2026-09-29 in a clean virtualenv.
+# tronpy: protobuf encoder for the unsigned Transaction (decoding/verification is pure Python in safebatch/nile_tx.py).
+# protobuf: required by tronpy.proto but not pulled in automatically by tronpy 0.6.2 (observed 2026-09-29) -> pinned explicitly.
+tronpy==0.6.2
+protobuf==6.33.6

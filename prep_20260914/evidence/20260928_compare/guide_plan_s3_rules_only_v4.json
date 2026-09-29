@@ -1,0 +1,143 @@
+{
+ "text": "업비트에서 산 USDT 50만원어치를 내 Binance 계정으로 트론 네트워크로 보내고 싶어요",
+ "use_kiln": false,
+ "step": "s3",
+ "plan": {
+  "plan_id": "fa4b723f945db52e",
+  "status": "ready_unverified",
+  "status_label": "안내 준비 · 사용자 직접 확인 필요",
+  "intent": {
+   "from": "upbit",
+   "to": "binance",
+   "asset": "USDT",
+   "network": "TRON",
+   "amount_krw": 500000,
+   "own_account": true
+  },
+  "intent_ko": {
+   "코인을 보낼 곳(출금 거래소)": "업비트",
+   "코인을 받을 곳(입금 거래소)": "바이낸스",
+   "자산": "USDT",
+   "네트워크": "트론(TRC20)",
+   "송금할 코인 가치(원화 환산 참고값)": "약 500,000원 (시세 변동에 따라 실제 전송 수량과 다릅니다)",
+   "받을 곳 계정 명의": "본인 계정(사용자 진술) — 실제 계정 명의 일치는 거래소에서 사용자가 확인"
+  },
+  "route": "upbit_to_binance_own_account_usdt",
+  "title": "업비트 → Binance 본인 계정으로 USDT 보내기 (1차 안내 범위)",
+  "current_step": {
+   "id": "s3",
+   "n": 3,
+   "total": 5,
+   "title": "도착 계정 확인",
+   "do_now": "Binance 본인 계정의 USDT 입금 주소와 네트워크를 확인한다. 계정 영문 이름이 업비트 등록 이름과 같은지 본다. (단, '사용자 직접 확인 필요' 표시는 시스템 승인이 아니므로, 거래소 화면에서 사용자가 직접 조건을 확인한 뒤 진행하세요.)",
+   "need": [
+    "Binance 본인 계정(KYC 완료)",
+    "USDT 입금 주소·네트워크"
+   ],
+   "user_confirms": "본인 계정 여부·주소·네트워크",
+   "screen": {
+    "purpose": "이 화면은 받는 곳(Binance, 내 계정)이 '여기로 USDT를 보내면 내 계정에 들어온다'고 알려주는 화면입니다. 이 화면에서는 아무것도 보내지 않습니다.",
+    "address_role": "화면의 주소는 **받는 사람 주소 = 내 Binance 계정의 USDT 받는 주소**입니다. 보내는 사람 주소가 아닙니다. 이 주소를 복사해 두었다가 업비트(보내는 곳) 출금 화면에 붙여넣습니다.",
+    "next_one": "이 화면의 주소(받는 주소)를 복사해 둔다. 이 화면에서는 그 밖에 할 일이 없습니다.",
+    "key_conditions": [
+     "네트워크: 업비트 출금에서도 이 화면과 똑같이 TRC20(Tron)을 골라야 합니다. 다르면 코인이 사라질 수 있습니다.",
+     "최소 수량: 화면에 적힌 최소 수량(예: 1 USDT) 미만은 입금 처리되지 않을 수 있습니다. 최소 수량을 맞췄다고 입금이 보장되지는 않습니다.",
+     "입금 방식: 받는 곳 화면에 적힌 입금 방식 조건(예: 스마트 컨트랙트 입금 지원 여부)을 그대로 확인합니다.",
+     "받는 계정: 현재 제품은 본인 계정 간 이동만 안내합니다(거래소 일반 규정과는 별개). '내 계정'이라고 하셨으므로 진술로 반영했고, 실제 명의 일치는 Binance 화면에서 직접 확인합니다."
+    ],
+    "screen_conditions_note": "최소 수량·네트워크·입금 방식의 실제 값은 사용자가 보고 있는 입금 화면에 적힌 것을 따릅니다(위는 예시).",
+    "after_this": "이후 순서(4단계): 업비트 앱 [출금] → USDT → 네트워크 'TRC20(Tron)' 선택 → 복사한 주소 붙여넣기 → 출금 신청. 보내기 버튼은 업비트 출금 화면에 있습니다."
+   }
+  },
+  "next_step": {
+   "id": "s4",
+   "title": "출금 신청"
+  },
+  "need_confirm": [],
+  "unsupported": [],
+  "conflicts": [],
+  "step_suggestion": null,
+  "unverified_condition_ids": [
+   "r_binance_status"
+  ],
+  "conditions": [
+   {
+    "id": "r_vasp_tier",
+    "kind": "current",
+    "applies_to": "업비트 개인 회원 → 해외 가상자산사업자 출금",
+    "condition": "Binance·Bitget·OKX·Gate·Crypto.com 은 업비트 '계정주 확인 연동 가상자산사업자' 목록에 있다. 이 유형은 100만원 이상 출금 시 '본인' 계정만 가능하고 계정주 본인 확인을 거친다. 100만원 미만은 본인/타인 모두 가능.",
+    "doc_date": "2026-09-23 (목록 기준일)",
+    "effective_from": null,
+    "checked_at": "2026-09-28T19:27+09:00",
+    "source_url": "https://support.upbit.com/hc/ko/articles/5048002559897",
+    "confidence": "확정(공식 고객센터 직접 열람)",
+    "limits": "목록에 있다는 것이 특정 자산·네트워크·실시간 입출금 가동을 보장하지 않는다.",
+    "as_of_note": null
+   },
+   {
+    "id": "r_name_match",
+    "kind": "current",
+    "applies_to": "국내 거래소 ↔ 해외 거래소 트래블룰 대상 입출금",
+    "condition": "트래블룰 적용 입출금은 양쪽 거래소에 등록된 본인 정보(영문 이름 등)가 일치해야 한다.",
+    "doc_date": "2026 (업비트 트래블룰 안내)",
+    "effective_from": null,
+    "checked_at": "2026-09-28T17:25+09:00",
+    "source_url": "https://support.upbit.com/hc/ko/articles/4498679629337",
+    "confidence": "유력(공식 안내 요지, 원문 문장 재확인 필요)",
+    "limits": "이름 표기(띄어쓰기·순서) 세부 규칙은 각 거래소 고객센터 확인.",
+    "as_of_note": null
+   },
+   {
+    "id": "r_binance_status",
+    "kind": "unverified",
+    "applies_to": "Binance 의 한국 거주자 서비스 지위",
+    "condition": "2차 출처는 Binance 가 한국 FIU 미등록이며 2026-01-28부터 Google Play 한국 이용자 앱 차단이라고 보도. 공식 명단으로 확인하지 못함. 업비트 목록에는 여전히 계정주 확인 연동 사업자로 있음.",
+    "doc_date": "2026-06-06 (wherelegalcrypto 검토일)",
+    "effective_from": null,
+    "checked_at": "2026-09-28T19:24+09:00",
+    "source_url": "https://wherelegalcrypto.com/exchanges/binance/south-korea/",
+    "confidence": "미확정(2차 출처)",
+    "limits": "다른 거래소를 자동으로 더 안전하다고 추천하지 않는다.",
+    "as_of_note": null
+   }
+  ],
+  "glossary": [
+   {
+    "term": "계정주 확인 연동 가상자산사업자",
+    "plain": "업비트가 상대 거래소 계정이 '내 것'인지 확인할 수 있는 해외 거래소. 100만원 이상 보낼 때 본인 계정으로만 보낼 수 있다.",
+    "source_url": "https://support.upbit.com/hc/ko/articles/5048002559897"
+   },
+   {
+    "term": "트래블룰 솔루션 연동 사업자",
+    "plain": "송·수신인 정보를 자동으로 주고받는 거래소. 본인·타인 계정 모두 가능(국내 거래소 등).",
+    "source_url": "https://support.upbit.com/hc/ko/articles/5048002559897"
+   },
+   {
+    "term": "네트워크(TRC20/ERC20)",
+    "plain": "같은 USDT라도 보내는 길이 다르다. 출발과 도착이 같은 길을 골라야 한다. 다르면 자산이 고립될 수 있다.",
+    "source_url": "https://www.blog.blockscout.com/sent-crypto-to-wrong-network/"
+   }
+  ],
+  "earn_cards": [
+   {
+    "title": "예치(Earn) 상품을 고를 때 볼 것",
+    "product_example": "Binance Simple Earn (예시)",
+    "conditions": [
+     "보상률은 변동될 수 있음",
+     "유연형/고정형: 고정형은 만기 전 인출 시 보상 손실·지연 가능",
+     "인출 한도·처리 지연 조건",
+     "원금 위험 고지 여부"
+    ],
+    "unknown": [
+     "한국 거주자 계정에서 이용 가능한지 미확인",
+     "실제 상품 조건은 가입 화면 원문 기준"
+    ],
+    "source_url": "https://www.binance.com/en/earn-faq/dark/simple-earn/faqa",
+    "checked_at": "2026-09-28 (부사장 링크, 전무 원문 미열람)",
+    "auto_action": false
+   }
+  ],
+  "authority": "이 화면의 어떤 상태도 승인·서명·송금 권한이 아닙니다.",
+  "disclaimer": "이 화면은 공식 문서 조건을 정리한 안내입니다. 실제 입금·매수·출금은 사용자가 각 거래소에서 직접 수행하고 확인합니다. 테스트넷 실습은 실제 거래소 입금이 아닙니다."
+ }
+}

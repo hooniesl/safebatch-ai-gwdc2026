@@ -1,0 +1,42 @@
+ok   M 4001·명시 문구 → 거절
+ok   M 부분일치는 거절 아님
+ok   D 두 번째 탭은 busy 로 거부
+ok   E3 저장 실패 → 지갑 서명 0
+ok   E4 PREPARED + 취소 → 삭제
+ok   E5 SIGNED 단계의 서버 미수신 → 유지(미서명 아님)
+ok   E5 SIGNING 단계는 취소 응답에도 미서명 종결 안 함
+ok   E5 만료 주문은 재제출 안 함
+ok   E5 취소 주문은 재제출 안 함
+ok   E6 만료 1회 관측 → 아직 폐기 안 함·재제출 0
+ok   H 페이지 종료 뒤 재진입: 유지·재제출 0·잠금(keep:SIGNING:PENDING)
+ok   M 'connection cancelled' → SIGNING 유지
+ok   F 서명 뒤 첫 제출 실패 → 1회로 정지(post-failed:1)
+ok   G SIGNED 저장 실패 → SIGNING 유지·제출 0·서버 보유 등록 1
+ok   J 스테일 폴링의 삭제 거부(stale:never-signed:PENDING)
+ok   A 첫 제출 실패 → 정지·서명본 보존(post-failed:1)
+ok   B 응답 유실 → 정지(방송은 이미 1회)
+ok   C 불통 중 서명본 보관(단계 SUBMITTING)
+ok   E6 만료 2회 확인 뒤 서명본 폐기·재제출 0(keep:SIGNED_EXPIRED:PENDING)
+ok   E6 '새 주문' 안내 없음·주문 기록·잠금 유지
+ok   H 일반 지갑 오류 → SIGNING 유지·보유 등록
+ok   E1 격리 → 복구 유지·잠금(keep:SUBMITTED:SIGNATURE_HELD)
+ok   E2 NOT_SUBMITTED + 원래 주문 UNKNOWN → 유지(keep:SUBMIT_REFUSED:UNKNOWN)
+ok   I 로컬 시계 초과·서버 만료 아님 → 서명본 유지·재제출 1회·확정(chain-terminal:FINAL_CONFIRMED_SOLIDITY)
+ok   K NOT_SUBMITTED → SUBMIT_REFUSED 고정
+ok   H 확실한 사용자 거절(4001) → 미서명 삭제
+ok   B 이어서 확인 → 재제출 없이 원래 주문 조회로 종결(POST 1회)
+ok   D 두 번 탭 → 지갑 서명 1회·POST 1회·방송 1회
+ok   N 3회 확인 후에도 서명본 유지·잠금·재제출 0·보유 등록(keep:SIGNED:CANCELLED)
+ok   B 같은 서명본 재제출 → idempotent·방송 여전히 1회
+ok   E1 격리 주문은 재제출 안 함
+ok   G 새로고침·반복 조회 뒤에도 잠금 유지·삭제 경로 없음(keep:SIGNING:PENDING)
+ok   A 이어서 확인 → 같은 서명본 재제출(POST 2회)·방송 1회·지갑 서명 1회
+ok   A 체인 종결 뒤 복구 정보 삭제(chain-terminal:FINAL_CONFIRMED_SOLIDITY)
+ok   C 새로고침 뒤 같은 서명본 제출 1회·방송 1회·재서명 0(chain-terminal:FINAL_CONFIRMED_SOLIDITY)
+ok   C 사용자에게 재제출 안내
+ok   K 복구 반복해도 재제출 0(POST 1)
+ok   E2 NOT_SUBMITTED + 원래 주문 FINAL_CONFIRMED_SOLIDITY → 종결(chain-terminal:FINAL_CONFIRMED_SOLIDITY)
+ok   F 복구 동작당 재제출 1회씩(총 POST 3)·서명본 보존(submit_count 3)
+ok   F 잠금 유지
+ok   E6 근거 없는 expired 는 폐기하지 않음
+RESULT PASS

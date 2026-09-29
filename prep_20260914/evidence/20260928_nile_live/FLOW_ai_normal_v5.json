@@ -1,0 +1,370 @@
+{
+ "flow_id": "nile_ai_normal_v5_20260929",
+ "revision": 1,
+ "rules_digest": "accc3b0dcd4430af",
+ "guide_plan_id": "nile-selftest-ai-normal-v5",
+ "mode": "exact_amount",
+ "candidates": [
+  {
+   "kind": "exact",
+   "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+   "value_units": 1000000,
+   "fee_units": 0,
+   "total_units": 1000000,
+   "asset": "USDT",
+   "network": "nile",
+   "path": "nile_trc20",
+   "trx_fee_limit_sun": 4655000,
+   "trx_est_sun": 1904500,
+   "trx_bandwidth_max_sun": 345000,
+   "trx_total_max_sun": 5000000
+  }
+ ],
+ "kiln": {
+  "http": 200,
+  "usage": {
+   "completion_tokens": 67,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 1,
+    "rejected_prediction_tokens": 0
+   },
+   "cost": 5.4040000000000004e-05,
+   "prompt_tokens": 444,
+   "prompt_tokens_details": {
+    "cached_tokens": 6,
+    "audio_tokens": 0
+   },
+   "total_tokens": 511
+  },
+  "model": "qwen3-32b",
+  "request_id": null,
+  "elapsed_ms": 1366,
+  "error": null,
+  "finish_reason": "stop",
+  "ok": true,
+  "raw": "\n\n```json\n{\"choice_index\": 0, \"reason\": \"지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.\"}\n```",
+  "validation": "ok"
+ },
+ "chosen": {
+  "choice_index": 0,
+  "reason": "지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.",
+  "plan": {
+   "kind": "exact",
+   "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+   "value_units": 1000000,
+   "fee_units": 0,
+   "total_units": 1000000,
+   "asset": "USDT",
+   "network": "nile",
+   "path": "nile_trc20",
+   "trx_fee_limit_sun": 4655000,
+   "trx_est_sun": 1904500,
+   "trx_bandwidth_max_sun": 345000,
+   "trx_total_max_sun": 5000000
+  },
+  "plan_digest": "cfe9cc12d8f36ee0"
+ },
+ "approval": {
+  "approval_id": "nile_ai_normal_v5_20260929:r1:approval@nile_ai_normal_v5_20260929",
+  "flow_id": "nile_ai_normal_v5_20260929",
+  "revision": 1,
+  "rules_digest": "accc3b0dcd4430af",
+  "plan_digest": "cfe9cc12d8f36ee0",
+  "approved_by": "Codex",
+  "approved_at": 1790610961
+ },
+ "executed": true,
+ "execution": {
+  "state": "ACCEPTED",
+  "detail": {
+   "state": "ACCEPTED",
+   "outcome": "ACCEPTED_ACCEPTED",
+   "tx_hash": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24",
+   "payment_id": "nile_ai_normal_v5_20260929:r1:2",
+   "receipt": {
+    "txid": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24",
+    "found_tx": true,
+    "found_info": true,
+    "solid_found": false,
+    "txid_match": true,
+    "raw_bytes_identical": true,
+    "contract_ret": "SUCCESS",
+    "receipt_result": "SUCCESS",
+    "block_number": 71361508,
+    "fee_sun": 345000,
+    "energy_usage_total": 14650,
+    "net_usage": null,
+    "energy_fee_sun": null,
+    "net_fee_sun": 345000,
+    "total_cap_sun": 5000000,
+    "energy_fee_limit_sun": 4655000,
+    "bandwidth_max_sun": 345000,
+    "bandwidth_bytes": 345,
+    "net_usage_within_bound": true,
+    "fee_within_limit": true,
+    "transfer_logs_matching_parties": 1,
+    "amount_expected": 1000000,
+    "amount_actual": 1000000,
+    "amount_match": true,
+    "solid_block_match": false,
+    "solid_result": null,
+    "verdict": "ACCEPTED"
+   }
+  }
+ },
+ "outcome": "EXECUTED_ACCEPTED_PENDING",
+ "reason": null,
+ "ts": 1790610960,
+ "path": "nile_trc20",
+ "ai_mode": "AI_LIVE",
+ "a_demo_eligible": true,
+ "quote": {
+  "trx_sun": 1000000000,
+  "usdt_units": 1000000000,
+  "energy_est": 14650,
+  "energy_price_sun": 100,
+  "bandwidth_price_sun": 1000,
+  "tx_size_bytes": 281,
+  "bandwidth_bytes": 345,
+  "bandwidth_rule": "java-tron BandwidthProcessor.consume: serialized Transaction(without ret) + MAX_RESULT_SIZE_IN_TX(64) per contract",
+  "est_energy_sun": 1904500,
+  "bandwidth_max_sun": 345000,
+  "expected_total_sun": 2249500,
+  "would_succeed": true,
+  "free_net_left": 277,
+  "quoted_at": 1790610960
+ },
+ "order": {
+  "kind": "nile_trc20",
+  "payment_id": "nile_ai_normal_v5_20260929:r1:2",
+  "batch_id": "nile_ai_normal_v5_20260929",
+  "revision": 1,
+  "csv_sha256": "b19086ba7981d25e1d99425da4bcbb1eb87a1db889900f2f7fc3b2001ea4fc32",
+  "goal": "Nile 테스트 USDT 1개를 본인 지갑(TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz)으로 보내기 — 테스트넷 연습, 실제 거래소 입금 아님",
+  "ai_work": {
+   "ai": {
+    "mode": "AI_LIVE",
+    "did": "사용자 목표·조건과 코드가 만든 후보(1개)를 읽고, 규칙에 맞는지 설명하는 한 문장을 냈다(후보 선택 index 포함). 금액·주소·수수료·기한은 바꿀 수 없다.",
+    "model": "qwen3-32b",
+    "request_id": null,
+    "choice_index": 0,
+    "reason": "지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.",
+    "usage": {
+     "completion_tokens": 67,
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 1,
+      "rejected_prediction_tokens": 0
+     },
+     "cost": 5.4040000000000004e-05,
+     "prompt_tokens": 444,
+     "prompt_tokens_details": {
+      "cached_tokens": 6,
+      "audio_tokens": 0
+     },
+     "total_tokens": 511
+    },
+    "flow_id": "nile_ai_normal_v5_20260929",
+    "not_did": "후보를 만들지 않았고 경로를 최적화하지 않았다(후보 1개). 승인·서명·방송을 하지 않는다."
+   },
+   "code": [
+    "사용자 규칙(수량·예산·허용 수취인·기한·TRX 총상한)으로 후보 계획 계산(코드, 모델 무관)",
+    "모델 출력 형식 검증: choice_index 범위·허용 키만(금액/주소 필드 거부)",
+    "계획 재검증: 수량=요청, 수취인∈허용목록, USDT 수수료 0, Energy 한도+Bandwidth 최대=총상한≤사용자 상한",
+    "미서명 거래 독립 디코드 대조(20항목)·확인 지문(전체 조건+raw+txID)·정책 승인 결합",
+    "서명 뒤: raw 바이트 동일·txID·서명자 EOA 복구=보내는 계정, 방송 직전 재견적, 영수증 4기준 대조"
+   ],
+   "human": "사람 확인 = 확인 지문을 읽고 같을 때만 승인 · TronLink 서명 1회(기존 허용 범위)"
+  },
+  "approval_id": "nile_ai_normal_v5_20260929:r1:approval",
+  "row_no": 2,
+  "memo": "Nile 테스트 USDT 1개를 본인 지갑(TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz)으 plan=nile-selftest-ai-normal-v5",
+  "network": "nile",
+  "chain_id": 3448148188,
+  "user_eoa": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+  "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+  "token": "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
+  "token_symbol": "USDT",
+  "token_decimal": 6,
+  "amount_units": 1000000,
+  "trx_total_cap_sun": 5000000,
+  "trx_fee_limit_sun": 4655000,
+  "trx_bandwidth_max_sun": 345000,
+  "trx_total_max_sun": 5000000,
+  "trx_est_sun": 1904500,
+  "trx_expected_total_sun": 2249500,
+  "energy_est": 14650,
+  "energy_price_sun": 100,
+  "bandwidth_price_sun": 1000,
+  "tx_size_bytes": 281,
+  "bandwidth_bytes": 345,
+  "bandwidth_rule": "java-tron BandwidthProcessor.consume: serialized Transaction(without ret) + MAX_RESULT_SIZE_IN_TX(64) per contract",
+  "expire_at_ms": 1790632533000,
+  "user_deadline_ts": 1790632533,
+  "tx_id": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24",
+  "confirm_sha256": "ce741dfb2ef8d54b50212b50db820faf214e73eab76492a3732d882d878e5fcd",
+  "ai_mode": "AI_LIVE",
+  "unsigned_tx": {
+   "txID": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24",
+   "raw_data": {
+    "ref_block_bytes": "e365",
+    "ref_block_hash": "0080c5c9abeda050",
+    "expiration": 1790632533000,
+    "timestamp": 1790610933000,
+    "fee_limit": 4655000,
+    "contract": [
+     {
+      "parameter": {
+       "value": {
+        "owner_address": "4130b2528f0857ead32dd0823835c79908648de8b8",
+        "contract_address": "41eca9bc828a3005b9a3b909f2cc5c2a54794de05f",
+        "data": "a9059cbb00000000000000000000000030b2528f0857ead32dd0823835c79908648de8b800000000000000000000000000000000000000000000000000000000000f4240",
+        "call_value": 0
+       },
+       "type_url": "type.googleapis.com/protocol.TriggerSmartContract"
+      },
+      "type": "TriggerSmartContract"
+     }
+    ]
+   },
+   "raw_data_hex": "0a02e36522080080c5c9abeda0504088b890d08e345aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a154130b2528f0857ead32dd0823835c79908648de8b8121541eca9bc828a3005b9a3b909f2cc5c2a54794de05f2244a9059cbb00000000000000000000000030b2528f0857ead32dd0823835c79908648de8b800000000000000000000000000000000000000000000000000000000000f424070888aeac58e349001988f9c02",
+   "visible": false
+  },
+  "checks": [
+   {
+    "check": "raw_hex_present",
+    "pass": true,
+    "detail": "raw_data_hex"
+   },
+   {
+    "check": "txid_matches_sha256(raw)",
+    "pass": true,
+    "detail": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24"
+   },
+   {
+    "check": "no_unexpected_raw_fields",
+    "pass": true,
+    "detail": "[]"
+   },
+   {
+    "check": "no_memo_field",
+    "pass": true,
+    "detail": "None"
+   },
+   {
+    "check": "ref_block_present",
+    "pass": true,
+    "detail": "ref block"
+   },
+   {
+    "check": "one_contract",
+    "pass": true,
+    "detail": "1"
+   },
+   {
+    "check": "contract_type_trigger_smart_contract",
+    "pass": true,
+    "detail": "31 type.googleapis.com/protocol.TriggerSmartContract"
+   },
+   {
+    "check": "no_unexpected_contract_fields",
+    "pass": true,
+    "detail": "[] perm=0"
+   },
+   {
+    "check": "no_unexpected_trigger_fields",
+    "pass": true,
+    "detail": "[]"
+   },
+   {
+    "check": "owner_is_sender",
+    "pass": true,
+    "detail": "4130b2528f0857ead32dd0823835c79908648de8b8"
+   },
+   {
+    "check": "contract_is_token",
+    "pass": true,
+    "detail": "41eca9bc828a3005b9a3b909f2cc5c2a54794de05f"
+   },
+   {
+    "check": "no_call_value",
+    "pass": true,
+    "detail": "call_value/token"
+   },
+   {
+    "check": "data_is_transfer(receiver,amount)",
+    "pass": true,
+    "detail": "a9059cbb00000000000000000000000030b2528f0857ead32dd0823835c79908648de8b800000000"
+   },
+   {
+    "check": "fee_limit_equals_spec",
+    "pass": true,
+    "detail": "4655000"
+   },
+   {
+    "check": "expiration_equals_spec",
+    "pass": true,
+    "detail": "1790632533000"
+   },
+   {
+    "check": "expiration_in_future",
+    "pass": true,
+    "detail": "exp=1790632533000 now=1790610964000"
+   },
+   {
+    "check": "expiration_within_max",
+    "pass": true,
+    "detail": "21569000"
+   },
+   {
+    "check": "timestamp_not_future",
+    "pass": true,
+    "detail": "1790610933000"
+   },
+   {
+    "check": "timestamp_within_window",
+    "pass": true,
+    "detail": "31000"
+   },
+   {
+    "check": "raw_json_matches_bytes",
+    "pass": true,
+    "detail": "raw_data json vs decoded bytes"
+   }
+  ],
+  "snapshot_sha256": "1a3775c897918b7c13dc67374ed93089b40273c4e7fcf47074d23069f1bf3bcb",
+  "notice": "Nile 테스트넷 · 테스트 자금. 실제 거래소 입금이 아닙니다. 이 화면은 서명만 하며 전송(방송)은 서버가 원장 예약 뒤 1회 합니다."
+ },
+ "confirm_sha256": "ce741dfb2ef8d54b50212b50db820faf214e73eab76492a3732d882d878e5fcd",
+ "ai_info": {
+  "mode": "AI_LIVE",
+  "model": "qwen3-32b",
+  "request_id": null,
+  "usage": {
+   "completion_tokens": 67,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 1,
+    "rejected_prediction_tokens": 0
+   },
+   "cost": 5.4040000000000004e-05,
+   "prompt_tokens": 444,
+   "prompt_tokens_details": {
+    "cached_tokens": 6,
+    "audio_tokens": 0
+   },
+   "total_tokens": 511
+  },
+  "flow_id": "nile_ai_normal_v5_20260929",
+  "choice_index": 0,
+  "reason": "지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.",
+  "ok": true,
+  "raw": "\n\n```json\n{\"choice_index\": 0, \"reason\": \"지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.\"}\n```"
+ },
+ "artifact": "prep_20260914/evidence/20260928_nile_live/PREPARE_ai_normal_v5.json",
+ "confirmed_by": "Codex"
+}

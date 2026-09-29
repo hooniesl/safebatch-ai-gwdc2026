@@ -1,0 +1,240 @@
+
+Documentation · Kiln
+Skip to content
+Kiln
+Docs
+Search
+⌘K
+English
+Sign in
+Get started
+Overview
+Quickstart
+Migrating from OpenAI
+Using the API
+API Reference
+Chat completions
+Responses
+Completions
+Messages
+Count tokens
+List models
+Key info
+Models
+Streaming
+Errors
+Rate limits
+Manage
+Authentication
+Usage & billing
+Organizations & budgets
+Integrations
+SDKs & coding tools
+OpenAI SDK
+Anthropic SDK
+Vercel AI SDK
+LangChain
+PydanticAI
+Claude Code
+Codex CLI
+Hermes Agent
+OpenCode
+OpenClaw
+Cursor
+Cookbook
+All recipes
+Help
+FAQ
+Changelog
+Copy Markdown
+View as Markdown
+Kiln docs
+Kiln — AI inference API on NPUs
+Call AI models with the OpenAI SDK. Set base_url and an API key to start.
+Get an API key
+Point your OpenAI SDK at Kiln.
+Point base_url at Kiln and use an API key that starts with sk-bk-…. Put your key in the examples below, then run them. Some parameters are not supported yet; see Known limitations in the API reference.
+curl
+Python
+JavaScript
+bash
+curl
+ https://api.bricksum.com/v1/chat/completions 
+\
+-H
+"Authorization: Bearer sk-bk-..."
+\
+-H
+"Content-Type: application/json"
+\
+-d
+'{
+ "model": "gpt-oss-120b",
+ "messages": [
+ {"role": "user", "content": "Hello!"}
+ ]
+ }'
+python
+from
+ openai 
+import
+ OpenAI
+client 
+=
+ OpenAI
+(
+ base_url
+=
+"https://api.bricksum.com/v1"
+,
+ api_key
+=
+"sk-bk-..."
+,
+)
+resp 
+=
+ client
+.
+chat
+.
+completions
+.
+create
+(
+ model
+=
+"gpt-oss-120b"
+,
+ messages
+=
+[
+{
+"role"
+:
+"user"
+,
+"content"
+:
+"Hello!"
+}
+]
+,
+)
+print
+(
+resp
+.
+choices
+[
+0
+]
+.
+message
+.
+content
+)
+javascript
+import
+ OpenAI 
+from
+"openai"
+;
+const
+ client 
+=
+new
+OpenAI
+(
+{
+baseURL
+:
+"https://api.bricksum.com/v1"
+,
+apiKey
+:
+ process
+.
+env
+.
+KILN_API_KEY
+,
+}
+)
+;
+const
+ resp 
+=
+await
+ client
+.
+chat
+.
+completions
+.
+create
+(
+{
+model
+:
+"gpt-oss-120b"
+,
+messages
+:
+[
+{
+role
+:
+"user"
+,
+content
+:
+"Hello!"
+}
+]
+,
+}
+)
+;
+console
+.
+log
+(
+resp
+.
+choices
+[
+0
+]
+.
+message
+.
+content
+)
+;
+Up and running in 5 minutes
+1
+Create an API key in the console
+2
+Set base_url to https://api.bricksum.com/v1
+3
+Send a first request and read usage in the response
+Quickstart
+A step-by-step walkthrough from creating an API key to your first API request.
+Quickstart
+ →
+API Reference
+The hub of the API reference: base URL, authentication, the endpoints (Chat Completions, Completions, Responses, Messages, models, key), the parameters they share, the response envelope, streaming, errors and limits.
+Explore the API
+ →
+Models
+How to list the models you can call through the API, and the context length, pricing and capabilities of each one.
+Pick a model
+ →
+Usage & billing
+The usage object and usage.cost, how cost is computed, the generation ID header, checking your key, and what is billed.
+Check your costs
+ →
+Using an AI coding assistant?
+/llms.txt
+ is a machine-readable index of every page here. Give it to Claude Code or Cursor so the agent can read these docs while it sets up Kiln.

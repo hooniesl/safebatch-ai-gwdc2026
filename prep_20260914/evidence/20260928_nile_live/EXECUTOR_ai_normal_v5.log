@@ -1,0 +1,5 @@
+[사람 확인 요약] {"sender": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", "amount_units": 1000000, "trx_total_cap_sun": 5000000, "energy_fee_limit_sun": 4655000, "bandwidth_max_sun": 345000, "deadline_ts": 1790632533, "tx_id": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24", "confirm_sha256": "ce741dfb2ef8d54b50212b50db820faf214e73eab76492a3732d882d878e5fcd", "ai_mode": "AI_LIVE"}
+[AI가 한 일] {"mode": "AI_LIVE", "model": "qwen3-32b", "request_id": null, "choice_index": 0, "reason": "지정된 수신 주소와 정확한 USDT 금액, TRX 수수료 한도 내에서 네트워크가 Nile 테스트넷인 유일한 옵션입니다.", "ok": true}
+{"flow_id": "nile_ai_normal_v5_20260929", "revision": 1, "outcome": "EXECUTED_ACCEPTED_PENDING", "reason": null, "executed": true, "ai_mode": "AI_LIVE", "a_demo_eligible": true}
+execution: ACCEPTED ACCEPTED_ACCEPTED tx a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24 reason None
+saved prep_20260914/evidence/20260928_nile_live/FLOW_ai_normal_v5.json

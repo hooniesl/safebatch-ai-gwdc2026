@@ -1,0 +1,2 @@
+cert: 2026/09/29 13:50:28 500 Internal Server Error: your Tailscale account does not support getting TLS certs
+No serve config

@@ -1,0 +1,173 @@
+{
+ "flow_id": "nile_ai_adapt_v6_20260929",
+ "revision": 2,
+ "rules_digest": "a632fb901f7bca80",
+ "guide_plan_id": "nile-selftest-ai-adapt-v6",
+ "mode": "max_within_budget",
+ "candidates": [
+  {
+   "kind": "max_within_budget",
+   "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+   "value_units": 600000,
+   "fee_units": 0,
+   "total_units": 600000,
+   "asset": "USDT",
+   "network": "nile",
+   "path": "nile_trc20",
+   "trx_fee_limit_sun": 4655000,
+   "trx_est_sun": 1904500,
+   "trx_bandwidth_max_sun": 345000,
+   "trx_total_max_sun": 5000000
+  }
+ ],
+ "kiln": {
+  "http": 200,
+  "usage": {
+   "completion_tokens": 61,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 1,
+    "rejected_prediction_tokens": 0
+   },
+   "cost": 7.636000000000001e-05,
+   "prompt_tokens": 813,
+   "prompt_tokens_details": {
+    "cached_tokens": 144,
+    "audio_tokens": 0
+   },
+   "total_tokens": 874
+  },
+  "model": "qwen3-32b",
+  "request_id": null,
+  "elapsed_ms": 1329,
+  "error": null,
+  "finish_reason": "stop",
+  "ok": true,
+  "raw": "\n\n{\"choice_index\": 0, \"reason\": \"예산이 1.0 USDT에서 0.6 USDT로 줄어들었기 때문에, 후보는 최대 0.6 USDT를 보내는 것을 반영합니다.\"}",
+  "validation": "ok"
+ },
+ "chosen": {
+  "choice_index": 0,
+  "reason": "예산이 1.0 USDT에서 0.6 USDT로 줄어들었기 때문에, 후보는 최대 0.6 USDT를 보내는 것을 반영합니다.",
+  "plan": {
+   "kind": "max_within_budget",
+   "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+   "value_units": 600000,
+   "fee_units": 0,
+   "total_units": 600000,
+   "asset": "USDT",
+   "network": "nile",
+   "path": "nile_trc20",
+   "trx_fee_limit_sun": 4655000,
+   "trx_est_sun": 1904500,
+   "trx_bandwidth_max_sun": 345000,
+   "trx_total_max_sun": 5000000
+  },
+  "plan_digest": "8575400029290612"
+ },
+ "approval": {
+  "approval_id": "nile_ai_adapt_v6_20260929:r1:approval@nile_ai_adapt_v6_20260929",
+  "flow_id": "nile_ai_adapt_v6_20260929",
+  "revision": 2,
+  "rules_digest": "a632fb901f7bca80",
+  "plan_digest": "8575400029290612",
+  "approved_by": "Codex",
+  "approved_at": 1790612286
+ },
+ "executed": false,
+ "execution": {
+  "state": "NOT_SUBMITTED",
+  "detail": {
+   "state": "NOT_SUBMITTED",
+   "reason": "confirm digest mismatch between human-confirmed summary, artifact and signing target",
+   "payment_id": "nile_ai_adapt_v6_20260929:r1:2"
+  }
+ },
+ "outcome": "NOT_SUBMITTED",
+ "reason": null,
+ "ts": 1790612285,
+ "path": "nile_trc20",
+ "ai_mode": "AI_LIVE",
+ "a_demo_eligible": true,
+ "quote": {
+  "trx_sun": 999655000,
+  "usdt_units": 1000000000,
+  "energy_est": 14650,
+  "energy_price_sun": 100,
+  "bandwidth_price_sun": 1000,
+  "tx_size_bytes": 281,
+  "bandwidth_bytes": 345,
+  "bandwidth_rule": "java-tron BandwidthProcessor.consume: serialized Transaction(without ret) + MAX_RESULT_SIZE_IN_TX(64) per contract",
+  "est_energy_sun": 1904500,
+  "bandwidth_max_sun": 345000,
+  "expected_total_sun": 2249500,
+  "would_succeed": true,
+  "free_net_left": 282,
+  "quoted_at": 1790612285
+ },
+ "order": null,
+ "confirm_sha256": "dce84413ee64f5962c889d5deff2c96cc62abd43e0e2cbd6461baaf6641114da",
+ "ai_info": {
+  "change": {
+   "prior_artifact_txid": "a7c6b7340fde03af6b9ac00158d916b1ec90595ed00c0e0ac548eea7e770ca24",
+   "prior_confirm_sha256": "ce741dfb2ef8d54b50212b50db820faf214e73eab76492a3732d882d878e5fcd",
+   "before": {
+    "mode": "exact_amount",
+    "amount_units": 1000000,
+    "budget_total_units": 1000000,
+    "min_receive_units": 0,
+    "deadline_ts": 1790632533,
+    "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+    "trx_fee_cap_sun": 5000000,
+    "planned_value_units": 1000000
+   },
+   "after": {
+    "mode": "max_within_budget",
+    "amount_units": 1000000,
+    "budget_total_units": 600000,
+    "min_receive_units": 500000,
+    "deadline_ts": 1790633870,
+    "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+    "trx_fee_cap_sun": 5000000,
+    "planned_value_units": 600000
+   },
+   "changed_fields": [
+    "mode",
+    "budget_total_units",
+    "min_receive_units",
+    "deadline_ts"
+   ],
+   "user_reason": "사용자가 예산을 1.0 USDT에서 0.6 USDT로 줄임(금액 조절 허용 목표)",
+   "before_text": "1.000000 USDT 요청 · 예산 1.000000 · 모드 exact_amount · 계획 수량 1.000000",
+   "after_text": "1.000000 USDT 요청 · 예산 0.600000 · 최소 0.500000 · 모드 max_within_budget · 계획 수량 0.600000",
+   "adjust_rule": "금액 조정은 mode=max_within_budget(예산 안에서 금액 조절 허용) 에서만 코드가 계산한다. exact_amount 이면 조정 없이 거절된다."
+  },
+  "mode": "AI_LIVE",
+  "model": "qwen3-32b",
+  "request_id": null,
+  "usage": {
+   "completion_tokens": 61,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 1,
+    "rejected_prediction_tokens": 0
+   },
+   "cost": 7.636000000000001e-05,
+   "prompt_tokens": 813,
+   "prompt_tokens_details": {
+    "cached_tokens": 144,
+    "audio_tokens": 0
+   },
+   "total_tokens": 874
+  },
+  "flow_id": "nile_ai_adapt_v6_20260929",
+  "choice_index": 0,
+  "reason": "예산이 1.0 USDT에서 0.6 USDT로 줄어들었기 때문에, 후보는 최대 0.6 USDT를 보내는 것을 반영합니다.",
+  "ok": true,
+  "raw": "\n\n{\"choice_index\": 0, \"reason\": \"예산이 1.0 USDT에서 0.6 USDT로 줄어들었기 때문에, 후보는 최대 0.6 USDT를 보내는 것을 반영합니다.\"}"
+ },
+ "artifact": "prep_20260914/evidence/20260928_nile_live/PREPARE_ai_adapt_v6.json",
+ "confirmed_by": "Codex"
+}

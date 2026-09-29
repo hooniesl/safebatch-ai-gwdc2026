@@ -1,0 +1,59 @@
+{
+ "approval": "사장 2026-09-29 '응 상한 승인할께'",
+ "max_calls": 4,
+ "max_usd": 0.01,
+ "used": 4,
+ "cost_usd": 0.00014256000000000002,
+ "unknown_cost_calls": 0,
+ "halted": null,
+ "calls": [
+  {
+   "ts": "2026-09-29T13:51:07+0900",
+   "flow": "phone_r2_format_check",
+   "call_id": "8e5a712a",
+   "http": 200,
+   "source": "tool_calls",
+   "cost_usd": 4.4920000000000004e-05,
+   "cost_status": "server_usage",
+   "raw_saved": true,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "ts": "2026-09-29T13:51:18+0900",
+   "flow": "phone_server",
+   "call_id": "3a506bac",
+   "http": 200,
+   "source": "tool_calls",
+   "cost_usd": 3.0079999999999997e-05,
+   "cost_status": "server_usage",
+   "raw_saved": true,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "ts": "2026-09-29T13:51:19+0900",
+   "flow": "phone_server",
+   "call_id": "e628cf9d",
+   "http": 200,
+   "source": "tool_calls",
+   "cost_usd": 3.6479999999999996e-05,
+   "cost_status": "server_usage",
+   "raw_saved": true,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "ts": "2026-09-29T13:51:21+0900",
+   "flow": "phone_server",
+   "call_id": "e886d607",
+   "http": 200,
+   "source": "tool_calls",
+   "cost_usd": 3.108e-05,
+   "cost_status": "server_usage",
+   "raw_saved": true,
+   "ok": true,
+   "why": ""
+  }
+ ]
+}
