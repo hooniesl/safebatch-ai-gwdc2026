@@ -6,7 +6,7 @@ import phone_ai as AI
 MAC = "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz"
 IPH = "TQNXymgxq4j5grpQFcTMSkhjXHNDsTW3mb"
 C = [
-    {"alias": "맥북지갑", "aliases": ["맥북", "테스트지갑"], "address": MAC, "network": "nile", "confirmed_by_owner": True, "note": "n"},
+    {"alias": "맥북지갑", "aliases": ["맥북", "테스트지갑", "MacBook지갑"], "address": MAC, "network": "nile", "confirmed_by_owner": True, "note": "n"},
     {"alias": "아이폰지갑", "aliases": ["아이폰"], "address": IPH, "network": "nile", "confirmed_by_owner": True, "note": "i"},   # 사장 확인된 두 번째 수취인(서로 다른 주소)
     {"alias": "민수", "address": None, "network": "nile", "confirmed_by_owner": False, "note": "a"},
     {"alias": "민수", "address": None, "network": "nile", "confirmed_by_owner": False, "note": "b"},
@@ -38,6 +38,29 @@ class ObservedVoiceText(unittest.TestCase):
 
     def test_korean_numeral_still_asks_amount(self):
         r = PC.parse_request("맥북지갑한테 트론 두 개", C); no_proposal(self, r); self.assertIn("몇 TRX", r["question"])
+
+
+class IphoneVoiceText(unittest.TestCase):   # 9/29 17:5x 사장 아이폰 실측 "MacBook 지갑에 트론 2개" — 명시 등록 별칭(MacBook지갑)으로만 연결, 조사 '에'
+    def test_observed_iphone_text_is_proposal_with_confirm_note(self):
+        r = PC.parse_request("MacBook 지갑에 트론 2개", C)
+        self.assertEqual(r["kind"], "proposal"); self.assertEqual(r["proposal"]["alias"], "맥북지갑"); self.assertEqual(r["proposal"]["amount_trx"], "2")
+        self.assertEqual(r["understood"]["alias_match"], "space_or_particle_tolerant"); self.assertIn("MacBook 지갑에 트론 2개", r["confirm_note"])
+
+    def test_case_insensitive_latin_alias(self):
+        for t in ("macbook 지갑에 트론 2개", "MACBOOK지갑한테 트론 2개", "MacBook지갑에 트론 2개"):
+            r = PC.parse_request(t, C); self.assertEqual(r["kind"], "proposal", t); self.assertEqual(r["proposal"]["alias"], "맥북지갑", t)
+
+    def test_unregistered_latin_word_is_not_guessed(self):
+        r = PC.parse_request("MacBook에 트론 2개", C); no_proposal(self, r); self.assertEqual(r.get("reason"), "UNREGISTERED_ALIAS")
+        r = PC.parse_request("Mac 지갑에 트론 2개", C); no_proposal(self, r)
+
+    def test_particle_e_alone_does_not_create_recipient(self):
+        r = PC.parse_request("집에 가서 트론 2개", C); no_proposal(self, r)                       # '집' 미등록 → 질문, 추측 없음
+        r = PC.parse_request("맥북지갑한테 트론 2개 집에 가서", C); self.assertEqual(r["kind"], "proposal")   # '에' 앞 미등록 단어는 두 번째 수취인으로 세지 않음
+
+    def test_without_explicit_alias_registration_it_asks(self):
+        c2 = [dict(C[0], aliases=["맥북", "테스트지갑"])] + C[1:]
+        r = PC.parse_request("MacBook 지갑에 트론 2개", c2); no_proposal(self, r)
 
 
 class LeftBoundary(unittest.TestCase):   # VP B

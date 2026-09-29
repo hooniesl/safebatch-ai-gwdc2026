@@ -3,12 +3,19 @@
   "contacts": [
     {
       "alias": "맥북지갑",
-      "aliases": ["맥북", "테스트지갑"],
+      "aliases": [
+        "맥북",
+        "테스트지갑",
+        "MacBook지갑",
+        "맥북 지갑",
+        "MacBook 지갑"
+      ],
       "address": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
       "network": "nile",
       "confirmed_by_owner": true,
       "confirmed_at": "2026-09-21 (사장 TronLink 화면·9/21 허용 원장 4aa672) · 9/29 체인 읽기 존재 확인",
-      "note": "사장 맥북 TronLink Nile 테스트 지갑"
+      "note": "사장 맥북 TronLink Nile 테스트 지갑",
+      "alias_note": "9/29 사장 지시: 아이폰 음성 인식 'MacBook 지갑에 …' 를 등록 별칭으로만 연결(추측 없음). 대소문자 무시."
     },
     {
       "alias": "민수",

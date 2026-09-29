@@ -1,0 +1,3 @@
+MacBook 지갑에 트론 2개 → question None None 누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테
+맥북 지갑에 트론 2개 → question None None 누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테
+MacBook지갑한테 트론 2개 → question UNREGISTERED_ALIAS None 'MacBook지갑' 은(는) 등록된 수취인이 아닙니다. 주소를 추측하지

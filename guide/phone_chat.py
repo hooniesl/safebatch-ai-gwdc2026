@@ -18,7 +18,7 @@ CONTACTS_PATH = HERE / "phone_contacts.json"
 AI_MODE = "MOCK_RULES"
 AI_NOTE = "규칙 기반 모의 응답 · 실제 AI(Kiln qwen3-32b) 호출 아님(예약 잔여 0)"
 MAX_TRX_PER_REQUEST = Decimal("100")           # 시제품 상한(테스트넷). 넘으면 질문.
-PARTICLES = ("한테", "에게", "께", "으로", "로", "의")   # "의": 음성 인식이 "맥북 지갑의 트론 2개" 처럼 적는 경우(9/29 사장 실측) — 등록 별칭과 맞을 때만 수취인으로 본다
+PARTICLES = ("한테", "에게", "께", "으로", "로", "의", "에")   # "의": 음성 인식이 "맥북 지갑의 트론 2개" 처럼 적는 경우(9/29 사장 실측) — 등록 별칭과 맞을 때만 수취인으로 본다
 ASSET_TRX = re.compile(r"(트론|tron|trx|티알엑스)", re.I)
 ASSET_OTHER = re.compile(r"(usdt|테더|usdd|btc|비트코인|eth|이더)", re.I)
 AMT_AFTER = re.compile(r"(트론|tron|trx|티알엑스)\s*(\d+(?:\.\d+)?)\s*(개|트론|trx)?", re.I)
@@ -42,17 +42,17 @@ def _alias_candidates(token: str) -> list[str]:
 
 
 def find_alias(contacts: list[dict], token: str) -> list[dict]:
-    cands = _alias_candidates(token)
+    cands = {_nospace(x) for x in _alias_candidates(token)}
     hits = []
     for c in contacts:
         names = [c.get("alias") or ""] + list(c.get("aliases") or [])
-        if any(n and n in cands for n in names):
+        if any(n and _nospace(n) in cands for n in names):
             hits.append(c)
     return hits
 
 
 def _strict_alias_token(text: str) -> str | None:
-    for m in re.finditer(r"([가-힣A-Za-z0-9_\-]+?)(한테|에게|께|으로|로|의)(\s|$|,)", text):
+    for m in re.finditer(r"([가-힣A-Za-z0-9_\-]+?)(한테|에게|께|으로|로|의|에)(\s|$|,)", text):
         tok = m.group(1)
         if ASSET_TRX.search(tok) or re.fullmatch(r"\d+(\.\d+)?", tok):
             continue
@@ -61,7 +61,8 @@ def _strict_alias_token(text: str) -> str | None:
 
 
 def _nospace(s: str) -> str:
-    return re.sub(r"\s+", "", s or "")
+    """띄어쓰기 제거 + 영문 소문자(음성 인식 'MacBook 지갑' ↔ 등록 'MacBook지갑')."""
+    return re.sub(r"\s+", "", s or "").lower()
 
 
 _DROPPABLE = re.compile(r"^(\d+(?:\.\d+)?(개|트론|trx)?|트론|tron|trx|티알엑스|[가-힣A-Za-z0-9]+(을|를|은|는|이|가|도|만|에서|부터|까지))$", re.I)
@@ -82,7 +83,7 @@ def _alias_map(contacts: list[dict]) -> dict[str, str]:
 
 def _recipient_segments(text: str) -> list[str]:
     """수취인 조사(한테/에게/께/으로/로/의) 앞의 단어 묶음과, 조사가 없을 때 자산 단어(트론…) 앞 묶음."""
-    segs = [(m.group(1).strip(), m.group(2)) for m in re.finditer(r"([가-힣A-Za-z0-9_\- ]+?)(한테|에게|께|으로|로|의)(\s|$|,)", text)]
+    segs = [(m.group(1).strip(), m.group(2)) for m in re.finditer(r"([가-힣A-Za-z0-9_\- ]+?)(한테|에게|께|으로|로|의|에)(\s|$|,)", text)]
     if not segs:
         m = re.search(r"^(.*?)\s*(트론|tron|trx|티알엑스)", text, re.I)
         if m and m.group(1).strip():
