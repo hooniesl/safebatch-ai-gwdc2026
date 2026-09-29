@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>SafeBatch 휴대폰 창구 · Nile 테스트넷</title>
+<style>
+  body { font-family: -apple-system, "Apple SD Gothic Neo", Roboto, sans-serif; margin: 0; background: #f4f5f7; color: #1c1c1e; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 12px 12px 80px; }
+  .card { background: #fff; border-radius: 12px; padding: 14px; margin: 10px 0; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .warn { background: #fff7e6; border: 1px solid #ffd591; }
+  .bad { background: #fff1f0; border: 1px solid #ffa39e; }
+  .good { background: #f6ffed; border: 1px solid #b7eb8f; }
+  h1 { font-size: 18px; margin: 6px 0 2px; }
+  h2 { font-size: 15px; margin: 0 0 8px; }
+  .muted { color: #666; font-size: 12px; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 10px; background: #eee; margin-right: 4px; }
+  .badge.ai { background: #e6f4ff; color: #0958d9; }
+  button { font-size: 16px; padding: 12px 14px; border-radius: 10px; border: 0; background: #1677ff; color: #fff; width: 100%; margin: 6px 0; }
+  button.secondary { background: #fff; color: #222; border: 1px solid #ccc; }
+  button.danger { background: #fff; color: #b71c1c; border: 1px solid #e57373; }
+  button:disabled { background: #cfd8dc; color: #666; border: 0; }
+  input[type=text] { width: 100%; box-sizing: border-box; font-size: 16px; padding: 12px; border-radius: 10px; border: 1px solid #bbb; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td { padding: 6px 4px; border-bottom: 1px solid #eee; vertical-align: top; word-break: break-all; }
+  td:first-child { color: #555; width: 34%; }
+  .mono { font-family: Menlo, monospace; font-size: 12px; }
+  .chat { min-height: 40px; }
+  .msg { padding: 8px 10px; border-radius: 10px; margin: 6px 0; font-size: 15px; }
+  .me { background: #e6f4ff; text-align: right; }
+  .bot { background: #f0f0f0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SafeBatch 휴대폰 창구</h1>
+  <div class="muted">Nile 테스트넷 · 테스트 자금만 · 실제 자산 아님. 서명은 이 휴대폰의 지갑 앱이 하고, 맥북은 검증·전송(서명된 거래의 방송)·조회만 합니다.</div>
+
+  <div class="card" id="walletCard">
+    <h2>① 지갑</h2>
+    <div id="walletState" class="muted">아직 연결 안 됨</div>
+    <button id="connect">지갑 연결(TronLink 계정 요청)</button>
+  </div>
+
+  <div class="card">
+    <h2>② 대화로 요청 <span class="badge ai" id="aiBadge">AI 표시: 확인 중</span></h2>
+    <div class="muted">예시: “맥북지갑한테 트론 2개 보내줘” (예시이며 [서명] 전에는 아무것도 보내지 않습니다)</div>
+    <div class="chat" id="chat"></div>
+    <input type="text" id="text" placeholder="누구에게 트론 몇 개?" autocomplete="off">
+    <button id="send" class="secondary">요청 내용 정리하기(아직 안 보냄)</button>
+    <div class="muted" id="contacts"></div>
+  </div>
+
+  <div class="card warn" id="confirmCard" style="display:none">
+    <h2>③ 확인 후 휴대폰에서 서명</h2>
+    <div class="muted">지갑 앱 창에 뜨는 받는 주소·수량이 아래와 글자 하나까지 같을 때만 서명하세요. 내용이 바뀌면 새 주문이 되고 이전 서명은 거부됩니다.</div>
+    <table id="orderTable"></table>
+    <button id="prepare">이 내용으로 주문 만들기(미서명 거래 작성·검사, 아직 안 보냄)</button>
+    <div id="dupBox" class="card bad" style="display:none"></div>
+    <button id="resend" class="danger" style="display:none">그래도 다시 보내기(이전 결과를 확인했습니다)</button>
+    <button id="sign" disabled>휴대폰 지갑에서 서명</button>
+    <button id="reject" class="danger" disabled>취소(서명 안 함)</button>
+    <button id="resumeBtn" class="secondary" style="display:none">이어서 확인(같은 주문 조회 · 필요 시 같은 서명본 1회 재제출)</button>
+  </div>
+
+  <div class="card" id="historyCard" style="display:none">
+    <h2>내 주문 결과(기존 거래 조회 · 새 송금 아님)</h2>
+    <div class="muted">연결된 지갑의 이전 주문을 읽기 전용으로 조회합니다. 서버가 재시작되어도 같은 주소로 다시 볼 수 있습니다.</div>
+    <div id="historyBody"></div>
+    <button id="historyRefresh" class="secondary">결과 다시 조회</button>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <h2>④ 결과</h2>
+    <div id="result"></div>
+  </div>
+
+  <div class="card" id="log" style="display:none"><h2>기록</h2><div id="logBody" class="mono muted"></div></div>
+</div>
+<script src="__SB_BASE__/phone_client.js"></script>
+<script>
+const BASE = "__SB_BASE__";
+let proposal = null, order = null, wallet = { address: null, node: null, via: null };
+const $ = id => document.getElementById(id);
+function log(s) { $("log").style.display = ""; const d = $("logBody"); d.textContent = new Date().toLocaleTimeString() + " " + s + "\n" + d.textContent; }
+async function api(path, body) {
+  const opt = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};
+  const r = await fetch(BASE + path, opt); const j = await r.json(); j._http = r.status; return j;
+}
+function tronWebNow() { return (window.tron && window.tron.tronWeb) || (window.tronLink && window.tronLink.tronWeb) || window.tronWeb || null; }
+function tronInstalled() { return !!(window.tron || window.tronLink || window.tronWeb); }
+function walletLine() {
+  const tw = tronWebNow();
+  if (!tronInstalled()) return { ok: false, text: "TronLink 을 찾지 못했습니다. 이 페이지를 TronLink 앱의 DApp 브라우저(Discover/탐색) 에서 여세요." };
+  if (!tw || !(tw.defaultAddress && tw.defaultAddress.base58)) return { ok: false, text: "TronLink 는 있으나 아직 연결되지 않았습니다 → [지갑 연결] 을 누르세요." };
+  wallet.address = tw.defaultAddress.base58; wallet.node = (tw.fullNode && tw.fullNode.host) || "?";
+  const nile = /nile/i.test(wallet.node);
+  return { ok: true, nile, text: `연결됨 · 계정 ${wallet.address} · 노드 ${wallet.node} · ${nile ? "Nile ✔" : "⚠ 노드 주소에 nile 이 없습니다(지갑 앱 네트워크를 Nile 로 바꾸세요)"}` + (wallet.via ? ` · ${wallet.via}` : "") };
+}
+function refreshWallet() { const w = walletLine(); $("walletState").textContent = w.text; $("walletState").className = w.ok ? (w.nile ? "good" : "warn") : "muted"; return w; }
+$("connect").onclick = async () => {
+  try {
+    if (window.tron && typeof window.tron.request === "function") {
+      try { await window.tron.request({ method: "eth_requestAccounts" }); wallet.via = "tron.eth_requestAccounts"; }
+      catch (e) { if (window.tronLink && window.tronLink.request) { await window.tronLink.request({ method: "tron_requestAccounts" }); wallet.via = "tronLink.tron_requestAccounts"; } else throw e; }
+    } else if (window.tronLink && typeof window.tronLink.request === "function") {
+      await window.tronLink.request({ method: "tron_requestAccounts" }); wallet.via = "tronLink.tron_requestAccounts";
+    } else if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+      wallet.via = "window.tronWeb(이미 주입됨)";
+    } else { throw new Error("TronLink 확장/앱을 찾지 못했습니다."); }
+    await new Promise(r => setTimeout(r, 400));
+    refreshWallet(); log("wallet connect: " + JSON.stringify(walletLine())); loadHistory();
+  } catch (e) { $("walletState").textContent = "연결 실패: " + (e && e.message || e); log("connect error " + (e && e.message || e)); }
+};
+function addMsg(cls, text) { const d = document.createElement("div"); d.className = "msg " + cls; d.textContent = text; $("chat").appendChild(d); }
+$("send").onclick = async () => {
+  const t = $("text").value.trim(); if (!t) return; addMsg("me", t); $("text").value = "";
+  const r = await api("/api/chat", { text: t }); log("chat → " + r.kind);
+  $("aiBadge").textContent = "AI 표시: " + (r.ai && r.ai.mode) + " · " + (r.ai && r.ai.note);
+  if (r.kind === "question") { addMsg("bot", r.question); proposal = null; $("confirmCard").style.display = "none"; return; }
+  if (r.kind === "decline") { addMsg("bot", "거절: " + r.explain + " (주문 생성 없음 · 사유 " + r.reason_code + ")"); proposal = null; $("confirmCard").style.display = "none"; return; }
+  proposal = r; addMsg("bot", `정리만 했습니다. 전송은 [서명] 후에만 됩니다. 이해한 내용: ${r.proposal.alias} (${r.proposal.address}) 에게 ${r.proposal.amount_trx} TRX · Nile. 수수료 상한 ${r.fee_cap_trx} TRX 는 빠지는 금액이 아니라, 이보다 수수료가 크면 진행하지 않는 한도입니다.`);
+  order = null; $("sign").disabled = true; $("reject").disabled = true; $("prepare").disabled = false; $("dupBox").style.display = "none"; $("resend").style.display = "none";
+  renderTable([["받는 사람(별칭)", r.proposal.alias], ["받는 주소(전체)", r.proposal.address], ["주소 확인 근거", r.proposal.address_confirmed_at || "-"],
+               ["보낼 수량", r.proposal.amount_trx + " TRX"], ["네트워크", "Nile 테스트넷"],
+               ["수수료 상한", r.fee_cap_trx + " TRX — 빠지는 금액이 아님. 예상 수수료가 이보다 크면 보내지 않습니다. 보낸 뒤 실제 수수료가 이보다 크게 확인되면 '확인 필요'로 표시하고 완료로 기록하지 않습니다(전송 여부는 txID로 확인)."],
+               ["보내는 지갑", wallet.address || "(지갑 연결 필요)"],
+               ...(r.adapt ? [["조건 변경(적응)", `예산 ${r.adapt.budget_trx ?? "-"} TRX · 기한 ${r.adapt.deadline_minutes ?? "-"}분 → 수수료 상한 ${r.adapt.fee_cap_trx} TRX 로 주문에 반영. 이전 승인 무효, 다시 확인·서명 필요`]] : []),
+               ...SBClient.proposalNotice(r).rows,
+               ["AI", r.ai.mode + " · " + r.ai.note + (r.ai.fallback ? " · " + r.ai.fallback : "")]]);
+  SBClient.proposalNotice(r).messages.forEach(m => addMsg("bot", m));   // 관용 매칭 재확인·적응 안내(정상/폴백/적응 모두, textContent)
+  $("confirmCard").style.display = "";
+};
+function renderTable(rows) { $("orderTable").innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td class="${/주소|ID|지문/.test(k) ? "mono" : ""}">${v}</td></tr>`).join(""); }
+let preparing = false;
+async function doPrepare(confirmResend) {
+  const w = refreshWallet(); if (!w.ok) { alert("먼저 지갑을 연결하세요."); return; }
+  if (!proposal) return;
+  if (preparing) { addMsg("bot", "주문을 만드는 중입니다. 잠시 기다리세요."); return; }
+  preparing = true; $("prepare").disabled = true; $("resend").disabled = true;
+  try { await doPrepareInner(confirmResend); } finally { preparing = false; }
+}
+async function doPrepareInner(confirmResend) {
+  const r = await api("/api/order/prepare", { proposal_id: proposal.proposal_id, sender: wallet.address, confirm_resend: !!confirmResend }); log("prepare → " + (r.ok ? r.order.payment_id : r.error));
+  if (!r.ok) {
+    $("prepare").disabled = false;
+    addMsg("bot", "주문을 만들지 못했습니다: " + r.error);
+    if (r.duplicate_of) { const d = r.duplicate_of; $("dupBox").style.display = ""; $("dupBox").innerHTML = `<b>이전 결과(같은 지갑·수취인·수량, 최근 15분)</b><div>${resultLabel(d.state)}</div><div class="mono">txID ${d.tx_hash || "-"}</div>` + (d.explorer ? `<div><a href="${d.explorer}" target="_blank">탐색기에서 같은 txID 보기</a></div>` : ""); $("resend").style.display = ""; $("resend").disabled = false; }   // 9/29 A-T 실측: doPrepare 가 끈 버튼을 중복 안내 뒤 다시 켠다(사장 확인 후 재전송 가능)
+    return;
+  }
+  order = r.order; const q = order.quote; $("dupBox").style.display = "none"; $("resend").style.display = "none";
+  renderTable([["주문 ID", order.payment_id], ["받는 사람(별칭)", order.receiver_alias], ["받는 주소(전체)", order.receiver], ["보내는 지갑(이 휴대폰)", order.user_eoa],
+               ["보낼 수량", order.amount_trx + " TRX"], ["네트워크", "Nile 테스트넷 (chainId " + order.chain_id + ")"],
+               ["예상 실제 수수료", `약 ${(q.worst_case_fee_sun/1e6).toFixed(6)} TRX 이하 (대역폭 ${q.bandwidth_bytes}B×${q.bandwidth_price_sun}sun${q.receiver_exists ? "" : " + 수취인 활성화 1.1 TRX"}; 무료 대역폭 ${q.free_bandwidth_left}B 남음 → 무료분 안이면 0 TRX)`],
+               ["수수료 상한", order.fee_cap_trx + " TRX — 빠지는 금액이 아님. 예상이 이보다 크면 보내지 않고, 보낸 뒤 실제가 이보다 크면 '확인 필요'로 표시(완료로 기록하지 않음)"],
+               ["잔액(조회)", (q.balance_sun/1e6).toFixed(6) + " TRX"],
+               ["서명 만료", new Date(order.expire_at_ms).toLocaleTimeString() + " 까지 — 이 시각이 지나면 이 주문은 무효입니다. 만료 후에는 서명하지 말고, 보내려면 처음부터 새 주문을 만드세요."],
+               ["거래 ID(txID)", order.tx_id], ["주문 지문", order.snapshot_sha256], ["서버 사전 검사", order.checks.length + "/" + order.checks.length + " 통과"],
+               ["서명 주체", order.signing.who + " · 맥북 서명 " + (order.signing.mac_signs ? "필요" : "없음(" + order.signing.mac_role + ")")], ["AI", order.ai.mode + " · " + order.ai.note]]);
+  $("sign").disabled = false; $("reject").disabled = false; $("prepare").disabled = true;
+  addMsg("bot", "미서명 거래를 만들고 검사했습니다(아직 아무것도 보내지 않았습니다). 지갑 앱 창의 받는 주소·수량이 위 표와 같으면 [휴대폰 지갑에서 서명] 을 누르세요.");
+}
+$("prepare").onclick = () => doPrepare(false);
+$("resend").onclick = () => doPrepare(true);
+function lockNewOrders(on, why) { $("prepare").disabled = on; $("send").disabled = on; $("resend").disabled = on; $("sign").disabled = on || !order; if (on && why) addMsg("bot", why); }
+async function loadHistory() {
+  if (!wallet.address) return;
+  let h; try { h = await api("/api/orders?sender=" + encodeURIComponent(wallet.address)); } catch (e) { return; }
+  const rows = (h.orders || []).filter(o => o.result_state);
+  $("historyCard").style.display = rows.length ? "" : "none";
+  $("historyBody").innerHTML = rows.map(o => `<div class="msg ${o.result_state === "FINAL_CONFIRMED_SOLIDITY" ? "good" : "warn"}"><b>${resultLabel(o.result_state)}</b><br>${o.amount_trx} TRX → ${o.receiver_alias} (${o.receiver})<br>` +
+    (o.block_number ? `블록 ${o.block_number} · 실제 수수료 ${o.fee_known ? (o.fee_sun/1e6) + " TRX" + (o.fee_note ? "(" + o.fee_note + ")" : "") : "미확인"}<br>` : "") +
+    `<span class="mono">txID ${o.tx_hash}</span><br>` + (o.explorer ? `<a href="${o.explorer}" target="_blank">탐색기에서 같은 txID 보기</a>` : "") + `<div class="muted">주문 ${o.payment_id} · 기존 거래 결과 조회(새 송금 아님)</div></div>`).join("");
+}
+$("historyRefresh").onclick = loadHistory;
+function refreshRecoveryButtons() { const f = client.loadInflight(); $("resumeBtn").style.display = f ? "" : "none"; }
+$("resumeBtn").onclick = async () => { const d = await client.resume(); refreshRecoveryButtons(); loadHistory(); if (d && d.done === false && client.loadInflight()) pollStatus(client.loadInflight().payment_id, 24); };
+
+const client = SBClient.create({ api, storage: window.localStorage, now: () => Date.now(), key: "sb_inflight_" + BASE,
+                                 ui: { msg: t => addMsg("bot", t), result: r => showResult(r), lock: on => lockNewOrders(on), log: s => log(s) } });
+$("sign").onclick = async () => {
+  const tw = tronWebNow(); const o = order; if (!tw || !o) return;                       // 서명을 시작한 주문을 고정(전역 order 가 바뀌어도 이 주문만 제출·조회)
+  if (tw.defaultAddress.base58 !== o.user_eoa) { alert("지갑 계정이 주문의 보내는 지갑과 다릅니다. 다시 주문을 만드세요."); return; }
+  $("sign").disabled = true; $("reject").disabled = true;
+  const d = await client.sign(o, tx => tw.trx.sign(JSON.parse(JSON.stringify(tx))));   // SIGNING 저장 → 서명본 보관 → 제출 1회(재귀 없음) · 응답이 무엇이든 원래 주문 상태로 판단
+  refreshRecoveryButtons();
+  if (d && d.aborted === "wallet-rejected") { $("sign").disabled = false; $("reject").disabled = false; return; }
+  if (d && d.aborted) return;                                                             // busy / storage / wallet-unknown / storage-signed: 기록 보존, 버튼으로 이어서 확인
+  loadHistory();
+  if (d && d.done === false && !String(d.why || "").startsWith("post-failed")) pollStatus(o.payment_id, 60);
+};
+$("reject").onclick = async () => {
+  if (!order) return; const r = await api("/api/order/reject", { payment_id: order.payment_id, snapshot_sha256: order.snapshot_sha256 });
+  addMsg("bot", r.ok ? ((r.detail || "").startsWith("cancelled") ? "취소했습니다. 이 화면에서는 아무것도 전송되지 않았습니다. 단, 지갑 앱에서 이미 서명을 눌렀다면 그 결과는 이 화면에 없으니, 지갑 앱 내역 또는 txID로 직접 확인하세요."
+                       : "서명은 이미 만들어졌지만 이 화면은 그것을 전송하지 않습니다(서명 자체를 되돌릴 수는 없음). 만료 시각까지 이 지갑으로 새 주문은 만들 수 없습니다.") : "취소 실패: " + r.error);
+  $("sign").disabled = true; $("reject").disabled = true;
+};
+function resultLabel(s) {
+  return { FINAL_CONFIRMED_SOLIDITY: "완료(확정)", ACCEPTED_UNCONFIRMED: "아직 완료 아님 — 블록에 포함됐으나 확정 대기 중. '완료(확정)'으로 바뀔 때까지 기다리세요.",
+           UNKNOWN: "결과 불명 — 보내졌을 수도 있습니다. 절대 다시 보내지 말고 '완료/실패'가 뜰 때까지 기다리세요(같은 txID 재조회 중).",
+           REJECTED: "노드 거절(체인 미도달) — 보내지지 않았습니다.", NOT_SUBMITTED: "이번 제출은 전송되지 않음 — 원래 주문의 상태로 판단합니다(아래 조회 결과 참조).", FAILED_ONCHAIN: "체인 실패 — 전송이 실행되지 않았습니다(수수료는 나갈 수 있음).",
+           EXPIRED_NOT_ON_CHAIN: "만료·체인에 없음(확정 블록 시각·확정 조회 2회로 확인) — 이 주문은 종결. 보내려면 새 주문.",
+           REJECTED_BY_NODE_UNCONFIRMED: "노드가 거절했지만 아직 종결 아님 — 확정 근거가 모일 때까지 이 지갑으로 새 주문을 만들 수 없습니다. 다시 보내지 마세요.",
+           FAILED_UNCONFIRMED: "실패로 보이지만 확정 전 — 확정될 때까지 기다리세요. 다시 보내지 마세요.",
+           SIGNATURE_HELD: "서명본 보관 중(전송 안 함) — 만료가 확정 블록 기준으로 지나고 확정 조회가 비어야 종결됩니다. 그 전에는 새 주문 불가." }[s] || s;
+}
+function showResult(r) {
+  $("resultCard").style.display = "";
+  const ok = r.state === "FINAL_CONFIRMED_SOLIDITY", mid = r.state === "ACCEPTED_UNCONFIRMED" || r.state === "UNKNOWN";
+  $("resultCard").className = "card " + (ok ? "good" : mid ? "warn" : "bad");
+  const rc = r.receipt || {};
+  $("result").innerHTML = `<div><b>${resultLabel(r.state)}</b></div><div class="muted">${r.reason || r.note || ""}</div>` +
+    (r.tx_hash ? `<div class="mono">txID ${r.tx_hash}</div>` : "") + (rc.block_number ? `<div>블록 ${rc.block_number} · 실제 수수료 ${rc.fee_field_present ? (rc.fee_sun/1e6) + " TRX" : "미확인(영수증에 수수료 항목 없음)"} · ${rc.fee_within_cap ? "상한 안" : "⚠ 확인 필요(상한 초과이거나 수수료 미확인)"}</div>` : "") +
+    (r.explorer ? `<div><a href="${r.explorer}" target="_blank">탐색기에서 같은 txID 보기</a></div>` : "");
+  log("result " + r.state);
+}
+async function pollStatus(pid, n) {
+  for (let i = 0; i < n; i++) {
+    await new Promise(r => setTimeout(r, 5000));
+    const d = await client.checkOrder(pid);                 // 같은 주문만 조회(자동 재제출 없음 — 재제출은 [이어서 확인] 버튼으로 복구 동작당 1회)
+    refreshRecoveryButtons();
+    if (!d || d.done) { loadHistory(); return; }
+    if (d.s && d.s.signature_stored === false && ["PENDING", "CANCELLED"].includes(d.s.order_state) && d.s.result) { /* 결과가 있으면 유지 */ }
+  }
+  addMsg("bot", "아직 종결되지 않았습니다. 이 화면을 닫아도 다시 열면 같은 주문(" + pid + ")을 계속 조회합니다. 새로 보내지 마세요.");
+}
+(async () => {
+  try { const h = await api("/api/health"); $("aiBadge").textContent = "AI 표시: " + h.ai_mode + "(규칙 모의, 실제 AI 호출 없음)"; } catch (e) { $("aiBadge").textContent = "서버 연결 실패"; }
+  try { const c = await api("/api/contacts"); $("contacts").textContent = "등록 수취인: " + c.contacts.map(x => x.alias + (x.confirmed ? "(사장 확인됨 · 보낼 수 있음)" : "(확인 전 · 보낼 수 없음)")).join(", "); } catch (e) {}
+  const d = await client.resume();                          // 새로고침/재진입: 저장된 주문만 조회, 서명본이 있으면 같은 주문에 1회 재제출, 재서명·새 주문 없음
+  refreshRecoveryButtons();
+  if (d && d.done === false && client.loadInflight() && !String(d.why || "").startsWith("post-failed")) pollStatus(client.loadInflight().payment_id, 60);
+  setTimeout(loadHistory, 1800);
+  refreshWallet(); if (window.tron && window.tron.on) { try { window.tron.on("accountsChanged", () => refreshWallet()); window.tron.on("chainChanged", () => refreshWallet()); } catch (e) {} }
+  setTimeout(refreshWallet, 1500);
+})();
+</script>
+</body>
+</html>

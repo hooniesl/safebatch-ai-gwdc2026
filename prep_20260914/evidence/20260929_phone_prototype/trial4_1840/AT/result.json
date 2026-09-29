@@ -1,0 +1,41 @@
+{
+ "state": "FINAL_CONFIRMED_SOLIDITY",
+ "payment_id": "phone_trx_20260929_175744_59e9f0de",
+ "tx_hash": "59e9f0de67b8365a36d16f0f416b0e1de3bebec71c92d9c3eff3faf5ce8d6606",
+ "receipt": {
+  "txid": "59e9f0de67b8365a36d16f0f416b0e1de3bebec71c92d9c3eff3faf5ce8d6606",
+  "lookups": {
+   "tx": "FOUND",
+   "info": "FOUND",
+   "solid_tx": "FOUND",
+   "solid": "FOUND"
+  },
+  "solid_lookups_ok": true,
+  "found_tx": true,
+  "found_info": true,
+  "solid_found": true,
+  "txid_match": true,
+  "raw_bytes_identical": true,
+  "contract_ret": "SUCCESS",
+  "receipt_result": null,
+  "block_number": 71381764,
+  "fee_sun": 267000,
+  "fee_field_present": true,
+  "fee_known": true,
+  "fee_note": null,
+  "net_usage": null,
+  "net_fee_sun": 267000,
+  "fee_cap_sun": 2000000,
+  "fee_within_cap": true,
+  "amount_expected_sun": 2000000,
+  "chain_amount_sun": 2000000,
+  "chain_parties_match": true,
+  "amount_match": true,
+  "solid_block_match": true,
+  "solid_result": null,
+  "verdict": "CONFIRMED"
+ },
+ "explorer": "https://nile.tronscan.org/#/transaction/59e9f0de67b8365a36d16f0f416b0e1de3bebec71c92d9c3eff3faf5ce8d6606",
+ "note": "결과 불명/미확정은 같은 txID 재조회로만 종결. 새 거래 재전송 없음.",
+ "recorded_at": "2026-09-29T17:59:07+0900"
+}

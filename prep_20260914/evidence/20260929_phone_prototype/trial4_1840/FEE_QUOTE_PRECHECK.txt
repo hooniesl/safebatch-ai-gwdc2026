@@ -1,0 +1,6 @@
+time 2026-09-29 17:41:11
+안드로이드 A-V/A-T TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY: balance 11.900000 TRX · free_bw_left 420 B · bw_bytes 401 × 1000 sun · receiver_exists True · activation_fee 0.0 · worst_fee/건 0.401000 TRX · within_cap True · would_succeed(1건) True
+   2건 필요(지급 4 + 최악 수수료 2×0.401000) = 4.802000 TRX → 충분 (여유 7.098000)
+아이폰 I-V/I-T TQNXymgxq4j5grpQFcTMSkhjXHNDsTW3mb: balance 5.000000 TRX · free_bw_left 600 B · bw_bytes 401 × 1000 sun · receiver_exists True · activation_fee 0.0 · worst_fee/건 0.401000 TRX · within_cap True · would_succeed(1건) True
+   2건 필요(지급 4 + 최악 수수료 2×0.401000) = 4.802000 TRX → 충분 (여유 0.198000)
+RESULT READY

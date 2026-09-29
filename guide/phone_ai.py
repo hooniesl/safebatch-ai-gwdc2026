@@ -303,7 +303,8 @@ import pathlib as _pathlib
 import threading as _threading
 import time as _time
 
-BUDGET_FILE = _pathlib.Path(__file__).resolve().parent / "logs" / "kiln_budget_r2_20260929.json"
+BUDGET_FILE = _pathlib.Path(_os.environ.get("SB_KILN_BUDGET_FILE") or (_pathlib.Path(__file__).resolve().parent / "logs" / "kiln_budget_r2_20260929.json"))
+# SB_KILN_BUDGET_FILE: 새 사장 승인마다 새 파일을 가리킨다(기존 승인 파일은 초기화·재생성하지 않는다). 9/29 18:4x R3 = logs/kiln_budget_r3_20260929.json
 
 
 class KilnBudget:

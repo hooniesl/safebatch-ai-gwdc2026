@@ -249,5 +249,44 @@ run("P", async () => {
   assert(SBClient.proposalNotice(fb).messages.length === 1, "P 규칙 폴백 제안에도 재확인 메시지 표시");
 });
 
-for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N ", "P "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
+
+// Q (9/29 UI 단순화) 화면 상태 규칙: 완료 뒤 서명 불가·새 송금 초기화·늦은 응답 무시·지갑 변경 차단·새로고침은 상태 불변
+run("Q", async () => {
+  const S = SBClient.screen; const W = "TSender111111111111111111111111111";
+  let u = S.initial(); u.walletAddr = W;
+  u = S.on(u, { type: "request", text: "맥북지갑한테 트론 2개" }); const r1 = u.reqId;
+  const prop = { kind: "proposal", proposal_id: "p1", proposal: { alias: "맥북지갑", address: "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz", amount_trx: "2" }, ai: { mode: "KILN_LIVE", call_id: "c1" }, text: "맥북지갑한테 트론 2개", understood: {} };
+  u = S.on(u, { type: "proposal", proposal: prop, walletAddr: W });
+  assert(u.state === "confirm" && S.isCurrent(u, r1), "Q 제안 → confirm");
+  const order = { payment_id: "phone_trx_A", tx_id: "a".repeat(64), user_eoa: W, amount_trx: "2", receiver_alias: "맥북지갑", receiver: prop.proposal.address, snapshot_sha256: "s".repeat(64), expire_at_ms: 1, quote: { worst_case_fee_sun: 401000, bandwidth_bytes: 401, free_bandwidth_left: 600, receiver_exists: true, balance_sun: 5e6 }, fee_cap_trx: "2", checks: [1, 2], chain_id: 1, signing: { who: "phone" } };
+  u = S.on(u, { type: "order", order }); assert(u.state === "presign" && S.canSign(u, W), "Q 주문 → presign · 같은 지갑 서명 가능");
+  assert(!S.canSign(u, "TOther"), "Q 다른 지갑이면 서명 불가");
+  u = S.on(u, { type: "signing" }); assert(u.state === "processing" && !S.canSign(u, W), "Q 서명 시작 → processing · 서명 버튼 불가");
+  const foreign = { state: "FINAL_CONFIRMED_SOLIDITY", payment_id: "phone_trx_OLD", tx_hash: "o".repeat(64) };
+  assert(!S.resultBelongs(u, foreign), "Q 다른 주문의 결과는 현재 화면에 속하지 않음(덮어쓰기 금지)");
+  const acc = { state: "ACCEPTED_UNCONFIRMED", payment_id: "phone_trx_A", tx_hash: "a".repeat(64), receipt: { block_number: 1 } };
+  u = S.on(u, { type: "result", result: acc }); assert(u.state === "processing", "Q 블록 포함·확정 대기 → processing 유지");
+  const fin = { ...acc, state: "FINAL_CONFIRMED_SOLIDITY", receipt: { block_number: 1, fee_sun: 0, fee_known: true, fee_field_present: false, fee_within_cap: true } };
+  u = S.on(u, { type: "result", result: fin }); assert(u.state === "done" && !S.canSign(u, W), "Q 확정 → done · 이전 주문 서명 불가");
+  assert(S.feeText(fin.receipt) === "0 TRX", "Q fee_known=true·fee 필드 생략 → 0 TRX 로 표시(미확인 아님)");
+  assert(S.feeText({ fee_known: false, fee_field_present: false }) === "미확인", "Q fee_known=false → 미확인");
+  assert(!S.canStartNew(u, { payment_id: "x" }), "Q 보관 주문(inflight) 있으면 새 송금 불가");
+  assert(S.canStartNew(u, null), "Q 종결·보관 없음 → 새 송금 가능");
+  const u2 = S.on(u, { type: "new" });
+  assert(u2.state === "input" && u2.proposal === null && u2.order === null && u2.result === null && u2.reqId === u.reqId + 1 && u2.walletAddr === W, "Q 새 송금 → 빈 입력·이전 제안/주문 제거·지갑 유지");
+  const late = S.isCurrent(u2, r1); assert(late === false, "Q 이전 요청(reqId)의 늦은 응답은 무시");
+  let u3 = S.on(u2, { type: "request", text: "지연한테 트론 1개" }); const p2 = { ...prop, proposal_id: "p2", proposal: { alias: "지연", address: "TMDKznuDWaZwfZHcM61FVFstyYNmK6Njk1", amount_trx: "1" } };
+  u3 = S.on(u3, { type: "proposal", proposal: p2, walletAddr: W }); assert(u3.proposal.proposal.alias === "지연" && u3.order === null, "Q 새 수취인 B 제안만 확인 대상(이전 A 없음)");
+  const u4 = S.on(u3, { type: "wallet-changed", address: "TOther" }); assert(u4.state === "input" && u4.proposal === null && S.walletChanged(u3, "TOther"), "Q 지갑 변경 → 이전 제안으로 서명 불가·입력으로");
+  let u5 = S.on(S.on(u3, { type: "order", order: { ...order, payment_id: "phone_trx_B" } }), { type: "signing" }); u5 = S.on(u5, { type: "unknown" });
+  assert(u5.state === "unknown" && !S.canStartNew(u5, null) && !S.canSign(u5, W), "Q 결과 불명 → 새 송금·서명 모두 불가(기록·잠금 유지)");
+  const u6 = S.on(u5, { type: "result", result: { state: "NOT_SUBMITTED", payment_id: "phone_trx_B" } }); assert(u6.state === "unknown", "Q NOT_SUBMITTED 는 상태를 바꾸지 않음(원래 주문 상태로 판단)");
+  const hr = S.historyRow({ result_state: "FINAL_CONFIRMED_SOLIDITY", amount_trx: "2", receiver_alias: "맥북지갑", receiver: prop.proposal.address, created_at: 1790671000 });
+  assert(hr.label === "완료 ✓" && hr.amount === "2 TRX" && hr.who === "맥북지갑에게" && hr.cls === "ok" && hr.when.length > 0, "Q 최근 송금 행: 짧은 상태·금액·수취인·시각");
+  const hr2 = S.historyRow({ result_state: "UNKNOWN", amount_trx: "2", receiver: prop.proposal.address }); assert(hr2.label === "확인 중" && hr2.cls === "warn" && hr2.when === "", "Q 미확정은 목록에서 드러남 · 시각 근거 없으면 비움");
+  assert(S.aiLine({ mode: "KILN_LIVE", call_id: "c1" }).indexOf("실호출") >= 0 && S.aiLine({ mode: "KILN_LIVE", fallback: "x" }).indexOf("폴백") >= 0 && S.aiLine({ mode: "KILN_LIVE", carried_from: "c1" }).indexOf("재사용") >= 0 && S.aiLine({ mode: "MOCK_KILN" }).indexOf("모의") >= 0, "Q AI 표시: 실호출/폴백/재사용/모의 구분");
+  assert(S.healthLine({ ai_provider: "KILN_LIVE" }).indexOf("실호출 연결") >= 0 && S.healthLine({ ai_provider: "MOCK" }).indexOf("모의") >= 0, "Q 연결 모드 표시는 요청별 사용 여부와 분리");
+});
+
+for (const tag of ["A ", "B ", "C ", "D ", "E1", "E2", "E3", "E4", "E5", "E6", "F ", "G ", "H ", "I ", "J ", "K ", "M ", "N ", "P ", "Q "]) { if (!out.some(l => l.slice(5).startsWith(tag))) { out.push("FAIL 시나리오 " + tag.trim() + " 결과 없음(미실행)"); failures++; } }
 print(out.join("\n")); print("RESULT " + (failures === 0 ? "PASS" : "FAIL " + failures));

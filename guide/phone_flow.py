@@ -74,9 +74,47 @@ class PhoneFlow:
         self._prepare_lock = threading.Lock()                # 9/29 실측: 주문 만들기 두 번 탭 → 동시 prepare 가 supersede 검사를 지나쳐 PENDING 2건 생성 → 직렬화
 
     # ── 대화 → 제안 ───────────────────────────────────────────────────────
+    CARRY_WINDOW_S = 900
+
+    def _carry_candidate(self, text: str) -> dict | None:
+        """9/29 A-T 실측(화면 버튼 결함으로 새로고침 필요) 대응: **같은 문장**의 직전 Kiln 실호출 성공 결과를 15분 안에 1회만 재사용한다(추가 호출 0).
+        조건(Mac 적응 흐름 AI_CARRIED 와 같은 취지): 기록된 호출이 KILN_LIVE·call_id 있음·폴백 없음·kind proposal(normal) · 900 s 이내 · 그 call_id 를 이미 재사용한 기록 없음.
+        실호출 성공 수에 넣지 않는다(ai.calls=0, ai.carried_from 표시)."""
+        try:
+            p = self.results_dir.parent / "phone_ai_decisions.jsonl"
+            if not p.exists():
+                return None
+            rows = [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
+        except Exception:                                   # noqa: BLE001
+            return None
+        used = {(r.get("ai") or {}).get("carried_from") for r in rows if (r.get("ai") or {}).get("carried_from")}
+        now = int(self.now_fn())
+        for r in reversed(rows):
+            ai = r.get("ai") or {}
+            if r.get("text") != text[:300] or ai.get("mode") != "KILN_LIVE" or not ai.get("call_id") or ai.get("fallback") or ai.get("carried_from"):
+                continue
+            if r.get("kind") != "proposal" or r.get("kind_detail") != "normal" or ai.get("call_id") in used:
+                return None
+            try:
+                ts = int(r["t"]) if r.get("t") is not None else int(time.mktime(time.strptime(r["ts"][:19], "%Y-%m-%dT%H:%M:%S")))
+            except Exception:                               # noqa: BLE001
+                return None
+            return r if 0 <= now - ts <= self.CARRY_WINDOW_S else None
+        return None
+
     def chat(self, text: str) -> dict:
         contacts = self.contacts if self.contacts is not None else PC.load_contacts()
-        r = AI.decide(text, contacts, provider=self.ai_provider, fee_cap_trx=Decimal(self.fee_cap_sun) / 1_000_000)
+        carry = self._carry_candidate(text) if getattr(self.ai_provider, "provider", "") == "KILN_LIVE" else None
+        if carry:
+            r = PC.parse_request(text, contacts)
+            if r.get("kind") == "proposal":
+                r["kind_detail"] = "normal"; r["constraints"] = {"budget_sun": None, "deadline_s": None, "fee_cap_sun": int(self.fee_cap_sun)}
+                r["ai"] = {**(carry.get("ai") or {}), "calls": 0, "carried_from": carry["ai"]["call_id"],
+                           "note": f"직전 Kiln 실호출({carry['ai']['call_id']}, {carry['ts'][11:19]}) 결과를 같은 문장·15분 안에 1회 재사용 — 추가 호출 0, 실호출 성공 수에 세지 않음"}
+            else:
+                carry = None
+        if not carry:
+            r = AI.decide(text, contacts, provider=self.ai_provider, fee_cap_trx=Decimal(self.fee_cap_sun) / 1_000_000)
         self._ai_log(text, r)
         if r["kind"] == "proposal":
             pid = secrets.token_hex(6)
@@ -92,7 +130,7 @@ class PhoneFlow:
         """AI 계층 판단 기록(모의/실호출 구분, 폴백은 성공 아님). 서명본·키 없음."""
         try:
             d = self.results_dir.parent / "phone_ai_decisions.jsonl"
-            rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "text": text[:300], "kind": r.get("kind"), "kind_detail": r.get("kind_detail"), "reason_code": r.get("reason_code"),
+            rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "t": int(self.now_fn()), "text": text[:300], "kind": r.get("kind"), "kind_detail": r.get("kind_detail"), "reason_code": r.get("reason_code"),
                    "ai": r.get("ai"), "constraints": r.get("constraints"), "proposal": {k: v for k, v in (r.get("proposal") or {}).items() if k in ("alias", "address", "amount_trx")}}
             with open(d, "a", encoding="utf-8") as fh:
                 fh.write(json.dumps(rec, ensure_ascii=False) + "\n")

@@ -677,3 +677,28 @@ class SenderIsolationTests(unittest.TestCase):
             # 결과 조회는 여전히 지갑별(상대 지갑 주문이 보이지 않는다)
             self.assertEqual({o["payment_id"] for o in flow.list_orders(SENDER)}, {oa["payment_id"]})
             self.assertEqual({o["payment_id"] for o in flow.list_orders(self.OTHER_ADDR)}, {ob["payment_id"]})
+
+
+class CarryLastLiveCallTests(unittest.TestCase):
+    """9/29 A-T: 같은 문장의 직전 Kiln 실호출 성공 결과를 15분 안에 1회만 재사용(추가 호출 0). 모의 제공자(MOCK_KILN)에는 적용하지 않는다."""
+    class _Live:
+        provider = "KILN_LIVE"; model = "qwen3-32b"; calls = 0
+        def structure(self, text):
+            self.calls += 1
+            return {"provider": "KILN_LIVE", "model": "qwen3-32b", "raw": json.dumps({"alias": "맥북지갑", "amount": "2", "asset": "TRX", "change": None, "reason": "r", "missing": []}), "calls": 1, "usage": {"total_tokens": 10}, "call_id": f"live{self.calls}", "source": "tool_calls"}
+
+    def test_reuse_once_within_window_then_new_call(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live
+            r1 = flow.chat("맥북지갑 트론 2개"); self.assertEqual(r1["kind"], "proposal"); self.assertEqual(live.calls, 1); self.assertNotIn("carried_from", r1["ai"])
+            r2 = flow.chat("맥북지갑 트론 2개"); self.assertEqual(r2["kind"], "proposal"); self.assertEqual(live.calls, 1, "재사용 → 실호출 없음")
+            self.assertEqual(r2["ai"]["carried_from"], "live1"); self.assertEqual(r2["ai"]["calls"], 0); self.assertIn("proposal_id", r2)
+            r3 = flow.chat("맥북지갑 트론 2개"); self.assertEqual(live.calls, 2, "같은 call 두 번째 재사용 금지 → 새 실호출")
+            r4 = flow.chat("맥북지갑한테 트론 2개"); self.assertEqual(live.calls, 3, "다른 문장 → 새 실호출")
+
+    def test_no_reuse_after_window_or_for_mock(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            node = FakeNode(); flow = mkflow(node, tmp); live = self._Live(); flow.ai_provider = live
+            flow.chat("맥북지갑 트론 2개"); base = flow.now_fn(); flow.now_fn = lambda: base + 901
+            flow.chat("맥북지갑 트론 2개"); self.assertEqual(live.calls, 2, "15분 지나면 재사용 없음")
+            flow2 = mkflow(FakeNode(), tmp); r = flow2.chat("맥북지갑 트론 2개"); self.assertEqual(r["ai"]["mode"], "MOCK_KILN"); self.assertNotIn("carried_from", r["ai"])

@@ -161,51 +161,5 @@
     if (r && r.kind_detail === "adapt" && r.next) messages.push(String(r.next));
     return { rows, messages };
   }
-  /* ── 화면 상태 규칙(9/29 부사장 UI 단순화안, DOM 없이 검사) ─────────────────────────────
-     상태: input → confirm(제안) → dup(중복 안내) → presign(주문) → processing(서명·제출·미확정) → done | unknown(결과 확인 필요)
-     reqId: 요청마다 증가. 늦게 온 응답은 isCurrent 로 무시. canSign 은 presign·현재 주문·같은 지갑일 때만. 새 송금(new)은 종결(done) 또는 미보관 상태에서만. */
-  const TERMINAL_OK = "FINAL_CONFIRMED_SOLIDITY";
-  const UNKNOWN_STATES = ["UNKNOWN", "ACCEPTED_UNCONFIRMED", "REJECTED_BY_NODE_UNCONFIRMED", "FAILED_UNCONFIRMED", "SIGNATURE_HELD"];
-  const LABELS = { FINAL_CONFIRMED_SOLIDITY: "완료(확정)", ACCEPTED_UNCONFIRMED: "블록 포함 · 확정 대기", UNKNOWN: "결과 불명 — 다시 보내지 마세요", REJECTED: "노드 거절 — 보내지지 않음",
-                   NOT_SUBMITTED: "이번 제출은 전송되지 않음", FAILED_ONCHAIN: "체인 실패", EXPIRED_NOT_ON_CHAIN: "만료 · 체인에 없음", REJECTED_BY_NODE_UNCONFIRMED: "노드 거절 · 확정 전",
-                   FAILED_UNCONFIRMED: "실패로 보임 · 확정 전", SIGNATURE_HELD: "서명본 보관 중 · 전송 안 함" };
-  function resultLabel(s) { return LABELS[s] || s || "-"; }
-  function stateClass(s) { return s === TERMINAL_OK ? "ok" : (UNKNOWN_STATES.includes(s) ? "warn" : "bad"); }
-  function initial() { return { state: "input", reqId: 0, proposal: null, order: null, result: null, walletAddr: null, text: "" }; }
-  function on(ui, ev) {
-    const u = { ...ui };
-    switch (ev.type) {
-      case "request": u.reqId = ui.reqId + 1; u.text = ev.text; u.proposal = null; u.order = null; u.result = null; u.state = "input"; return u;
-      case "question": case "decline": case "prepare-failed": if (ev.type !== "prepare-failed") u.state = "input"; return u;
-      case "proposal": u.proposal = ev.proposal; u.order = null; u.result = null; u.walletAddr = ev.walletAddr || ui.walletAddr; u.state = "confirm"; return u;
-      case "duplicate": u.state = "dup"; return u;
-      case "edit": u.state = "input"; u.proposal = null; u.order = null; return u;
-      case "order": u.order = ev.order; u.state = "presign"; return u;
-      case "signing": u.state = "processing"; return u;
-      case "sign-rejected": u.state = "presign"; return u;
-      case "rejected": u.state = "input"; u.proposal = null; u.order = null; return u;
-      case "unknown": u.state = "unknown"; return u;
-      case "recovering": u.state = "unknown"; u.result = ev.result; u.order = u.order || { payment_id: ev.payment_id, tx_id: ev.tx_hash }; return u;
-      case "result": u.result = ev.result; u.state = ev.result.state === TERMINAL_OK ? "done" : (["REJECTED", "FAILED_ONCHAIN", "EXPIRED_NOT_ON_CHAIN"].includes(ev.result.state) ? "unknown" : (ev.result.state === "NOT_SUBMITTED" ? ui.state : (UNKNOWN_STATES.includes(ev.result.state) ? (ev.result.state === "ACCEPTED_UNCONFIRMED" ? "processing" : "unknown") : ui.state))); return u;
-      case "wallet-changed": u.walletAddr = ev.address; if (["confirm", "dup", "presign"].includes(ui.state)) { u.state = "input"; u.proposal = null; u.order = null; } return u;
-      case "new": return { ...initial(), reqId: ui.reqId + 1, walletAddr: ui.walletAddr };
-      default: return u;
-    }
-  }
-  function isCurrent(ui, reqId) { return ui.reqId === reqId; }
-  function canSign(ui, walletAddr) { return ui.state === "presign" && !!ui.order && !!walletAddr && ui.order.user_eoa === walletAddr && ui.walletAddr === walletAddr; }
-  function canStartNew(ui, inflight) { if (inflight) return false; return ui.state === "done" || ui.state === "input"; }
-  function walletChanged(ui, addr) { return !!ui.walletAddr && !!addr && ui.walletAddr !== addr; }
-  function resultBelongs(ui, r) { if (!ui.order) return false; return (r.payment_id && r.payment_id === ui.order.payment_id) || (r.tx_hash && r.tx_hash === ui.order.tx_id); }
-  function shortAddr(a) { a = String(a || ""); return a.length > 12 ? a.slice(0, 6) + "…" + a.slice(-4) : a; }
-  function aiLine(ai) { if (!ai) return "-"; if (ai.carried_from) return "직전 Kiln 실호출 결과 재사용(추가 호출 0)"; if (ai.fallback) return "규칙 해석(AI 실패·폴백: " + String(ai.fallback).slice(0, 60) + ")";
-    if (ai.mode === "KILN_LIVE") return "Kiln qwen3-32b 실호출" + (ai.call_id ? " · " + ai.call_id : ""); if (ai.mode === "MOCK_KILN" || ai.mode === "MOCK_RULES") return "규칙 모의(실제 AI 호출 없음)"; return String(ai.mode || "-"); }
-  function healthLine(h) { if (!h) return "-"; return h.ai_provider === "KILN_LIVE" ? "Kiln 실호출 연결됨(요청마다 실제 사용 여부는 아래에 표시)" : "규칙 모의(실제 AI 호출 없음)"; }
-  function feeText(rc) { if (!rc) return "미확인"; const known = rc.fee_known !== undefined ? rc.fee_known : rc.fee_field_present; return known ? (Number(rc.fee_sun || 0) / 1e6) + " TRX" : "미확인"; }
-  function feeBasis(rc) { if (!rc) return "-"; const known = rc.fee_known !== undefined ? rc.fee_known : rc.fee_field_present; return known ? ("영수증 확인 · " + (Number(rc.fee_sun || 0) === 0 ? "0 sun(무료 대역폭 안 · 영수증에 fee 항목 생략=0)" : rc.fee_sun + " sun") + (rc.fee_note ? " · " + rc.fee_note : "")) : "영수증에 수수료 근거 없음"; }
-  function feeLines(o, q) { const worst = Number(q.worst_case_fee_sun || 0) / 1e6; return { fee: `최대 ${worst.toFixed(6)} TRX (대역폭 ${q.bandwidth_bytes}B${q.receiver_exists ? "" : " + 활성화 1.1 TRX"}; 무료 ${q.free_bandwidth_left}B 남음 → 무료분 안이면 0)`, cap: `${o.fee_cap_trx} TRX — 한도이며 빠지는 금액이 아님. 넘으면 보내지 않음` }; }
-  function fmtWhen(o) { const t = o.created_at ? new Date(Number(o.created_at) * 1000) : null; return t && !isNaN(t) ? t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""; }
-  function historyRow(o) { const s = o.result_state; const cls = stateClass(s); return { cls, label: s === TERMINAL_OK ? "완료 ✓" : (cls === "warn" ? "확인 중" : "실패/미전송"), amount: (o.amount_trx || "?") + " TRX", who: (o.receiver_alias || shortAddr(o.receiver)) + "에게", when: fmtWhen(o) }; }
-  const screen = { initial, on, isCurrent, canSign, canStartNew, walletChanged, resultBelongs, shortAddr, aiLine, healthLine, feeText, feeBasis, feeLines, historyRow, resultLabel, stateClass };
-  root.SBClient = { create, CHAIN_TERMINAL, STAGES, proposalNotice, escapeHtml, screen };
+  root.SBClient = { create, CHAIN_TERMINAL, STAGES, proposalNotice, escapeHtml };
 })(typeof window !== "undefined" ? window : globalThis);
