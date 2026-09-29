@@ -89,7 +89,7 @@ class MockKiln:
     def structure(self, text: str) -> dict:
         t = (text or "").strip()
         amt = PC._extract_amount(t)
-        alias = PC._extract_alias_token(t)
+        alias = PC._extract_alias_token(t, PC.load_contacts())   # 등록 별칭 띄어쓰기/조사 관용(9/29 음성 입력)
         asset = "TRX" if PC.ASSET_TRX.search(t) else ("OTHER" if PC.ASSET_OTHER.search(t) else None)
         change = {}
         m = re.search(r"예산\s*(\d+(?:\.\d+)?)", t)

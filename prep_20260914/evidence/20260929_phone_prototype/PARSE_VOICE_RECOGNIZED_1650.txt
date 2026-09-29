@@ -1,0 +1,11 @@
+{"text": "맥북 지갑의 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2"}, "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테').", "proposal_alias": null, "amount": null}
+{"text": "맥북지갑한테 트론 두 개", "kind": "question", "understood": {"asset": "TRX"}, "question": "몇 TRX 를 보낼까요? 숫자로 알려주세요(예: 트론 2개).", "proposal_alias": null, "amount": null}
+{"text": "맥북 지갑한테 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2", "alias_input": "지갑"}, "question": "'지갑' 은(는) 등록된 수취인이 아닙니다. 주소를 추측하지 않습니다. 먼저 수취인 목록에 등록(사장 확인)한 뒤 다시 말씀해 주세요.", "proposal_alias": null, "amount": null}
+{"text": "맥북지갑의 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2"}, "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테').", "proposal_alias": null, "amount": null}
+{"text": "맥북 지갑 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2"}, "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테').", "proposal_alias": null, "amount": null}
+{"text": "민수한테 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2", "alias_input": "민수"}, "question": "같은 이름이 2명 등록되어 있습니다: 민수(동명이인 예시 1(주소 미등록) — 질문 경로 시연용), 민수(동명이인 예시 2(주소 미등록) — 질문 경로 시연용). 어느 분인지 구분되는 이름으로 알려주세요.", "proposal_alias": null, "amount": null}
+{"text": "지연한테 트론 2개", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2", "alias_input": "지연"}, "question": "'지연' 의 주소가 아직 사장 확인을 받지 않았습니다(미확인 주소로는 보내지 않습니다). 등록 확인 후 다시 요청해 주세요.", "proposal_alias": null, "amount": null}
+{"text": "맥북 지갑의 트론 2개 보내줘", "kind": "question", "understood": {"asset": "TRX", "amount_trx": "2"}, "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테').", "proposal_alias": null, "amount": null}
+--- decide() with MockKiln (규칙 모의) ---
+{"text": "맥북 지갑의 트론 2개", "kind": "question", "kind_detail": "info_check", "reason_code": null, "question": "확인이 필요합니다: 받는 사람(별칭) 을 알려 주세요.", "amount": null, "alias": null}
+{"text": "맥북지갑한테 트론 두 개", "kind": "question", "kind_detail": "info_check", "reason_code": null, "question": "확인이 필요합니다: 수량 을 알려 주세요.", "amount": null, "alias": null}

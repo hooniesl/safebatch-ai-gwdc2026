@@ -18,7 +18,7 @@ CONTACTS_PATH = HERE / "phone_contacts.json"
 AI_MODE = "MOCK_RULES"
 AI_NOTE = "규칙 기반 모의 응답 · 실제 AI(Kiln qwen3-32b) 호출 아님(예약 잔여 0)"
 MAX_TRX_PER_REQUEST = Decimal("100")           # 시제품 상한(테스트넷). 넘으면 질문.
-PARTICLES = ("한테", "에게", "께", "으로", "로")
+PARTICLES = ("한테", "에게", "께", "으로", "로", "의")   # "의": 음성 인식이 "맥북 지갑의 트론 2개" 처럼 적는 경우(9/29 사장 실측) — 등록 별칭과 맞을 때만 수취인으로 본다
 ASSET_TRX = re.compile(r"(트론|tron|trx|티알엑스)", re.I)
 ASSET_OTHER = re.compile(r"(usdt|테더|usdd|btc|비트코인|eth|이더)", re.I)
 AMT_AFTER = re.compile(r"(트론|tron|trx|티알엑스)\s*(\d+(?:\.\d+)?)\s*(개|트론|trx)?", re.I)
@@ -51,13 +51,47 @@ def find_alias(contacts: list[dict], token: str) -> list[dict]:
     return hits
 
 
-def _extract_alias_token(text: str) -> str | None:
-    for m in re.finditer(r"([가-힣A-Za-z0-9_\-]+?)(한테|에게|께|으로|로)(\s|$|,)", text):
+def _strict_alias_token(text: str) -> str | None:
+    for m in re.finditer(r"([가-힣A-Za-z0-9_\-]+?)(한테|에게|께|으로|로|의)(\s|$|,)", text):
         tok = m.group(1)
         if ASSET_TRX.search(tok) or re.fullmatch(r"\d+(\.\d+)?", tok):
             continue
         return tok
     return None
+
+
+def _nospace(s: str) -> str:
+    return re.sub(r"\s+", "", s or "")
+
+
+def registered_alias_in_text(text: str, contacts: list[dict]) -> tuple[str | None, str]:
+    """띄어쓰기·조사 차이를 무시하고 **등록된** 별칭이 문장에 있는지 본다(9/29 음성 입력 '맥북 지갑의 트론 2개').
+    반환 (별칭, 사유). 서로 다른 수취인이 둘 이상 맞으면 (None, "AMBIGUOUS") — 추측하지 않고 질문한다. 별칭이 문장에 없으면 (None, "NONE")."""
+    t = _nospace(text)
+    tail = r"(한테|에게|께|으로|로|의|트론|tron|trx|티알엑스|\d|$)"
+    found: dict[str, str] = {}
+    for c in contacts:
+        for n in [c.get("alias") or ""] + list(c.get("aliases") or []):
+            n2 = _nospace(n)
+            if len(n2) >= 2 and re.search(re.escape(n2) + tail, t, re.I):
+                key = (c.get("alias") or "") + "|" + (c.get("address") or "") + "|" + (c.get("note") or "")
+                found[key] = c.get("alias") or n
+    if not found:
+        return None, "NONE"
+    if len(found) > 1:
+        return None, "AMBIGUOUS"
+    return next(iter(found.values())), "OK"
+
+
+def _extract_alias_token(text: str, contacts: list[dict] | None = None) -> str | None:
+    """1) 조사 앞 토큰(엄격). 2) 그 토큰이 등록 별칭이 아니거나 없으면, 등록 별칭을 띄어쓰기 무시로 찾는다(등록된 이름만, 추측 없음)."""
+    tok = _strict_alias_token(text)
+    if contacts is None:
+        return tok
+    if tok and find_alias(contacts, tok):
+        return tok
+    alias, why = registered_alias_in_text(text, contacts)
+    return alias if why == "OK" else tok
 
 
 def _extract_amount(text: str) -> Decimal | None:
@@ -89,10 +123,18 @@ def parse_request(text: str, contacts: list[dict] | None = None) -> dict:
     if amt <= 0 or amt > MAX_TRX_PER_REQUEST:
         return {**base, "kind": "question", "question": f"수량은 0 보다 크고 {MAX_TRX_PER_REQUEST} TRX 이하로만 받습니다(시제품 상한). 다시 알려주세요."}
     base["understood"]["amount_trx"] = str(amt.normalize()) if amt != amt.to_integral() else str(int(amt))
-    tok = _extract_alias_token(t)
+    strict = _strict_alias_token(t)
+    tok = _extract_alias_token(t, contacts)
+    tolerant = bool(tok) and tok != strict                      # 띄어쓰기/조사 차이를 무시해 등록 별칭으로 맞춘 경우 → 제안에 재확인 문구
     if not tok:
+        _, why = registered_alias_in_text(t, contacts)
+        if why == "AMBIGUOUS":
+            return {**base, "kind": "question", "question": "받는 사람이 둘 이상으로 읽힙니다. 등록된 이름 하나만 말씀해 주세요(예: '맥북지갑한테').", "reason": "AMBIGUOUS_ALIAS"}
         return {**base, "kind": "question", "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테')."}
     base["understood"]["alias_input"] = tok
+    if tolerant:
+        base["understood"]["alias_match"] = "space_or_particle_tolerant"
+        base["understood"]["alias_heard"] = strict
     hits = find_alias(contacts, tok)
     if not hits:
         return {**base, "kind": "question", "question": f"'{tok}' 은(는) 등록된 수취인이 아닙니다. 주소를 추측하지 않습니다. 먼저 수취인 목록에 등록(사장 확인)한 뒤 다시 말씀해 주세요.",
@@ -112,7 +154,8 @@ def parse_request(text: str, contacts: list[dict] | None = None) -> dict:
             "proposal": {"alias": c["alias"], "address": c["address"], "network": "nile", "asset": "TRX",
                          "amount_trx": base["understood"]["amount_trx"], "amount_sun": amount_sun,
                          "address_confirmed_at": c.get("confirmed_at"), "address_note": c.get("note")},
-            "next": "휴대폰에서 아래 내용을 확인한 뒤 [서명] 을 누르면 지갑 앱이 서명을 요청합니다. 서명 전에는 아무것도 보내지 않습니다."}
+            "next": ((f"받는 사람을 등록된 '{c['alias']}' 으로 이해했습니다(입력 문장: '{t}'). 아니면 진행하지 마세요. " if tolerant else "")
+                     + "휴대폰에서 아래 내용을 확인한 뒤 [서명] 을 누르면 지갑 앱이 서명을 요청합니다. 서명 전에는 아무것도 보내지 않습니다.")}
 
 
 def structure_with_kiln(text: str) -> None:
