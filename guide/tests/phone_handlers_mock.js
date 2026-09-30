@@ -97,7 +97,7 @@ function snapshot() { return JSON.stringify(counts); }
   assert(U().state !== "done" && U().order.payment_id === "phone_trx_B", "3 화면도 B 유지(A 완료로 덮지 않음)");
 } catch (e) { assert(false, "scenario threw " + e + " " + (e && e.stack || "")); } })();
 
-/* 4) 편집/지갑 변경 뒤 이전 chat·prepare 응답 도착 → 이전 제안 비활성 */
+/* 4) 편집/지갑 변경 뒤 이전 chat·prepare 응답 도착 → 이전 제안 비활성 (9/29 승인 단계 축소: 제안 뒤 prepare 는 자동, 버튼 없음) */
 (function () { try {
   routes = { "/api/orders?": async () => ({ body: { orders: [] } }) };
   setWallet(SENDER); const p = boot();
@@ -107,13 +107,14 @@ function snapshot() { return JSON.stringify(counts); }
   gate(); drainMicrotasks(); drainMicrotasks(); drainMicrotasks();
   assert(U().state === "input" && U().proposal === null && p.el("stageConfirm").classList.contains("hidden"), "4 편집 뒤 늦은 chat 응답 → 제안 활성화 안 됨");
   routes["/api/chat"] = async () => ({ body: PROP });
-  p.el("text").value = "맥북지갑한테 트론 2개"; p.el("send").onclick(); drainMicrotasks(); drainMicrotasks(); drainMicrotasks();
-  assert(U().state === "confirm", "4 정상 제안");
   let gate2; routes["/api/order/prepare"] = async () => { await new Promise(r => { gate2 = r; }); return { body: { ok: true, order: ORDER } }; };
-  p.el("prepare").onclick(); drainMicrotasks();
+  const c0 = JSON.parse(snapshot());
+  p.el("text").value = "맥북지갑한테 트론 2개"; p.el("send").onclick(); drainMicrotasks(); drainMicrotasks(); drainMicrotasks();
+  assert(U().state === "confirm" && JSON.parse(snapshot()).prepare === c0.prepare + 1, "4 정상 제안 → 자동 prepare 1회(버튼 없음, 서명 요청 아님)");
   setWallet("TOtherWallet11111111111111111111111"); page.refreshWallet();   // 응답 전에 지갑 변경
   gate2(); drainMicrotasks(); drainMicrotasks(); drainMicrotasks();
   assert(U().state === "input" && U().order === null && !SBClient.screen.canSign(U(), "TOtherWallet11111111111111111111111"), "4 지갑 변경 뒤 늦은 prepare 응답 → 주문·서명 비활성");
+  assert(JSON.parse(snapshot()).sign_wallet === c0.sign_wallet, "4 자동 준비 중 지갑 서명 호출 0");
 } catch (e) { assert(false, "scenario threw " + e + " " + (e && e.stack || "")); } })();
 
 /* 5) [새로고침]·[새 송금]의 부작용 0, 미종결 시 새 송금 차단, 연타 1회 */

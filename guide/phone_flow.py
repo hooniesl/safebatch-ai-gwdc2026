@@ -104,9 +104,16 @@ class PhoneFlow:
         return None
 
     def chat(self, text: str) -> dict:
+        return self._chat(text, self.ai_provider)
+
+    def chat_test(self, text: str) -> dict:
+        """시험 모드(VP 9/29 검수 §후속): 명시적 모의 제공자만 사용 — 운영 Kiln 예산을 소모하지 않는다. 재사용(carry)도 없다."""
+        return self._chat(text, AI.MockKiln(), allow_carry=False)
+
+    def _chat(self, text: str, provider, allow_carry: bool = True) -> dict:
         contacts = self.contacts if self.contacts is not None else PC.load_contacts()
         # VP 9/29: 일반 /api/chat 의 자동 재사용은 기본 비활성. A-T 복구(17:56) 이력은 보존. 필요 시 SB_CARRY_LAST_LIVE=1 로만 켠다(명시 복구 식별자 검증은 별도 범위)
-        carry = self._carry_candidate(text) if (self.carry_enabled and getattr(self.ai_provider, "provider", "") == "KILN_LIVE") else None
+        carry = self._carry_candidate(text) if (allow_carry and self.carry_enabled and getattr(provider, "provider", "") == "KILN_LIVE") else None
         if carry:
             r = PC.parse_request(text, contacts)
             if r.get("kind") == "proposal":
@@ -116,7 +123,7 @@ class PhoneFlow:
             else:
                 carry = None
         if not carry:
-            r = AI.decide(text, contacts, provider=self.ai_provider, fee_cap_trx=Decimal(self.fee_cap_sun) / 1_000_000)
+            r = AI.decide(text, contacts, provider=provider, fee_cap_trx=Decimal(self.fee_cap_sun) / 1_000_000)
         self._ai_log(text, r)
         if r["kind"] == "proposal":
             pid = secrets.token_hex(6)
@@ -332,7 +339,7 @@ class PhoneFlow:
         return {"ok": True, "order": order, "superseded": superseded}
 
     # ── 휴대폰 서명 제출 → 방송 ────────────────────────────────────────────
-    def submit_signed(self, payment_id: str, snapshot_sha256: str, signed_tx: dict) -> dict:
+    def submit_signed(self, payment_id: str, snapshot_sha256: str, signed_tx: dict, *, pre_broadcast_guard=None) -> dict:
         now = int(self.now_fn())
         same = self._same_signature_already_stored(payment_id, snapshot_sha256, signed_tx)
         if same is not None:
@@ -351,7 +358,8 @@ class PhoneFlow:
 
         def refuse(reason: str, state: str = "NOT_SUBMITTED"):
             self.store.quarantine(payment_id, snapshot_sha256, reason)
-            self._intent(payment_id, "CANCELLED", reason=reason[:200])
+            # A final guard may refuse after broadcast reservation. Keep that reservation unresolved.
+            self._intent(payment_id, "UNKNOWN" if self.intents.state(payment_id) == "SUBMITTED" else "CANCELLED", reason=reason[:200])
             self._result(payment_id, {"state": "SIGNATURE_HELD", "reason": reason[:200], "payment_id": payment_id, "tx_hash": txid, "held_signature": True,
                                       "note": "서명본은 만료 전까지 유효할 수 있어 같은 지갑 새 주문을 체인 근거로 종결될 때까지 막는다."})
             # 응답 = 저장 상태(SIGNATURE_HELD). 방송 안 함은 not_broadcast 로 표시. 화면은 이 값을 '미송금 종결'로 취급하지 않는다.
@@ -378,6 +386,14 @@ class PhoneFlow:
             return {"state": "UNKNOWN" if st in ("SUBMITTED", "UNKNOWN", "ACCEPTED") else "SIGNATURE_HELD", "not_broadcast": True, "reason": f"blocked before broadcast: {why}"[:220],
                     "payment_id": payment_id, "tx_hash": txid, "signature_quarantined": True, "order_state": "SIGNED_REFUSED_NOT_BROADCAST"}
         bcast = {"raw_data": body["raw_data"], "raw_data_hex": body["raw_data_hex"], "signature": body["signature"], "txID": txid, "visible": False}
+        if pre_broadcast_guard is not None:
+            try:
+                allowed, guard_reason = pre_broadcast_guard()
+            except Exception as e:                          # noqa: BLE001 — failure to check cannot authorize broadcasting
+                allowed, guard_reason = False, f"guard failed ({type(e).__name__})"
+            if not allowed:
+                held = refuse(f"final broadcast guard refused: {guard_reason}")
+                return {**held, "state": "NOT_SUBMITTED", "broadcast_guard_refused": True}
         try:
             r = self.node.broadcast(bcast)
         except Exception as e:                              # noqa: BLE001

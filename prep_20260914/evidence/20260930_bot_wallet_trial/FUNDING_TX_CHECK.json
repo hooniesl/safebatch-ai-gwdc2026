@@ -1,0 +1,37 @@
+{
+  "observed_at": "2026-09-30T00:16:38+09:00",
+  "address": "TCcJH7JkoEzwEpZYAyvkes9mpKD1cE1Gdh",
+  "http": 200,
+  "response_keys": [
+    "data",
+    "success",
+    "meta"
+  ],
+  "success": true,
+  "transfers": [
+    {
+      "txid": "0373528ef818b861860f0f054318fd3e0420095ee5e034d7c151dd3ac17f6722",
+      "from_android": true,
+      "amount_sun": 2500000,
+      "contract_results": [
+        {
+          "contractRet": "SUCCESS",
+          "fee": 1100000
+        }
+      ],
+      "solid_http": 200,
+      "solid_receipt": {
+        "id": "0373528ef818b861860f0f054318fd3e0420095ee5e034d7c151dd3ac17f6722",
+        "fee": 1100000,
+        "blockNumber": 71389226,
+        "blockTimeStamp": 1790694753000,
+        "contractResult": [
+          ""
+        ],
+        "receipt": {
+          "net_fee": 100000
+        }
+      }
+    }
+  ]
+}

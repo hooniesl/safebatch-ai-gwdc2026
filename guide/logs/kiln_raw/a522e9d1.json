@@ -1,0 +1,44 @@
+{
+ "id": "chat-66e315c09ed846dfa96c79325722d2fc",
+ "model": "qwen3-32b",
+ "choices": [
+  {
+   "index": 0,
+   "message": {
+    "role": "assistant",
+    "content": "\n\n",
+    "reasoning": "\n\n",
+    "tool_calls": [
+     {
+      "id": "call-44670666528148d3a78b639b9f1af709",
+      "type": "function",
+      "function": {
+       "name": "parse_transfer_request",
+       "arguments": "{\"alias\": \"맥북지갑\", \"amount\": \"2\", \"asset\": \"TRX\", \"missing\": [\"recipient address\"], \"reason\": \"Transfer request requires a recipient address to proceed.\"}"
+      }
+     }
+    ]
+   },
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "token_ids": null
+  }
+ ],
+ "usage": {
+  "completion_tokens": 62,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 1,
+   "rejected_prediction_tokens": 0
+  },
+  "cost": 3.368e-05,
+  "prompt_tokens": 395,
+  "prompt_tokens_details": {
+   "cached_tokens": 382,
+   "audio_tokens": 0
+  },
+  "total_tokens": 457
+ },
+ "created": 1790689394
+}

@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-09-30T00:26:19+09:00",
+  "operation": "manual_recovery_of_existing_read_only_watcher_no_approval_no_transfer",
+  "intent_id": "f92a752cb321",
+  "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+  "delivery": [
+    {
+      "message_id": 23638,
+      "chat_matches_owner": true,
+      "text": "✅ 송금 완료(확정) · 2 TRX → 맥북지갑 · txID 54f9941ab273d6ad… · 블록 71389419 · 실제 수수료 0.0 TRX"
+    }
+  ],
+  "messages_count": 1,
+  "approval_posts": 0,
+  "signing_calls": 0,
+  "broadcast_calls": 0
+}

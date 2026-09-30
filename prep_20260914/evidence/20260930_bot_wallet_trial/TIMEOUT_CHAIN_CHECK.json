@@ -1,0 +1,40 @@
+{
+  "observed_at": "2026-09-30T00:23:34+09:00",
+  "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+  "tx": {
+    "http": 200,
+    "keys": [
+      "raw_data",
+      "signature",
+      "ret",
+      "raw_data_hex",
+      "txID"
+    ],
+    "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+    "ret": [
+      {
+        "contractRet": "SUCCESS"
+      }
+    ],
+    "fee": null,
+    "block": null,
+    "receipt": null
+  },
+  "solid_info": {
+    "http": 200,
+    "keys": [
+      "id",
+      "blockNumber",
+      "blockTimeStamp",
+      "contractResult",
+      "receipt"
+    ],
+    "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+    "ret": null,
+    "fee": null,
+    "block": 71389419,
+    "receipt": {
+      "net_usage": 267
+    }
+  }
+}

@@ -1,0 +1,116 @@
+/Users/djl/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+..............................................................[executor] intent UNKNOWN append failed for b-f1:r1:2: disk fsync failed
+...................................../Users/djl/Desktop/hani_bot/AI_CONTEST/gwdc_2026/guide/run_nile_live.py:276: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/z4/hj95_04x1nx1s7z7jsd9zt5h0000gn/T/tmpb3_6tx04/i.jsonl' mode='r' encoding='utf-8'>
+  return sum(1 for _ in open(p, encoding="utf-8"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+......................................................................................................2026-09-30T00:38:09 127.0.0.1 - "GET /p/wrongtoken/api/health HTTP/1.1" 404 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /api/health HTTP/1.1" 404 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 403 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 403 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /p/<token>/ HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/chat HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/order/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /p/<token>/api/order/status?payment_id=phone_trx_20260930_014000_d109477f HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "POST /p/<token>/api/order/signed HTTP/1.1" 200 -
+2026-09-30T00:38:09 127.0.0.1 - "GET /p/<token>/api/orders?sender=TJRabPrwbZy45sbavfcjinPJC18kjpRTv8 HTTP/1.1" 200 -
+.....................2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 409 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked> HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/phone_client.js HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked> HTTP/1.1" 404 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/api/intent HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/chat HTTP/1.1" 404 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/intent/create HTTP/1.1" 404 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/order/prepare HTTP/1.1" 404 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 409 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/api/order/status?payment_id=phone_trx_20260930_014000_d109477f HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/api/order/status?payment_id=phone_trx_other HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/order/signed HTTP/1.1" 403 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/api/orders?sender=TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /a/<masked>/api/orders?sender=TJRabPrwbZy45sbavfcjinPJC18kjpRTv8 HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/order/signed HTTP/1.1" 409 -
+2026-09-30T00:38:10 127.0.0.1 - "POST /a/<masked>/api/order/hold HTTP/1.1" 409 -
+2026-09-30T00:38:10 127.0.0.1 - "GET /p/<token>/i/<masked> HTTP/1.1" 404 -
+/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py:550: ResourceWarning: unclosed <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 65307)>
+  method()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/prepare_bg HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/pending HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/prepare_bg HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/pending HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 200 -
+/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py:550: ResourceWarning: unclosed <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 65335)>
+  method()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked> HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/phone_client.js HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked> HTTP/1.1" 404 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/api/intent HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/chat HTTP/1.1" 404 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/intent/create HTTP/1.1" 404 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/order/prepare HTTP/1.1" 404 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/api/order/status?payment_id=phone_trx_20260930_014000_d109477f HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/api/order/status?payment_id=phone_trx_other HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/order/signed HTTP/1.1" 403 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/api/orders?sender=TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /a/<masked>/api/orders?sender=TJRabPrwbZy45sbavfcjinPJC18kjpRTv8 HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/intent/prepare HTTP/1.1" 200 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/order/signed HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "POST /a/<masked>/api/order/hold HTTP/1.1" 409 -
+2026-09-30T00:38:11 127.0.0.1 - "GET /p/<token>/i/<masked> HTTP/1.1" 404 -
+/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py:550: ResourceWarning: unclosed <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 65349)>
+  method()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+....................................127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 403 -
+127.0.0.1 - "POST /api/order/signed HTTP/1.1" 409 -
+127.0.0.1 - "POST /api/order/signed HTTP/1.1" 200 -
+127.0.0.1 - "POST /api/order/reject HTTP/1.1" 200 -
+................ERROR:root:gwdc_tg_adapter.handle 실패: OSError
+......ERROR:root:gwdc result lookup unavailable: TimeoutError
+.ERROR:root:gwdc approval response unknown: TimeoutError
+............usage: phone_server [-h] [--host HOST] [--port PORT] [--advertise ADVERTISE]
+                    [--rotate-token] [--signer {none,mock,local}]
+                    [--signer-trial-policy SIGNER_TRIAL_POLICY]
+                    [--ai {mock,kiln-live}]
+phone_server: error: local signer requires --signer-trial-policy or SB_SIGNER_TRIAL_POLICY_FILE
+.............................
+----------------------------------------------------------------------
+Ran 324 tests in 7.223s
+
+OK

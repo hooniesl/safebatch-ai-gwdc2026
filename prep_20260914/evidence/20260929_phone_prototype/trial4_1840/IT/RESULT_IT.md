@@ -1,0 +1,8 @@
+# I-T 아이폰 텍스트 · 결과 (2026-09-29 20:42~20:43 KST) — 합격(전무 확정 확인 20:43:51, 텍스트 입력·화면은 사장 캡처 대조 필요)
+- 입력: 서버 수신 "맥북지갑한테 트론 2개"(시험표 문장과 동일). 텍스트 타이핑 여부는 사장 캡처로 확정. 네트워크: Tailscale HTTPS(LTE 여부 사장 화면).
+- AI: KILN_LIVE 실호출 성공 call 514bed72, qwen3-32b, finish tool_calls, source tool_calls, HTTP 200, cost $0.00002992(server_usage), 폴백 없음, 재사용 없음(carried_from null; 같은 문장 A-V/A-T 이력 있어도 새 실호출 → 자동 재사용 비활성 실증). 인자 alias 맥북지갑/amount 2/asset TRX → normal 제안. R3 used 4/4 · 누적 $0.0001368 · halted null · pending 없음(예약 20:42:05 → 확정 20:42:06).
+- 주문 phone_trx_20260929_204218_ce29ffa5: prepare 1차 20:42:16 **409(같은 내용 15분 중복 확인, 주문 미생성)** → 사장 [그래도 다시 보내기] → prepare 2차 20:42:22 200(confirm_resend) → hold 20:42:49 → 아이폰 TronLink 서명 1 → signed POST 1 → 방송 1(SUBMITTED 20:42:51) → ACCEPTED 20:42:52 → **FINAL_CONFIRMED_SOLIDITY 20:43:51**.
+- 체인(solidity 20:44 직접 조회): TransferContract TQNXymgxq4j5grpQFcTMSkhjXHNDsTW3mb → TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz, 2,000,000 sun, SUCCESS, 블록 71385047, fee 0(net_usage 267 B). txID ce29ffa5a1e35619f7e4c5ea4c00fb5d4f45e976b587ffee5d6af9edfe2927a4, 서버 결과 일치(txid_match·raw_bytes_identical·solid_found).
+- 잔액 20:44: iPhone 1.000 TRX(3.0−2) · 맥북지갑 988.21(+2).
+- 집계: 실호출 1 · 서명 1 · 방송 1 · 확정 1 · 주문 1(409 중복 확인은 주문 미생성). 20:36~20:44 POST = chat 1·prepare 2(409+200)·hold 1·signed 1. 새로고침·새 송금·넘침 캡처는 사장 대조 대기.
+- 20:44 사장 캡처 IT_1_done_screen_2044.png(수신 20:4x): 완료 화면 "송금 완료 2 TRX 맥북지갑 에게, 실제 수수료 0 TRX", [영수증 보기]·[새 송금] 표시, 최근 송금 2건(완료 08:42·08:30) 목록, 넘침 없음(육안). 상단 갱신 시각 오후 8:35:05(I-V 때 새로고침, I-T 뒤 새로고침 캡처 아님). 상태바 Wi-Fi 아이콘 → 이 캡처는 Wi-Fi 접속(LTE 아님). 입력 원문·새로고침 후·새 송금 후 캡처는 미수신.

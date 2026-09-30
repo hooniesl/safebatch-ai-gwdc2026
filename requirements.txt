@@ -3,3 +3,6 @@
 # protobuf: required by tronpy.proto but not pulled in automatically by tronpy 0.6.2 (observed 2026-09-29) -> pinned explicitly.
 tronpy==0.6.2
 protobuf==6.33.6
+# cryptography: only for the optional encrypted bot-wallet key file (guide/phone_signer.py LocalKeySigner, --signer local);
+# imported lazily, but tests/test_tg_signer_exec.py exercises that class, so the full suite needs it. Verified 2026-09-30 with 46.0.7.
+cryptography==46.0.7

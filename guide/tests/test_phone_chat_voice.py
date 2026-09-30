@@ -36,8 +36,13 @@ class ObservedVoiceText(unittest.TestCase):
     def test_object_first_word_order_still_ok(self):
         r = PC.parse_request("트론 2개를 맥북 지갑한테 보내줘", C); self.assertEqual(r["kind"], "proposal"); self.assertEqual(r["proposal"]["alias"], "맥북지갑")
 
-    def test_korean_numeral_still_asks_amount(self):
-        r = PC.parse_request("맥북지갑한테 트론 두 개", C); no_proposal(self, r); self.assertIn("몇 TRX", r["question"])
+    def test_korean_numeral_with_unit_preserves_original_and_exact_amount(self):
+        text = "맥북지갑한테 트론 두 개"
+        r = PC.parse_request(text, C)
+        self.assertEqual(r["kind"], "proposal")
+        self.assertEqual(r["proposal"]["amount_sun"], 2_000_000)
+        self.assertEqual(r["text"], text)
+        self.assertIn("2개", r["normalized_text"])
 
 
 class IphoneVoiceText(unittest.TestCase):   # 9/29 17:5x 사장 아이폰 실측 "MacBook 지갑에 트론 2개" — 명시 등록 별칭(MacBook지갑)으로만 연결, 조사 '에'

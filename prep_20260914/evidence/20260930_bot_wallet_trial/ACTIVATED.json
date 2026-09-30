@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-09-30T00:18:52+09:00",
+  "order_id": "55b464",
+  "intake_enabled": true,
+  "signer_stop_present": false,
+  "stop_preserved": "prep_20260914/evidence/20260930_bot_wallet_trial/signer_stop.pre_activation",
+  "ledger_entries": 0,
+  "restart_additional": 0,
+  "funding_txid": "0373528ef818b861860f0f054318fd3e0420095ee5e034d7c151dd3ac17f6722",
+  "funding_fee_sun": 1100000,
+  "balance_sun": 2500000,
+  "bot_amount_sun": 2000000,
+  "worst_case_fee_sun": 267000,
+  "pending_action": "owner Telegram voice command and text approval",
+  "signatures_observed": 0,
+  "broadcasts_observed": 0
+}

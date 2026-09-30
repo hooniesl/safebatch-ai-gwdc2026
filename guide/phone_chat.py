@@ -24,6 +24,59 @@ ASSET_OTHER = re.compile(r"(usdt|테더|usdd|btc|비트코인|eth|이더)", re.I
 AMT_AFTER = re.compile(r"(트론|tron|trx|티알엑스)\s*(\d+(?:\.\d+)?)\s*(개|트론|trx)?", re.I)
 AMT_BEFORE = re.compile(r"(\d+(?:\.\d+)?)\s*(개|트론|trx|tron)", re.I)
 
+_KOREAN_COUNTS = {"한": 1, "하나": 1, "두": 2, "둘": 2, "세": 3, "셋": 3,
+                  "네": 4, "넷": 4, "다섯": 5, "여섯": 6, "일곱": 7, "여덟": 8,
+                  "아홉": 9, "열": 10}
+_COUNT_RE = re.compile(r"(?<![가-힣A-Za-z0-9])(" + "|".join(_KOREAN_COUNTS) + r")\s*(개|TRX|트론)(?=$|\s|[.,!?]|를|만|씩|은|는)", re.I)
+
+
+def normalize_transfer_text(text: str, *, amount_reply: bool = False) -> str:
+    """명시적 TRX 문맥에서 단위가 붙은 한글 정수만 변환한다. 원문은 호출자가 보존한다."""
+    t = re.sub(r"\s+", " ", (text or "").strip())
+    if ASSET_TRX.search(t) or amount_reply:
+        def replace_count(match):
+            if re.search(r"(?:스물|서른|마흔|쉰|예순|일흔|여든|아흔|열|십|백|천)\s*$", t[:match.start()]):
+                return match.group(0)
+            return f"{_KOREAN_COUNTS[match.group(1)]}{match.group(2)}"
+        t = _COUNT_RE.sub(replace_count, t)
+    return t
+
+
+def input_problem(text: str) -> tuple[str, str] | None:
+    """모델 호출 전에 부정·정정·생략·체인 변경을 차단한다. 승인 판정과는 별개다."""
+    if len(text) > 300:
+        return "TOO_LONG", "송금할 내용만 300자 이내로 말씀해 주세요."
+    if re.search(r"(?:보내|승인)\s*하지\s*(?:마|말|않)|보내\s*지\s*(?:마|말|않)|(?:송금|전송)\s*하?지\s*(?:마|말|않)|안\s*(?:보내|송금|전송|돼|되)|취소|금지|보류|멈춰|중지|do\s*not|don't|cancel", text, re.I):
+        return "NEGATED", "보내지 않는 지시로 이해했습니다. 송금 요청을 만들지 않았습니다."
+    if re.search(r"말고|아니라|아니[ ,]|정정|수정|대신", text):
+        return "CORRECTION", "최종적으로 보낼 수량을 하나만 알려주세요(예: 3 TRX)."
+    if re.search(r"아까|지난번|이전처럼|똑같이|잔액\s*전부|전액|모두|남은", text):
+        return "CONTEXT_MISSING", "보낼 수량을 정확히 알려주세요(예: 2 TRX)."
+    if re.search(r"씩|(?:한|두|세|네|\d+)\s*번|나눠|각각|매일|매주|반복", text):
+        return "REPEATED_TRANSFER", "한 번에 한 건만 보낼 수 있습니다. 한 건으로 보낼 수량을 알려주세요."
+    if re.search(r"마이너스|플러스|반\s*개|(?:개|TRX|트론)\s*반|추가|\b더\s*보내", text, re.I):
+        return "INVALID_AMOUNT", "최종 수량을 양수로 정확히 알려주세요(예: 2.5 TRX)."
+    if re.search(r"메인\s*넷|mainnet|shasta|샤스타|이더리움|ethereum", text, re.I):
+        return "WRONG_NETWORK", "Nile 테스트넷으로 보낼 요청인지 확인해 주세요."
+    if ASSET_TRX.search(text) and ASSET_OTHER.search(text):
+        return "MIXED_ASSETS", "보낼 자산을 하나만 알려주세요. 이 창구는 Nile TRX만 지원합니다."
+    return None
+
+
+def transfer_amounts(text: str) -> list[str]:
+    """겹치는 앞/뒤 단위 표기는 한 수량으로 센다. 예산·수수료 조건은 별도다."""
+    spans = []
+    for rx, group in ((AMT_AFTER, 2), (AMT_BEFORE, 1)):
+        for m in rx.finditer(text):
+            start, end = m.span(group)
+            if re.match(r"\s*(?:분|초|시간|일)(?:\s|$|[.,])", text[end:]):
+                continue
+            if re.search(r"(?:예산|수수료|상한)\s*(?:은|는|이|가|최대)?\s*$", text[max(0, m.start()-12):m.start()]):
+                continue
+            if not any(start < b and end > a for a, b, _ in spans):
+                spans.append((start, end, m.group(group)))
+    return [num for _, _, num in sorted(spans)]
+
 
 def load_contacts(path: pathlib.Path | None = None) -> list[dict]:
     p = path or CONTACTS_PATH
@@ -159,8 +212,12 @@ def _extract_amount(text: str) -> Decimal | None:
 def parse_request(text: str, contacts: list[dict] | None = None) -> dict:
     """대화 문장 → {"kind": "proposal"|"question", ...}. 항상 ai.mode=MOCK_RULES 를 붙인다."""
     contacts = load_contacts() if contacts is None else contacts
-    t = (text or "").strip()[:300]
-    base = {"ai": {"mode": AI_MODE, "note": AI_NOTE}, "text": t, "understood": {}}
+    original = (text or "").strip()
+    t = normalize_transfer_text(original)
+    base = {"ai": {"mode": AI_MODE, "note": AI_NOTE}, "text": original, "normalized_text": t, "understood": {}}
+    problem = input_problem(original)
+    if problem:
+        return {**base, "kind": "question", "reason": problem[0], "question": problem[1]}
     if not t:
         return {**base, "kind": "question", "question": "무엇을 도와드릴까요? 예: '맥북지갑한테 트론 2개 보내줘'(예시)"}
     if ASSET_OTHER.search(t) and not ASSET_TRX.search(t):
@@ -168,23 +225,30 @@ def parse_request(text: str, contacts: list[dict] | None = None) -> dict:
     if not ASSET_TRX.search(t):
         return {**base, "kind": "question", "question": "무엇을 보낼까요? 지금은 테스트넷 TRX(트론)만 가능합니다. 예: '…한테 트론 2개'"}
     base["understood"]["asset"] = "TRX"
-    amt = _extract_amount(t)
-    if amt is None:
-        return {**base, "kind": "question", "question": "몇 TRX 를 보낼까요? 숫자로 알려주세요(예: 트론 2개)."}
-    if amt <= 0 or amt > MAX_TRX_PER_REQUEST:
-        return {**base, "kind": "question", "question": f"수량은 0 보다 크고 {MAX_TRX_PER_REQUEST} TRX 이하로만 받습니다(시제품 상한). 다시 알려주세요."}
-    base["understood"]["amount_trx"] = str(amt.normalize()) if amt != amt.to_integral() else str(int(amt))
-    # 모든 제안 경로에서 수취인 모호성을 먼저 판정한다(VP 9/29 A): 서로 다른 등록 수취인 둘 이상 → 질문, 이름 경계 불명확 → 질문
     _scan_alias, scan_why = registered_alias_in_text(t, contacts)
     if scan_why == "AMBIGUOUS":
-        return {**base, "kind": "question", "question": "받는 사람이 둘 이상으로 읽힙니다. 한 번에 한 명에게만 보낼 수 있으니 등록된 이름 하나만 말씀해 주세요(예: '맥북지갑한테').", "reason": "AMBIGUOUS_ALIAS"}
+        return {**base, "kind": "question", "question": "받는 사람이 둘 이상으로 읽힙니다. 등록된 이름 하나만 말씀해 주세요.", "reason": "AMBIGUOUS_ALIAS"}
+    amounts = transfer_amounts(t)
+    if len(amounts) > 1:
+        return {**base, "kind": "question", "reason": "MULTIPLE_AMOUNTS", "question": "수량이 여러 개입니다. 최종 수량 하나만 알려주세요(예: 2 TRX)."}
+    # 부호·쉼표·지수·과도한 소수 자릿수를 일부만 읽어 수량을 바꾸지 않는다.
+    if re.search(r"[-+−]\s*\d|\d[,.]\d+[,.]\d|\d[,/]\d|\d[eE][+-]?\d|\d+\.\d{7,}|\d+\s*점", t):
+        return {**base, "kind": "question", "reason": "INVALID_AMOUNT", "question": "수량은 양수, 소수점 여섯 자리 이내의 TRX로 알려주세요."
+                }
+    amt = Decimal(amounts[0]) if amounts else None
+    if amt is None:
+        return {**base, "kind": "question", "reason": "MISSING_AMOUNT", "question": "몇 TRX 를 보낼까요? 숫자로 알려주세요(예: 트론 2개)."}
+    if amt <= 0 or amt > MAX_TRX_PER_REQUEST:
+        return {**base, "kind": "question", "reason": "INVALID_AMOUNT", "question": f"수량은 0 보다 크고 {MAX_TRX_PER_REQUEST} TRX 이하로만 받습니다(시제품 상한). 다시 알려주세요."}
+    base["understood"]["amount_trx"] = str(amt.normalize()) if amt != amt.to_integral() else str(int(amt))
+    # 모든 제안 경로에서 수취인 모호성을 먼저 판정한다(VP 9/29 A): 서로 다른 등록 수취인 둘 이상 → 질문, 이름 경계 불명확 → 질문
     if scan_why == "UNCLEAR":
         return {**base, "kind": "question", "question": "받는 사람 이름이 어디까지인지 분명하지 않습니다. 등록된 이름 그대로 말씀해 주세요(예: '맥북지갑한테').", "reason": "UNCLEAR_ALIAS"}
     strict = _strict_alias_token(t)
     tok = _extract_alias_token(t, contacts)
     tolerant = bool(tok) and _nospace(strict or "") != _nospace(tok)   # 띄어쓰기/조사 차이를 무시해 등록 별칭으로 맞춘 경우 → 재확인 문구
     if not tok:
-        return {**base, "kind": "question", "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테')."}
+        return {**base, "kind": "question", "reason": "MISSING_ALIAS", "question": "누구에게 보낼까요? 등록된 이름(별칭)으로 알려주세요(예: '맥북지갑한테')."}
     base["understood"]["alias_input"] = tok
     if tolerant:
         base["understood"]["alias_match"] = "space_or_particle_tolerant"

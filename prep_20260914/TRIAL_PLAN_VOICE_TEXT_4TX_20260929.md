@@ -32,7 +32,7 @@
 4. 네트워크: 사장 선택(같은 Wi-Fi 또는 LTE). 실제 조건을 행별 기록.
 
 ## 4. 아이폰 준비 단계(사장 손, 한 단계씩 · 미확인)
-1. App Store 에서 Tailscale 설치(무료) → 같은 계정(ojaksal45@)으로 로그인 → 연결 ON(맥북 `djl-macbookpro` 표시). 현재 tailnet 에 `iphone-15-pro-max` 가 이미 보이나(15:4x status) 설치·로그인 여부는 미확인.
+1. App Store 에서 Tailscale 설치(무료) → 맥북과 같은 Tailscale 계정으로 로그인 → 연결 ON(맥북 `djl-macbookpro` 표시). 현재 tailnet 에 `iphone-15-pro-max` 가 이미 보이나(15:4x status) 설치·로그인 여부는 미확인.
 2. TronLink(iOS) → Nile Testnet 확인(캡처로 확인됨) → Discover/DApp 브라우저 → `guide/logs/phone_session.json` 의 URL 입력 → [지갑 연결] → 주소가 `TQNXymgx…` 로 표시되는지 확인(캡처). iOS DApp 주입·계정 연결은 안드로이드와 다를 수 있어 별도 확인.
 3. "내 주문 결과" 조회(0건 정상) → 캡처. 여기까지 서명·송금 없음.
 4. 자금 공급 승인 후 잔액 표시 확인 → 시험표 I-V/I-T.

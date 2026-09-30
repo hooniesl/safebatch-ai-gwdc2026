@@ -1,0 +1,95 @@
+{
+  "observed_at": "2026-09-30T00:29:26+09:00",
+  "intent_id": "f92a752cb321",
+  "payment_id": "phone_trx_20260930_002136_54f9941a",
+  "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+  "input": {
+    "message_id": "23634",
+    "is_text": false,
+    "local_transcription": "봇지갑으로 맥북 지갑한테 트론 2개 보내.",
+    "normalized_transfer_text": "맥북 지갑한테 트론 2개 보내."
+  },
+  "approval": {
+    "message_id": "23636",
+    "is_text": true,
+    "text": "승인",
+    "replied_to_summary_message_id": "23635",
+    "approved_at": 1790695326
+  },
+  "execution": {
+    "attempts": 1,
+    "signed_history_count": 1,
+    "submitting_history_count": 1,
+    "ledger_rows": 2,
+    "ledger_states": [
+      "RESERVED",
+      "CONSUMED"
+    ],
+    "broadcast_event_states": [
+      "DRAFTED",
+      "AWAITING_HUMAN",
+      "SIGNED",
+      "SUBMITTED",
+      "ACCEPTED",
+      "ACCEPTED",
+      "ACCEPTED",
+      "CONFIRMED"
+    ]
+  },
+  "result": {
+    "observed_at": "2026-09-30T00:27:13+09:00",
+    "operation": "independent_read_only_existing_transaction",
+    "sender": "TCcJH7JkoEzwEpZYAyvkes9mpKD1cE1Gdh",
+    "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+    "amount_sun": 2000000,
+    "receipt": {
+      "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+      "lookups": {
+        "tx": "FOUND",
+        "info": "FOUND",
+        "solid_tx": "FOUND",
+        "solid": "FOUND"
+      },
+      "solid_lookups_ok": true,
+      "found_tx": true,
+      "found_info": true,
+      "solid_found": true,
+      "txid_match": true,
+      "raw_bytes_identical": true,
+      "contract_ret": "SUCCESS",
+      "receipt_result": null,
+      "block_number": 71389419,
+      "fee_sun": 0,
+      "fee_field_present": false,
+      "fee_known": true,
+      "fee_note": "fee 필드 생략 = 0 sun(TRON 은 0 값을 생략; receipt 존재)",
+      "net_usage": 267,
+      "net_fee_sun": null,
+      "fee_cap_sun": 2000000,
+      "fee_within_cap": true,
+      "amount_expected_sun": 2000000,
+      "chain_amount_sun": 2000000,
+      "chain_parties_match": true,
+      "amount_match": true,
+      "solid_block_match": true,
+      "solid_result": null,
+      "verdict": "CONFIRMED"
+    },
+    "bot_solid_account_http": 200,
+    "bot_balance_sun": 500000,
+    "approval_or_sign_or_broadcast_calls": 0
+  },
+  "notification": {
+    "automatic_initial_delivery": false,
+    "failure": "approval HTTP client timeout20s; server processed37s; initial watcher never started",
+    "manual_recovery": true,
+    "delivery_message_id": 23638,
+    "telegram_api_accepted": true,
+    "read_by_owner": "not observed"
+  },
+  "extra_paid_ai_calls": 0,
+  "ai_mode": "MOCK_KILN",
+  "additional_signature_or_broadcast": 0,
+  "intake_enabled": false,
+  "stop_present": true
+}

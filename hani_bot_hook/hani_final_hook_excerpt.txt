@@ -1,0 +1,28 @@
+        chat_id = message.chat.id
+
+        # ============================================
+        # 🧾 GWDC: 관리자 지시 → 요약 → '승인' 답장 → 서버의 서명·방송·확정 회신.
+        #   media_handler의 로컬 음성도 같은 dispatch로 연결한다. 서명/AI 예산 관문은 서버가 맡는다.
+        #   활성 파일(guide/logs/tg_adapter_enabled)이 없으면 접수하지 않는다.
+        # ============================================
+        if (user_input and str(chat_id) == str(ADMIN_CHAT_ID)
+                and getattr(message.chat, "type", None) == "private"
+                and str(getattr(getattr(message, "from_user", None), "id", None)) == str(ADMIN_CHAT_ID)):
+            try:
+                import gwdc_tg_adapter as _gta
+                if _gta.dispatch_message(message, bot, ADMIN_CHAT_ID):
+                    return
+            except Exception as _e:
+                logging.error(f"gwdc_tg_adapter 결과 확인 실패: {type(_e).__name__}")
+                bot.reply_to(message, "❌ 송금 처리 결과를 확인하지 못했습니다. 새 요청을 보내지 말고 기존 요청 상태를 확인해 주세요.")
+                return
+
+----- media_handler.py (voice path, after local mlx-whisper transcription) -----
+            try:
+                import gwdc_tg_adapter
+                # 원래 메시지 ID/답장/전달 정보를 유지한다. 전사 결과도 음성 승인이다.
+                if gwdc_tg_adapter.dispatch_message(message, bot, admin_id, text=recognized, is_text=False):
+                    return
+            except Exception:
+                bot.reply_to(message, "❌ 송금 처리 결과를 확인하지 못했습니다. 새 요청을 보내지 말고 기존 요청 상태를 확인해 주세요.")
+                return

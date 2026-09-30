@@ -227,9 +227,18 @@ def outcome_of(r: dict) -> tuple[bool, str]:
 def decide(text: str, contacts: list[dict], provider=None, fee_cap_trx: Decimal = Decimal("2")) -> dict:
     """대화 → proposal(정상|adapt) / decline / question(정보 확인) / fallback. 주소·수량·상한·만료는 코드가 정한다.
     실호출 제공자(on_outcome 보유)는 스키마·의미·기록·비용 검증이 **모두 끝난 뒤** 한 번만 예약을 확정한다(VP 9/29 R2b 불변식 2). 예외로 확정 못 하면 예약은 pending 으로 남아 후속 호출을 막는다."""
+    if PC.input_problem(text):
+        result = PC.parse_request(text, contacts)
+        result["ai"]["calls"] = 0
+        result["kind_detail"] = "info_check"
+        return result
+    original_text = text
+    text = PC.normalize_transfer_text(text)
     provider = provider or MockKiln()
     notify = getattr(provider, "on_outcome", None)
     r = _decide_inner(text, contacts, provider, fee_cap_trx)
+    r["text"] = original_text
+    r["normalized_text"] = text
     if callable(notify) and (r.get("ai") or {}).get("calls"):
         ok, why = outcome_of(r)
         notify(ok, why, reservation=(r.get("ai") or {}).get("reservation"))
@@ -247,7 +256,8 @@ def _decide_inner(text: str, contacts: list[dict], provider, fee_cap_trx: Decima
         ai["error"] = str(resp["error"])[:200]
     o, why = validate_model_output(resp.get("raw") or "")
     if o is None:
-        r = PC.parse_request(text, contacts); r["ai"] = {**ai, "fallback": f"모델 출력 검증 실패({why}) → 규칙 파서(실제 AI 성공 아님)"}; r["kind_detail"] = "fallback"; return r
+        not_called = (not resp.get("calls")) and resp.get("error")      # 관문 거부(예산 소진·중단)·미호출은 '모델 출력 실패' 가 아니라 'AI 미호출' 로 표기(9/29 20:47 화면 오표기 수정)
+        r = PC.parse_request(text, contacts); r["ai"] = {**ai, "fallback": (f"AI 미호출({str(resp.get('error'))[:80]}) → 규칙 파서(실제 AI 성공 아님)" if not_called else f"모델 출력 검증 실패({why}) → 규칙 파서(실제 AI 성공 아님)")}; r["kind_detail"] = "fallback"; return r
     # 모델이 지어낸 조건 차단: 사용자 문장에 없는 예산·기한은 버린다(기록만) — 실호출이면 의미 실패로 통보
     change = dict(o.get("change") or {}); ignored = {}
     for k in list(change):

@@ -180,10 +180,12 @@
     const u = { ...ui };
     switch (ev.type) {
       case "request": u.reqId = ui.reqId + 1; u.text = ev.text; u.proposal = null; u.order = null; u.result = null; u.state = "input"; return u;
-      case "question": case "decline": case "prepare-failed": if (ev.type !== "prepare-failed") u.state = "input"; return u;
+      case "question": case "decline": u.state = "input"; return u;
+      case "prepare-failed": u.state = "blocked"; u.blockReason = ev.reason || "주문을 만들지 못했습니다"; u.order = null; return u;   // 9/29 20:47 결함: 실패 이유가 중복 패널에 가려짐 → 별도 상태로 표시
+      case "intent": u.intent = ev.intent; return u;
       case "proposal": u.proposal = ev.proposal; u.order = null; u.result = null; u.walletAddr = ev.walletAddr || ui.walletAddr; u.state = "confirm"; return u;
       case "duplicate": u.state = "dup"; return u;
-      case "edit": u.state = "input"; u.proposal = null; u.order = null; u.reqId = ui.reqId + 1; return u;
+      case "edit": u.state = "input"; u.proposal = null; u.order = null; u.blockReason = null; u.reqId = ui.reqId + 1; return u;
       case "order": u.order = ev.order; u.state = "presign"; return u;
       case "signing": u.state = "processing"; return u;
       case "sign-rejected": u.state = "presign"; return u;
@@ -191,7 +193,7 @@
       case "unknown": u.state = "unknown"; return u;
       case "recovering": u.state = "unknown"; u.result = ev.result; u.order = u.order || { payment_id: ev.payment_id, tx_id: ev.tx_hash }; return u;
       case "result": u.result = ev.result; u.state = ev.result.state === TERMINAL_OK ? "done" : (["REJECTED", "FAILED_ONCHAIN", "EXPIRED_NOT_ON_CHAIN"].includes(ev.result.state) ? "unknown" : (ev.result.state === "NOT_SUBMITTED" ? ui.state : (UNKNOWN_STATES.includes(ev.result.state) ? (ev.result.state === "ACCEPTED_UNCONFIRMED" ? "processing" : "unknown") : ui.state))); return u;
-      case "wallet-changed": u.walletAddr = ev.address; u.reqId = ui.reqId + 1; if (["confirm", "dup", "presign"].includes(ui.state)) { u.state = "input"; u.proposal = null; u.order = null; } return u;
+      case "wallet-changed": u.walletAddr = ev.address; u.reqId = ui.reqId + 1; if (["confirm", "dup", "presign", "blocked"].includes(ui.state)) { u.state = ui.intent ? "confirm" : "input"; u.order = null; if (!ui.intent) u.proposal = null; } return u;   // intent 모드는 제안을 유지하고 지갑 일치 뒤 다시 자동 준비
       case "restored": u.order = ev.order; u.result = ev.result; u.state = ev.result && ev.result.state === TERMINAL_OK ? "done" : "unknown"; return u;
       case "new": return { ...initial(), reqId: ui.reqId + 1, walletAddr: ui.walletAddr };
       default: return u;
@@ -199,11 +201,11 @@
   }
   function isCurrent(ui, reqId) { return ui.reqId === reqId; }
   function canSign(ui, walletAddr) { return ui.state === "presign" && !!ui.order && !!walletAddr && ui.order.user_eoa === walletAddr && ui.walletAddr === walletAddr; }
-  function canStartNew(ui, inflight) { if (inflight) return false; return ui.state === "done" || ui.state === "input"; }
+  function canStartNew(ui, inflight) { if (inflight) return false; return ui.state === "done" || ui.state === "input" || ui.state === "blocked"; }
   function walletChanged(ui, addr) { return !!ui.walletAddr && !!addr && ui.walletAddr !== addr; }
   function resultBelongs(ui, r) { if (!ui.order) return false; return (r.payment_id && r.payment_id === ui.order.payment_id) || (r.tx_hash && r.tx_hash === ui.order.tx_id); }
   function shortAddr(a) { a = String(a || ""); return a.length > 12 ? a.slice(0, 6) + "…" + a.slice(-4) : a; }
-  function aiLine(ai) { if (!ai) return "-"; if (ai.carried_from) return "직전 Kiln 실호출 결과 재사용(추가 호출 0)"; if (ai.fallback) return "규칙 해석(AI 실패·폴백: " + String(ai.fallback).slice(0, 60) + ")";
+  function aiLine(ai) { if (!ai) return "-"; if (ai.carried_from) return "직전 Kiln 실호출 결과 재사용(추가 호출 0)"; if (ai.fallback && /^AI 미호출/.test(String(ai.fallback))) return "규칙 해석(AI 미호출 · 승인 잔여 없음 또는 중단 · 실제 AI 성공 아님)"; if (ai.fallback) return "규칙 해석(AI 실패·폴백: " + String(ai.fallback).slice(0, 60) + ")";
     if (ai.mode === "KILN_LIVE") return "Kiln qwen3-32b 실호출" + (ai.call_id ? " · " + ai.call_id : ""); if (ai.mode === "MOCK_KILN" || ai.mode === "MOCK_RULES") return "규칙 모의(실제 AI 호출 없음)"; return String(ai.mode || "-"); }
   function healthLine(h) { if (!h) return "-"; return h.ai_provider === "KILN_LIVE" ? "Kiln 실호출 연결됨(요청마다 실제 사용 여부는 아래에 표시)" : "규칙 모의(실제 AI 호출 없음)"; }
   function feeText(rc) { if (!rc) return "미확인"; const known = rc.fee_known !== undefined ? rc.fee_known : rc.fee_field_present; return known ? (Number(rc.fee_sun || 0) / 1e6) + " TRX" : "미확인"; }
@@ -212,6 +214,21 @@
     detail: `대역폭 ${q.bandwidth_bytes}B × ${q.bandwidth_price_sun} sun${q.receiver_exists ? "" : " + 수취인 활성화 1.1 TRX"} · 무료 대역폭 ${q.free_bandwidth_left}B 남음(무료분 안이면 0 TRX) · 넘으면 보내지 않음` }; }
   function fmtWhen(o) { const t = o.created_at ? new Date(Number(o.created_at) * 1000) : null; return t && !isNaN(t) ? t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""; }
   function historyRow(o) { const s = o.result_state; const cls = stateClass(s); return { cls, label: s === TERMINAL_OK ? "완료 ✓" : (cls === "warn" ? "확인 중" : "실패/미전송"), amount: (o.amount_trx || "?") + " TRX", who: (o.receiver_alias || shortAddr(o.receiver)) + "에게", when: fmtWhen(o) }; }
-  const screen = { initial, on, isCurrent, canSign, canStartNew, walletChanged, resultBelongs, shortAddr, aiLine, healthLine, feeText, feeBasis, feeLines, historyRow, resultLabel, stateClass };
+  /* 최종 카드(VP 9/29 §3.2): 최대 차감액 = 수량 + 예상 최악 수수료(상한 이내). 상한은 한도이지 빠지는 금액이 아니다. */
+  function maxDeduct(o) { const q = (o && o.quote) || {}; const amt = Number(o && o.amount_trx || 0); const worst = Math.min(Number(q.worst_case_fee_sun || 0), Number(o && o.fee_cap_sun || Infinity)) / 1e6; return { amount: amt, worst: +worst.toFixed(6), max: +(amt + worst).toFixed(6) }; }
+  /* 외부 채팅 intent 게이트(VP 9/29 §2.3~§2.6): 링크로 연 페이지가 무엇을 할지 결정. 서명 요청은 절대 자동이 아니며, 자동은 "미서명 주문 준비" 까지만. */
+  function intentGate(intent, walletAddr, o) {
+    if (!intent) return { action: "none" };
+    if (intent.kind === "question") return { action: "message", text: "확인이 필요합니다: " + (intent.question || "") + " — 채팅에서 다시 요청하세요." };
+    if (intent.kind === "decline") return { action: "message", text: "거절된 요청입니다: " + (intent.explain || "") + " (주문 없음)" };
+    if (intent.result && intent.result.state) return { action: "show-result", result: intent.result };
+    if (o && o.payment_id && intent.payment_id === o.payment_id) return { action: "presign" };
+    if (!intent.sender) return { action: "message", text: "발신 지갑이 지정되지 않은 요청입니다. 채팅에서 지갑(아이폰/안드로이드)을 지정해 다시 요청하세요." };
+    if (!walletAddr) return { action: "connect", text: "요청한 지갑(" + (intent.sender_label || "") + " " + shortAddr(intent.sender) + ")을 TronLink 에서 연결하세요." };
+    if (walletAddr !== intent.sender) return { action: "mismatch", text: "연결된 지갑 " + shortAddr(walletAddr) + " 은 요청의 발신 지갑(" + (intent.sender_label || "") + " " + shortAddr(intent.sender) + ")이 아닙니다. 요청한 지갑으로 바꿔 연결하세요. 다른 지갑으로 대신 보내지 않습니다." };
+    if (intent.link_expired && !intent.payment_id) return { action: "message", text: "승인 링크가 만료되었습니다(15분). 채팅에서 다시 요청하세요. 주문은 만들지 않았습니다." };
+    return { action: "auto-prepare" };
+  }
+  const screen = { initial, on, isCurrent, canSign, canStartNew, walletChanged, resultBelongs, shortAddr, aiLine, healthLine, feeText, feeBasis, feeLines, historyRow, resultLabel, stateClass, maxDeduct, intentGate };
   root.SBClient = { create, CHAIN_TERMINAL, STAGES, proposalNotice, escapeHtml, screen };
 })(typeof window !== "undefined" ? window : globalThis);

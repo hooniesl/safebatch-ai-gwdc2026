@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-09-30T00:41:57+09:00",
+  "state": "VERIFIED_AWAITING_EXISTING_SCHEDULED_RESTART",
+  "changes": [
+    "승인POST 전에 추적 정보를 내구 저장",
+    "응답불명 시 동일intent 조회, 승인POST 자동재시도 없음",
+    "already/idempotent 동일결과 추적",
+    "단일 watcher 및 watcher/실패재전송 공유 내구 발송예약",
+    "실행증거 없는 승인 접수에서 서명/방송 완료 문구 제거",
+    "비활성 안내 시점중립 문구"
+  ],
+  "tests": {
+    "guide_full": {
+      "passed": 324,
+      "failed": 0,
+      "evidence": "TESTS_guide_timeout_fix_final.txt"
+    },
+    "actual_media_handler": {
+      "passed": 16,
+      "failed": 0,
+      "evidence": "TESTS_audio_handler_timeout_fix_final.txt"
+    },
+    "focused_approval": {
+      "passed": 20,
+      "reported_by": "voice_handler and signer_safety_review"
+    },
+    "tg_subset": {
+      "passed": 59,
+      "reported_by": "voice_handler"
+    }
+  },
+  "independent_review": {
+    "reviewer": "signer_safety_review",
+    "result": "PASS",
+    "fixed_finding": "watcher vs failed-notification resend race; independent barrier reproduction observes one completion message and no duplicate simultaneous resend",
+    "checks": [
+      "same-intent read only after response loss",
+      "no automatic approval POST retry",
+      "duplicate approval after20minutes still onePOST",
+      "different-chat view/disclosure0",
+      "admin/voice/forward boundaries",
+      "prePOST fsync",
+      "uncertain interrupted send claim remains blocked"
+    ],
+    "limits": [
+      "restart resumes tracking on next relevant message",
+      "failed-send retry policy cannot guarantee exactly-once delivery if Telegram accepted but its reply was lost"
+    ]
+  },
+  "deployment": {
+    "hanibot_restart_used": 1,
+    "hanibot_restart_authorized_max": 1,
+    "extra_restart_requested": 0,
+    "extra_restart_authorized": false,
+    "phone_restart_needed": false,
+    "intake_stays_closed": true,
+    "additional_chain_transactions": 0,
+    "additional_paid_ai": 0,
+    "manual_extra_restart_needed": false,
+    "scheduled_restart_owner_report": "하니봇은 새벽 4시에 자동 재시작되",
+    "planned_apply": "existing 04:00 restart; actual restart and loaded revision not yet observed"
+  },
+  "hashes": {
+    "gwdc_tg_adapter.py": "6e2788d641741ebba3b43a139d85357221d67292dfb3b4b51b50362662a7d30b",
+    "AI_CONTEST/gwdc_2026/guide/tests/test_tg_approval.py": "4f925fdab2772a6bc8a79527156296bf7aed2c6e883330dbae2591107e1fd950",
+    "AI_CONTEST/gwdc_2026/guide/tests/test_tg_approval_timeout.py": "9918cea920d48db79d98fee1bf5c725007c0f4251435853a257b22305bf56a69"
+  },
+  "owner_steering_at": "2026-09-30T00:42:43+09:00"
+}

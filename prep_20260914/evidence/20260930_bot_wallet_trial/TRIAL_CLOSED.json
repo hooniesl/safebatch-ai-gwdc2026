@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-09-30T00:25:10+09:00",
+  "reason": "one authorized transaction confirmed; notification recovery only",
+  "intent_id": "f92a752cb321",
+  "payment_id": "phone_trx_20260930_002136_54f9941a",
+  "txid": "54f9941ab273d6ad6f8dd1721dddeb50a2a09dda29b8c502db21497be01d3d13",
+  "intake_enabled": false,
+  "signer_stop_present": true,
+  "additional_restart": 0,
+  "exec_attempts": 1,
+  "notification_pending": true
+}

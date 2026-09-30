@@ -726,8 +726,22 @@ class PhoneHandlersJscMockTests(unittest.TestCase):
             self.skipTest("jsc not available")
         html = (here.parent / "phone.html").read_text(encoding="utf-8")
         inline = html.rsplit("<script>", 1)[1].split("</script>")[0]
-        wrapped = "globalThis.__page = function () {\n" + inline + "\nreturn { ui: () => ui, setUi: v => { ui = v; }, render, doRefresh, client: () => client, refreshWallet, loadHistory };\n};\n"
+        wrapped = "globalThis.__page = function () {\n" + inline + "\nreturn { ui: () => ui, setUi: v => { ui = v; }, render, doRefresh, client: () => client, refreshWallet, loadHistory, ops, doPrepare, autoPrepare, intentBoot, intentStep };\n};\n"
         inl = here / "_phone_inline.js"; inl.write_text(wrapped, encoding="utf-8")
         p = subprocess.run([jsc, "-e", f'var ARG_CLIENT="{here.parent / "phone_client.js"}"; var ARG_INLINE="{inl}";', str(here / "phone_handlers_mock.js")], capture_output=True, text=True, timeout=60)
         (here / "phone_handlers_mock_last.txt").write_text(p.stdout + p.stderr, encoding="utf-8")
+        self.assertIn("RESULT PASS", p.stdout, p.stdout[-3000:] + p.stderr[-2000:])
+
+    def test_handlers_intent_jsc_mock(self):
+        """9/29 승인 단계 축소·외부 채팅 승인 링크: 명령 → 자동 prepare → 최종 카드 1장 → 지갑 요청 1회 → 제출 1회 → 확정. 실제 서버·AI·서명·방송 0."""
+        here = pathlib.Path(__file__).resolve().parent
+        jsc = "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc"
+        if not pathlib.Path(jsc).exists():
+            self.skipTest("jsc not available")
+        html = (here.parent / "phone.html").read_text(encoding="utf-8")
+        inline = html.rsplit("<script>", 1)[1].split("</script>")[0]
+        wrapped = "globalThis.__page = function () {\n" + inline + "\nreturn { ui: () => ui, setUi: v => { ui = v; }, render, doRefresh, client: () => client, refreshWallet, loadHistory, ops, doPrepare, autoPrepare, intentBoot, intentStep };\n};\n"
+        inl = here / "_phone_inline.js"; inl.write_text(wrapped, encoding="utf-8")
+        p = subprocess.run([jsc, "-e", f'var ARG_CLIENT="{here.parent / "phone_client.js"}"; var ARG_INLINE="{inl}";', str(here / "phone_handlers_mock_intent.js")], capture_output=True, text=True, timeout=60)
+        (here / "phone_handlers_mock_intent_last.txt").write_text(p.stdout + p.stderr, encoding="utf-8")
         self.assertIn("RESULT PASS", p.stdout, p.stdout[-3000:] + p.stderr[-2000:])

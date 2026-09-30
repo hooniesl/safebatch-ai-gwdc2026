@@ -20,13 +20,16 @@ STATES = {
   "input": {}, "confirm": {"proposal": proposal}, "presign": {"proposal": proposal, "order": order}, "dup": {"proposal": proposal, "dup": {"state": "FINAL_CONFIRMED_SOLIDITY", "tx_hash": TX, "explorer": orders[0]["explorer"]}},
   "processing": {"proposal": proposal, "order": order, "result": {**result_final, "state": "ACCEPTED_UNCONFIRMED"}}, "done": {"proposal": proposal, "order": order, "result": result_final},
   "unknown": {"proposal": proposal, "order": order, "result": {"state": "UNKNOWN", "payment_id": order["payment_id"], "tx_hash": order["tx_id"]}},
+  "blocked": {"proposal": proposal, "blocked": "잔액 부족: 잔액 1.000000 TRX < 보낼 2.000000 + 최악 수수료 0.267000 TRX"},
+  "intent_connect": {"proposal": proposal, "no_wallet": True, "intent": {"intent_id": "i1", "source": "telegram", "text": "맥북지갑한테 트론 2개 보내 트론링크앱 사용해서", "sender": SENDER, "sender_label": "안드로이드", "kind": "proposal", "proposal_id": "p1", "state": "PROPOSED", "link_expired": False, "payment_id": None, "test_mode": False}},
+  "intent_test_presign": {"proposal": proposal, "order": order, "intent": {"intent_id": "i2", "source": "test", "text": "맥북지갑한테 트론 2개 보내 트론링크앱 사용해서", "sender": SENDER, "sender_label": "안드로이드", "kind": "proposal", "proposal_id": "p1", "state": "ORDER_PENDING", "link_expired": False, "payment_id": order["payment_id"], "test_mode": True}},
 }
 base = (HERE / "phone.html").read_text(encoding="utf-8").replace('src="__SB_BASE__/phone_client.js"', 'src="../phone_client.js"').replace('"__SB_BASE__"', '""')
 def stub(state):
     fx = STATES[state]
     return f"""<script>
 window.__FX = {json.dumps(fx, ensure_ascii=False)}; window.__ORDERS = {json.dumps(orders, ensure_ascii=False)};
-window.tron = {{ tronWeb: {{ defaultAddress: {{ base58: "{SENDER}" }}, fullNode: {{ host: "https://nile.trongrid.io" }}, trx: {{ sign: async t => t }} }}, request: async () => [], on: () => {{}} }};
+if (!window.__FX.no_wallet) window.tron = {{ tronWeb: {{ defaultAddress: {{ base58: "{SENDER}" }}, fullNode: {{ host: "https://nile.trongrid.io" }}, trx: {{ sign: async t => t }} }}, request: async () => [], on: () => {{}} }};
 window.fetch = async (url, opt) => {{
   const j = x => ({{ ok: true, status: 200, json: async () => x }});
   if (url.endsWith("/api/health")) return j({{ ok: true, ai_mode: "MOCK_RULES", ai_provider: "KILN_LIVE", network: "nile" }});
@@ -43,7 +46,10 @@ window.addEventListener("load", () => setTimeout(() => {{
   if (fx.order) ui = S.on(ui, {{ type: "order", order: fx.order }});
   if (fx.result) {{ ui = S.on(ui, {{ type: "signing" }}); ui = S.on(ui, {{ type: "result", result: fx.result }}); }}
   if ("{state}" === "unknown") ui = S.on(ui, {{ type: "unknown" }});
-  render(); if (fx.proposal) addMsg("me", fx.proposal.text);
+  if (fx.blocked) ui = S.on(ui, {{ type: "prepare-failed", reason: fx.blocked }});
+  if (fx.intent) {{ ui = S.on(ui, {{ type: "intent", intent: fx.intent }}); }}
+  render(); if (fx.proposal && !fx.intent) addMsg("me", fx.proposal.text);
+  if (fx.intent && !fx.order) intentStep();
   document.querySelectorAll("#historyList li").forEach((li, i) => {{ if (i === 0) li.classList.add("open"); }});
   setTimeout(() => {{ const sw = document.documentElement.scrollWidth, iw = window.innerWidth; let over = [];
     document.querySelectorAll("body *").forEach(el => {{ const r = el.getBoundingClientRect(); if (r.right > iw + 1 && r.width > 0) over.push(el.tagName + (el.id ? "#" + el.id : "") + (el.className && typeof el.className === "string" ? "." + el.className.split(" ")[0] : "")); }});
@@ -55,7 +61,7 @@ if __name__ == "__main__":
     for st in STATES:
         html = base.replace("<script src=", stub(st) + "\n<script src=", 1)
         f = HERE / "tests" / f"_preview_{st}.html"; f.write_text(html, encoding="utf-8")
-        for w in ([320, 360, 390, 430] if st in ("done", "presign", "input") else [360]):
+        for w in ([320, 360, 390, 430] if st in ("done", "presign", "input", "blocked", "intent_connect", "intent_test_presign") else [360]):
             # Chrome headless 는 창 폭 최소 500 → 좁은 뷰포트는 iframe 으로 만든다(같은 file 출처 접근 허용 플래그로 안쪽 측정값을 바깥 title 로 복사)
             fr = HERE / "tests" / f"_frame_{st}_{w}.html"
             fr.write_text(f"""<!doctype html><html><head><meta charset="utf-8"><style>body{{margin:0;background:#888}}iframe{{border:0;display:block;width:{w}px;height:1080px;background:#fff}}</style></head><body>
