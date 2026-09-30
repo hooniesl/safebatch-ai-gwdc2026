@@ -1,0 +1,22 @@
+{
+ "observed_at": "2026-09-30T10:02:00+09:00",
+ "order_id": "55b464",
+ "intake_enabled": true,
+ "signer_stop_present": false,
+ "ledger_entries": 0,
+ "bot_balance_sun": 2500000,
+ "bot_amount_sun": 2000000,
+ "worst_case_fee_sun": 401000,
+ "adapter_state": {
+  "awaiting": 0,
+  "pending": 0,
+  "tracking": 0
+ },
+ "hanibot_pid": 94551,
+ "hanibot_restart": 0,
+ "phone_server_pid": 29240,
+ "signatures_observed": 0,
+ "broadcasts_observed": 0,
+ "hanibot_log_lines_before": 5070,
+ "pending_action": "owner Telegram voice command and text approval"
+}

@@ -1,0 +1,55 @@
+{
+ "first_start_attempt": "failed at startup (SB_SIGNER_KEY_FILE/SB_SIGNER_PASS_FILE not set), no listener, no signing",
+ "second_start_attempt": {
+  "pid": 29240,
+  "alive": true,
+  "health_http": 200,
+  "health": {
+   "ok": true,
+   "ai_mode": "MOCK_RULES",
+   "ai_provider": "MOCK_KILN",
+   "network": "nile",
+   "server_time": 1790729719
+  }
+ },
+ "restart_cycles_used": 1,
+ "start_attempts": 2,
+ "restarts_authorized_max": 1,
+ "token_preserved": true,
+ "intake_enabled": false,
+ "signer_stop_present": true,
+ "new_ledger_init": {
+  "initialized_at": 1790729672,
+  "note": "55b464 R2: owner approved 2026-09-30 09:5x in hani-bot-27 session (VP_RETRIAL_REVIEW_20260930.md); one bot->Mac 2 TRX trial only; previous ledger preserved as .r1_consumed_20260930_0022"
+ },
+ "completed_at": "2026-09-30T09:55:19+09:00",
+ "old_pid_stopped": 80154,
+ "old_ledger_sha256": "fa195e429c078cd9a350184aaf7e648489be42f14a3ed1aa62283c5d1bdd293c",
+ "old_init_sha256": "16e864f62a173feb971c6c06433b2d9cc31f29d05eb0d1a66bde7755212eadca",
+ "old_ledger_states": [
+  "RESERVED",
+  "CONSUMED"
+ ],
+ "preserved": {
+  "evidence_copies": [
+   "signer_ledger_r1.jsonl",
+   "signer_ledger_r1.jsonl.init",
+   "SHA256SUMS_r1.txt",
+   "signer_stop.pre_r2"
+  ],
+  "in_place": [
+   "guide/logs/signer_ledger.jsonl.r1_consumed_20260930_0022",
+   "guide/logs/signer_ledger.jsonl.init.r1_consumed_20260930_0022"
+  ]
+ },
+ "new_ledger": "guide/logs/signer_ledger.jsonl (empty) + .init marker 09:54",
+ "policy_file": "<private dir outside the repo>/gwdc_bot_wallet_trial.json (unchanged content: bot->Mac exact 2 TRX, fee cap 2 TRX, lifetime 1)",
+ "health_after_restart": {
+  "ok": true,
+  "ai_mode": "MOCK_RULES",
+  "ai_provider": "MOCK_KILN",
+  "network": "nile",
+  "server_time": 1790729741
+ },
+ "unfinished_signing_check": "old ledger RESERVED->CONSUMED only; intent f92a752cb321 confirmed on-chain 54f9941a… with FINAL notice ok; no open reservation"
+}

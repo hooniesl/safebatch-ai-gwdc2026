@@ -1,0 +1,42 @@
+{
+ "recorded_at": "2026-09-30T10:12:42+09:00",
+ "order_id": "55b464",
+ "trial": "R2 bot-wallet Telegram end-to-end (rule-based parsing, MOCK_KILN, local key signer)",
+ "timeline_kst": {
+  "voice_request": "10:03 (msg 23659, owner voice, local STT '봇 지갑으로 맥북 지갑한테 트론 2개 보내.')",
+  "summary": "10:03 (msg 23660, intent 2128be5638a7, 2 TRX, fee max 0.267, expires 10:13:24)",
+  "owner_approval": "10:09:37 (msg 23662, text '승인' replying to 23660)",
+  "approve_post_server_200": "10:10:15 (server processing ~38 s > adapter 20 s transport timeout)",
+  "adapter_transport_timeout_reply": "10:09 '승인 응답을 확인하지 못했습니다… 같은 요청의 결과만 조회'",
+  "auto_notice_ORDER_SIGNED": "10:10:08",
+  "auto_notice_UNKNOWN": "10:10:22",
+  "auto_notice_FINAL": "10:10:48 '✅ 송금 완료(확정) · 2 TRX → 맥북지갑 · txID a4c396f7… · 블록 71401131 · 실제 수수료 0.0 TRX'",
+  "owner_screenshot": "OWNER_SCREEN_auto_completion_1011_cropped.jpg (10:11; public copy cropped to the completion message only, personal chat content excluded; full screenshot kept privately)"
+ },
+ "counts": {
+  "approve_POST": 1,
+  "intent_create": 1,
+  "prepare_bg": 1,
+  "intent_view": 4,
+  "signatures": 1,
+  "broadcasts": 1,
+  "ledger": "RESERVED->CONSUMED once (payment phone_trx_20260930_100324_a4c396f7)",
+  "manual_notice_or_state_correction_by_executive": 0,
+  "hanibot_restart": 0,
+  "paid_ai_calls": 0
+ },
+ "chain": {
+  "txid": "a4c396f73dac00cc8cddd6aa4e765fa1714c97ae6cb59a9d505f7c51cecfd59c",
+  "block": 71401131,
+  "contractRet": "SUCCESS",
+  "from": "TCcJH7JkoEzwEpZYAyvkes9mpKD1cE1Gdh",
+  "to": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+  "amount_trx": "2",
+  "fee_trx": "0",
+  "bot_balance_after_trx": "0.5",
+  "mac_balance_after_trx": "992.21",
+  "verification": "FINAL_CHAIN_VERIFICATION_R2.json (fullnode+solidity)"
+ },
+ "verdict": "PASS — unattended completion notice delivered automatically by the fixed adapter path after approval-transport timeout; no manual recovery",
+ "observation": "approval HTTP took ~38 s so the user still sees the transport-timeout wording before the automatic notices; recovery path (same-intent tracking) worked as designed"
+}

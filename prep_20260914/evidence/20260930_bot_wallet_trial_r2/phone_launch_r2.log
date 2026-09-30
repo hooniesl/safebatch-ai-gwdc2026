@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "<clone>/guide/phone_server.py", line 327, in <module>
+    main()
+  File "<clone>/guide/phone_server.py", line 304, in main
+    signer = SG.build_signer(a.signer, key_file=os.environ.get("SB_SIGNER_KEY_FILE"), pass_file=os.environ.get("SB_SIGNER_PASS_FILE"))
+  File "<clone>/guide/phone_signer.py", line 364, in build_signer
+    return LocalKeySigner(pathlib.Path(key_file), pathlib.Path(pass_file))
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1072, in __new__
+    self = cls._from_parts(args, init=False)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 697, in _from_parts
+    drv, root, parts = self._parse_args(args)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 681, in _parse_args
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+
+# second start attempt with SB_SIGNER_KEY_FILE/SB_SIGNER_PASS_FILE set (first attempt failed: env missing)
+[phone_server] v2026-09-29.tg2 listening on 127.0.0.1:8791 · session file <clone>/guide/logs/phone_session.json (URL with token inside)
+2026-09-30T09:55:19 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 200 -
+2026-09-30T09:55:41 127.0.0.1 - "GET /p/<token>/api/health HTTP/1.1" 200 -
+2026-09-30T10:03:24 127.0.0.1 - "POST /p/<token>/api/intent/create HTTP/1.1" 200 -
+2026-09-30T10:03:28 127.0.0.1 - "POST /p/<token>/api/intent/prepare_bg HTTP/1.1" 200 -
+2026-09-30T10:10:07 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 200 -
+2026-09-30T10:10:15 127.0.0.1 - "POST /p/<token>/api/intent/approve HTTP/1.1" 200 -
+2026-09-30T10:10:21 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 200 -
+2026-09-30T10:10:34 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 200 -
+2026-09-30T10:10:47 127.0.0.1 - "POST /p/<token>/api/intent/view HTTP/1.1" 200 -

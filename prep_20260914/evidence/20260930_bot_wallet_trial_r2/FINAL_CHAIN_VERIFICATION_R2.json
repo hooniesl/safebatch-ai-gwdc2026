@@ -1,0 +1,34 @@
+{
+ "observed_at": "2026-09-30T10:11:47+09:00",
+ "txid": "a4c396f73dac00cc8cddd6aa4e765fa1714c97ae6cb59a9d505f7c51cecfd59c",
+ "queries": {
+  "fullnode": {
+   "tx_http": 200,
+   "contractRet": "SUCCESS",
+   "owner": "411cf40c04daa58f9b7584df448e5485e2247d1f67",
+   "to": "4130b2528f0857ead32dd0823835c79908648de8b8",
+   "amount_sun": 2000000,
+   "signatures": 1,
+   "info_http": 200,
+   "block": 71401131,
+   "fee": 0,
+   "net_fee": 0,
+   "blockTimeStamp": 1790730582000
+  },
+  "solidity": {
+   "tx_http": 200,
+   "contractRet": "SUCCESS",
+   "owner": "411cf40c04daa58f9b7584df448e5485e2247d1f67",
+   "to": "4130b2528f0857ead32dd0823835c79908648de8b8",
+   "amount_sun": 2000000,
+   "signatures": 1,
+   "info_http": 200,
+   "block": 71401131,
+   "fee": 0,
+   "net_fee": 0,
+   "blockTimeStamp": 1790730582000
+  }
+ },
+ "bot_balance_sun": 500000,
+ "mac_balance_sun": 992210000
+}

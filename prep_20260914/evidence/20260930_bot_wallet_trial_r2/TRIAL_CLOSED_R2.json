@@ -1,0 +1,11 @@
+{
+ "observed_at": "2026-09-30T10:11:17+09:00",
+ "reason": "one authorized R2 transaction confirmed and auto-notified",
+ "intake_enabled": false,
+ "signer_stop_present": true,
+ "stop_note": "guide/logs/signer_stop rewritten 10:11:17",
+ "enabled_marker_preserved": "tg_adapter_enabled.post_trial_r2",
+ "phone_server_pid": 29240,
+ "phone_server_left_running": true,
+ "additional_restart": 0
+}

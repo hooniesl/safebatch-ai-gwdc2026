@@ -1,0 +1,26 @@
+{
+ "observed_at": "2026-09-30T10:01:35+09:00",
+ "operation": "read_only_quote_no_intent_no_signing",
+ "sender": "TCcJH7JkoEzwEpZYAyvkes9mpKD1cE1Gdh",
+ "receiver": "TEQh4L9pabnbW4UpHmxXveY31Q3FLsRHHz",
+ "amount_sun": 2000000,
+ "raw_len_bytes_assumed": 267,
+ "quote": {
+  "sender_exists": true,
+  "balance_sun": 2500000,
+  "receiver_exists": true,
+  "free_bandwidth_left": 441,
+  "staked_bandwidth_left": 0,
+  "bandwidth_bytes": 401,
+  "bandwidth_price_sun": 1000,
+  "bandwidth_fee_max_sun": 401000,
+  "bandwidth_covered": true,
+  "activation_fee_sun": 0,
+  "expected_max_fee_sun": 0,
+  "worst_case_fee_sun": 401000,
+  "fee_cap_sun": 2000000,
+  "within_cap": true,
+  "would_succeed": true,
+  "quoted_at": 1790730095
+ }
+}

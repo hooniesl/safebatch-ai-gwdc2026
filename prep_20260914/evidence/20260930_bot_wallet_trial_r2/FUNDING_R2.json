@@ -1,0 +1,14 @@
+{
+ "observed_at": "2026-09-30T10:01:19+09:00",
+ "operation": "read_only_chain_query",
+ "funding_txid": "c75ca3364e1ae546fe7f8df957f845557899e8a32fb5c68c93dd45969ed69b63",
+ "block": 71400949,
+ "result": "SUCCESS",
+ "from": "TJ1aFHjZsTyDtpUkwHXkPEC8Ay4w6ixHFY (Android, owner-signed)",
+ "to": "TCcJH7JkoEzwEpZYAyvkes9mpKD1cE1Gdh",
+ "amount_trx": "2.0",
+ "net_fee_trx": "0.0",
+ "fee_cap_trx": "0.3",
+ "bot_balance_after_trx": "2.5",
+ "owner_report": "보냈어 (10:00 KST)"
+}
